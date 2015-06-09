@@ -44,6 +44,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     public void insertIntoTitlesDatabase(String titleName){
 
+        // TODO - CHNAGE TO INSERTING AN OBJECT TITLESLISTDATA - CURSOR
         SQLiteDatabase database = getWritableDatabase();
 
         String insertQuery = "INSERT INTO title_list VALUES (NULL, '" + titleName + "')";
@@ -54,6 +55,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     public void insertIntoItemsDatabase(String titleName, String itemName){
 
+        // TODO - CHANGE TO INSERTING AN OBJECT ITEMSLISTDATA - CURSOR
         SQLiteDatabase database = getWritableDatabase();
 
         String insertQuery = "INSERT INTO items_list VALUES (NULL, '" + itemName + "'," +
@@ -121,10 +123,29 @@ public class DBHelper extends SQLiteOpenHelper{
         return titlesListDataArrayList;
     }
 
-    // todo - delete title
+    public void deleteTitle(String titleName){
+
+        SQLiteDatabase database = getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM title_list WHERE title_id = " +
+                "(SELECT title_id FROM title_list WHERE title_list.title = '" + titleName + "')";
+
+        database.execSQL(deleteQuery);
+        database.close();
+    }
+
+    // TODO - SQLITE PREPARED STATEMENTS FOR QUERIES
+
     // todo - delete item
     // todo - delete all items
     // todo - delete all titles & items
+
+    // todo  - update title option change title name on title_id (long press)
+    // todo  - update item option change item name on item_id (long press)
+
+    // todo - check duplicate entries titles - query database on titles - a cursor result means a duplicate (query done EVERY title entry)
+    // todo - check duplicate entries items - query database items WHERE title = 'movies' - a cursor result means a duplicate (query done EVERY item entry
+
 
 
 }

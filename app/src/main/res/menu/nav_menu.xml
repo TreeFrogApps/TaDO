@@ -3,26 +3,22 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:menuCategory="system"
             android:title="@string/nav_home"
             android:icon="@mipmap/ic_nav_holder"/>
 
         <item
             android:id="@+id/nav_lists"
-            android:menuCategory="secondary"
             android:title="@string/nav_ran_lists"
             android:icon="@mipmap/ic_nav_holder" />
 
         <item
             android:id="@+id/nav_drop_box_sync"
-            android:menuCategory="secondary"
             android:title="@string/nav_sync"
             android:icon="@mipmap/ic_nav_holder" />
 
         <item
             android:id="@+id/nav_schedule"
-            android:menuCategory="secondary"
-            android:title="Scheduled Events"
+            android:title="@string/nav_scheduler"
             android:icon="@mipmap/ic_nav_holder"/>
     </group>
 
