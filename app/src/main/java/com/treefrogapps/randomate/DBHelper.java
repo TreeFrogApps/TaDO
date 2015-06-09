@@ -1,6 +1,7 @@
 package com.treefrogapps.randomate;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,20 +43,21 @@ public class DBHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public void insertIntoTitlesDatabase(String titleName){
+    public void insertIntoTitlesDatabase(TitlesListData titlesListData){
 
-        // TODO - CHNAGE TO INSERTING AN OBJECT TITLESLISTDATA - CURSOR
         SQLiteDatabase database = getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        String insertQuery = "INSERT INTO title_list VALUES (NULL, '" + titleName + "')";
-        database.execSQL(insertQuery);
+        values.put(Constants.TITLE_ID, "NULL");
+        values.put(Constants.TITLE, titlesListData.getTitle());
+        database.insert(Constants.TITLES_LIST, null, values);
         database.close();
 
     }
 
     public void insertIntoItemsDatabase(String titleName, String itemName){
 
-        // TODO - CHANGE TO INSERTING AN OBJECT ITEMSLISTDATA - CURSOR
+        // TODO - CHANGE TO INSERTING AN OBJECT ITEMSLISTDATA - contentvalues
         SQLiteDatabase database = getWritableDatabase();
 
         String insertQuery = "INSERT INTO items_list VALUES (NULL, '" + itemName + "'," +
