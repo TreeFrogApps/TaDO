@@ -1,4 +1,4 @@
-package com.treefrogapps.randomate;
+package com.treefrogapps.TaDo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

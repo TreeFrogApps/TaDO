@@ -1,4 +1,4 @@
-package com.treefrogapps.randomate;
+package com.treefrogapps.TaDo;
 
 
 import android.content.ContentValues;
@@ -178,7 +178,7 @@ public class DBHelper extends SQLiteOpenHelper{
         database.beginTransactionNonExclusive();
 
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
-        executePreparedStatement(2, database, statement, new String[] {newItem.getItem(), oldItem.getTitle()});
+        executePreparedStatement(2, database, statement, new String[]{newItem.getItem(), oldItem.getTitle()});
     }
 
 

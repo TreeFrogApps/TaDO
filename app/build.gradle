@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.treefrogapps.randomate"
+        applicationId "com.treefrogapps.TaDo"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
