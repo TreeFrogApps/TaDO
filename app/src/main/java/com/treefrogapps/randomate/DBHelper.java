@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public void insertIntoTitlesDatabase(TitlesListData titlesListData){
+    public void insertIntoTitlesTable(TitlesListData titlesListData){
 
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -55,15 +55,17 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
-    public void insertIntoItemsDatabase(ItemsListData itemsListData){
+    public void insertIntoItemsTable(ItemsListData itemsListData){
 
         SQLiteDatabase database = this.getWritableDatabase();
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
         database.beginTransactionNonExclusive();
 
+        // create prepared statement
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_INSERT_QUERY);
 
-        executePreparedStatement(database, statement,
+        // execute method to handle statement request
+        executePreparedStatement(3, database, statement,
                 new String[]{itemsListData.getItem(), itemsListData.getTitle()});
     }
 
@@ -74,8 +76,8 @@ public class DBHelper extends SQLiteOpenHelper{
 
         Cursor cursor = database.rawQuery(Constants.TITLES_GET_QUERY, null);
 
-        int title_id = cursor.getColumnIndex("title_id");
-        int title = cursor.getColumnIndex("title");
+        int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
+        int title = cursor.getColumnIndex(Constants.TITLE);
 
         if (cursor.moveToFirst()){
 
@@ -94,15 +96,15 @@ public class DBHelper extends SQLiteOpenHelper{
         return titlesListDataArrayList;
     }
 
-    public ArrayList<ItemsListData> getItems(String titleName){
+    public ArrayList<ItemsListData> getItemsForTitle(String titleName){
 
         SQLiteDatabase database = this.getWritableDatabase();
         ArrayList<ItemsListData> itemsListDataArrayList = new ArrayList<>();
 
         Cursor cursor = database.rawQuery(Constants.ITEMS_GET_QUERY, new String[]{titleName});
 
-        int title_id = cursor.getColumnIndex("title_id");
-        int item = cursor.getColumnIndex("item");
+        int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
+        int item = cursor.getColumnIndex(Constants.ITEM);
 
         if (cursor.moveToFirst()){
 
@@ -128,7 +130,7 @@ public class DBHelper extends SQLiteOpenHelper{
         database.beginTransactionNonExclusive();
         SQLiteStatement statement = database.compileStatement(Constants.TITLE_DELETE_QUERY);
 
-        executePreparedStatement(database, statement, new String[]{titleName});
+        executePreparedStatement(2, database, statement, new String[]{titleName});
     }
 
     public void deleteItem(ItemsListData itemsListData){
@@ -137,19 +139,69 @@ public class DBHelper extends SQLiteOpenHelper{
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
         database.beginTransactionNonExclusive();
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_DELETE_SINGLE);
-        executePreparedStatement(database, statement, new String[] {itemsListData.getItem(), itemsListData.getTitle()});
+        executePreparedStatement(2, database, statement, new String[] {itemsListData.getItem(), itemsListData.getTitle()});
+    }
 
+    public void deleteAllItemsForTitle(String titleName){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // Non-exclusive mode allows database file to be in readable by other threads executing queries.
+        database.beginTransactionNonExclusive();
+        SQLiteStatement statement = database.compileStatement(Constants.ITEMS_DELETE_ALL_SINGLE_TITLE);
+        executePreparedStatement(2, database, statement, new String[] {titleName});
+    }
+
+    public void deleteAllTitlesAndItems(){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // delete all titles & items
+        database.delete(Constants.ITEMS_TABLE, null, null);
+        database.delete(Constants.TITLES_LIST, null, null);
+        database.close();
+    }
+
+    public void updateTitle(TitlesListData oldTitle, TitlesListData newTitle){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // put new values
+        ContentValues values = new ContentValues();
+        values.put(Constants.TITLE, newTitle.getTitle());
+        // update the database passing the oldTitleName as an argument
+        //                     table name  |  new values | where | arguments replacing '?' in where
+        database.update(Constants.TITLES_TABLE, values, "title= ?", new String[]{oldTitle.getTitle()});
+        database.close();
+    }
+
+    public void updateItem(ItemsListData oldItem, ItemsListData newItem){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.beginTransactionNonExclusive();
+
+        SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
+        executePreparedStatement(2, database, statement, new String[] {newItem.getItem(), oldItem.getTitle()});
     }
 
 
-    public void executePreparedStatement(SQLiteDatabase database, SQLiteStatement statement, String[] stringBindings){
+    public void executePreparedStatement(int executeType, SQLiteDatabase database, SQLiteStatement statement, String[] stringBindings){
 
         for (int i = 0; i < stringBindings.length; i++){
             statement.bindString((i+1), stringBindings[i]);
         }
-        statement.execute();
-        statement.clearBindings();
+
+        if (executeType == 1){
+            // CREATE and DROP
+            statement.execute();
+
+        } else if (executeType == 2){
+            // UPDATE and DELETE
+            statement.executeUpdateDelete();
+
+        } else if (executeType == 3){
+            // INSERT
+            statement.executeInsert();
+        }
         database.setTransactionSuccessful();
+        statement.clearBindings();
         database.endTransaction();
         database.close();
     }
@@ -157,13 +209,8 @@ public class DBHelper extends SQLiteOpenHelper{
 
     // todo - checking titles list doesn't match any new title lists made - duplicates = database nightmare
     // todo - checking items list doesn't match any new item made with same title name
-    // todo   different title name duplicates allowed but not same title same item
+    // todo   same ITEM name duplicates allowed but not same title
 
-    // todo - delete all items - for one title (statement done)
-    // todo - delete all titles & items
-
-    // todo  - update title option change title name on title_id (long press)
-    // todo  - update item option change item name on item_id (long press)
 
     // todo - check duplicate entries titles - query database on titles - a cursor result means a duplicate (query done EVERY title entry)
     // todo - check duplicate entries items - query database items WHERE title = 'movies' - a cursor result means a duplicate (query done EVERY item entry

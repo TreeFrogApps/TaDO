@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="320dp"
     android:layout_height="178dp"
-    android:background="@color/primaryColorAccent"
+    android:background="@drawable/dw_nav_header"
     android:layout_marginBottom="@dimen/eight_dp"
     android:gravity="start|left|bottom">
 
@@ -13,6 +13,6 @@
         android:layout_height="70dp"
         android:layout_marginLeft="@dimen/activity_vertical_margin"
         android:layout_marginBottom="64dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_nav_header_icon"/>
 
 </LinearLayout>

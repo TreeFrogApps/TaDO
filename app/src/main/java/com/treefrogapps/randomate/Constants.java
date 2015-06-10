@@ -15,7 +15,7 @@ public class Constants {
     // Titles table
     protected final static String TITLES_TABLE =
             "CREATE TABLE IF NOT EXISTS titles_list " +
-            "(title_id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR);";
+                    "(title_id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR);";
 
     protected final static String TITLES_LIST = "titles_list";
     protected final static String TITLE_ID = "title_id";
@@ -25,9 +25,9 @@ public class Constants {
     // Items Table
     protected final static String ITEMS_TABLE =
             "CREATE TABLE IF NOT EXISTS items_list " +
-            "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-            " item VARCHAR, title_id INTEGER NOT NULL," +
-            " FOREIGN KEY (title_id) REFERENCES title_list(title_id) ON DELETE CASCADE);";
+                    "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " item VARCHAR, title_id INTEGER NOT NULL," +
+                    " FOREIGN KEY (title_id) REFERENCES title_list(title_id) ON DELETE CASCADE);";
 
     protected final static String ITEMS_LIST = "items_list";
     protected final static String ITEMS_ID = "item_id";
@@ -49,10 +49,11 @@ public class Constants {
     protected final static String ITEMS_DELETE_ALL_SINGLE_TITLE = "DELETE FROM items_list WHERE " +
             "title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
-    protected  final static String ITEM_DELETE_SINGLE = "DELETE FROM items_list WHERE item= ? " +
+    protected final static String ITEM_DELETE_SINGLE = "DELETE FROM items_list WHERE item= ? " +
             "AND title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
-
+    protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ? WHERE" +
+            " title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
 
 }

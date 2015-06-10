@@ -1,11 +1,15 @@
 package com.treefrogapps.randomate;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,10 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initialiseMenu();
-
-
-
         dbHelper = new DBHelper(this);
+
+        if (savedInstanceState == null){
+            updateDisplayFragment("Home");
+        }
     }
 
     public void initialiseMenu(){
@@ -42,15 +47,64 @@ public class MainActivity extends AppCompatActivity {
         mNavView.getMenu().getItem(0).setChecked(true);
         mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(final MenuItem menuItem) {
+
                 mDrawLayout.closeDrawers();
                 menuItem.setChecked(true);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        updateDisplayFragment(menuItem.getTitle().toString());
+                    }
+                }, 300);
+
                 return true;
             }
         });
 
         mDrawLayout.setDrawerListener(mToggle);
         mToggle.syncState();
+
+    }
+
+    public void updateDisplayFragment(String menuTitle){
+
+        Fragment fragment = null;
+
+        switch (menuTitle){
+
+            case "Home" :
+                fragment = new HomeFragment();
+                break;
+            case "My Lists" :
+                fragment = new MyListsFragment();
+                break;
+            case "Sync with Dropbox" :
+                fragment = new SyncFragment();
+                break;
+            case "Scheduler" :
+                fragment = new SchedulerFragment();
+                break;
+            default : break;
+        }
+
+        if (fragment != null){
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frameContainer, fragment);
+            fragmentTransaction.commit();
+
+            try {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(menuTitle);
+                }
+            } catch (NullPointerException e){
+                e.printStackTrace();
+                Log.e("ERROR", "PROBLEM LOADING FRAGMENT");
+            }
+        }
 
     }
 
