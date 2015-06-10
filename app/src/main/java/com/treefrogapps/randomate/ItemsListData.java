@@ -4,6 +4,8 @@ package com.treefrogapps.randomate;
 public class ItemsListData {
 
     private int titleId;
+    // get name from title spinner when querying database -  insertIntoItemsDatabase(ItemsListData itemsListData)
+    private String title;
     private String item;
 
     public void setTitleId (int title_id){
@@ -12,6 +14,14 @@ public class ItemsListData {
 
     public int getTitleId() {
         return this.titleId;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+
+    public String getTitle(){
+        return this.title;
     }
 
     public void setItem (String item){
