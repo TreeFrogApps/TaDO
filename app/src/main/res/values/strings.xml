@@ -7,6 +7,12 @@
     <string name="nav_sync">Sync with Dropbox</string>
     <string name="nav_scheduler">Scheduler</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- fragment_home & HomeFragment Strings -->
+    <string name="home_fragment_create_lists_tv">CREATE TaDO LISTS</string>
+    <string name="fragment_home_tado_titles">TaDO TITLES</string>
+    <string name="fragment_home_pick_title">CHOOSE A LIST TITLE</string>
+
+
 </resources>

@@ -26,4 +26,8 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="MySpinnerStyle" parent="">
+        <item name="android:textColor">@color/primaryColorDark</item>
+    </style>
+
 </resources>

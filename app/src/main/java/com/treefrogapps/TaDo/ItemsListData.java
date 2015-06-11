@@ -7,6 +7,8 @@ public class ItemsListData {
     // get name from title spinner when querying database -  insertIntoItemsDatabase(ItemsListData itemsListData)
     private String title;
     private String item;
+    private String duration;
+    private String dateTime;
 
     public void setTitleId (int title_id){
         this.titleId = title_id;
@@ -30,5 +32,21 @@ public class ItemsListData {
 
     public String getItem() {
         return this.item;
+    }
+
+    public void setDuration(String duration){
+        this.duration = duration;
+    }
+
+    public String getDuration(){
+        return this.duration;
+    }
+
+    public void setDateTime(String dateTime){
+        this.dateTime = dateTime;
+    }
+
+    public String getDateTime(){
+        return this.dateTime;
     }
 }

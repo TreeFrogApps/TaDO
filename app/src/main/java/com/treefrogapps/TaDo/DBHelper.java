@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper{
 
-    // database query = "PRAGMA foreign_keys = ON" maybe required in onCreate, or every time database in isWriteable
-    // task - ise in onCreate only see if it works just only there
+    // database query = "PRAGMA foreign_keys = ON" maybe required in onCreate (ON DELETE CASCADE), or every time database in isWriteable
+    // task - use in onCreate only see if it works just only there!
 
     public DBHelper(Context context){
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
@@ -47,12 +47,14 @@ public class DBHelper extends SQLiteOpenHelper{
     public void insertIntoTitlesTable(TitlesListData titlesListData){
 
         SQLiteDatabase database = this.getWritableDatabase();
+
         ContentValues values = new ContentValues();
 
         values.put(Constants.TITLE, titlesListData.getTitle());
+        values.put(Constants.TITLE_DATETIME, titlesListData.getDateTime());
         database.insert(Constants.TITLES_LIST, null, values);
-        database.close();
 
+        database.close();
     }
 
     public void insertIntoItemsTable(ItemsListData itemsListData){
@@ -66,7 +68,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         // execute method to handle statement request
         executePreparedStatement(3, database, statement,
-                new String[]{itemsListData.getItem(), itemsListData.getTitle()});
+                new String[]{itemsListData.getItem(), itemsListData.getTitle(), itemsListData.getDuration(), itemsListData.getDateTime()});
     }
 
     public ArrayList<TitlesListData> getTitles() {
@@ -78,6 +80,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
         int title = cursor.getColumnIndex(Constants.TITLE);
+        int dateTime = cursor.getColumnIndex(Constants.TITLE_DATETIME);
 
         if (cursor.moveToFirst()){
 
@@ -86,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
                 titlesListData.setTitle_id(cursor.getInt(title_id));
                 titlesListData.setTitle(cursor.getString(title));
+                titlesListData.setDateTime(cursor.getString(dateTime));
 
                 titlesListDataArrayList.add(titlesListData);
 
@@ -105,6 +109,8 @@ public class DBHelper extends SQLiteOpenHelper{
 
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
         int item = cursor.getColumnIndex(Constants.ITEM);
+        int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
+        int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
 
         if (cursor.moveToFirst()){
 
@@ -113,6 +119,8 @@ public class DBHelper extends SQLiteOpenHelper{
 
                 itemsListData.setTitleId(cursor.getInt(title_id));
                 itemsListData.setItem(cursor.getString(item));
+                itemsListData.setDuration(cursor.getString(duration));
+                itemsListData.setDateTime(cursor.getString(dateTime));
 
                 itemsListDataArrayList.add(itemsListData);
 
@@ -166,6 +174,7 @@ public class DBHelper extends SQLiteOpenHelper{
         // put new values
         ContentValues values = new ContentValues();
         values.put(Constants.TITLE, newTitle.getTitle());
+        values.put(Constants.TITLE_DATETIME, newTitle.getDateTime());
         // update the database passing the oldTitleName as an argument
         //                     table name  |  new values | where | arguments replacing '?' in where
         database.update(Constants.TITLES_TABLE, values, "title= ?", new String[]{oldTitle.getTitle()});
@@ -178,7 +187,8 @@ public class DBHelper extends SQLiteOpenHelper{
         database.beginTransactionNonExclusive();
 
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
-        executePreparedStatement(2, database, statement, new String[]{newItem.getItem(), oldItem.getTitle()});
+        executePreparedStatement(2, database, statement,
+                new String[]{newItem.getItem(), newItem.getDuration(), newItem.getDateTime(), oldItem.getTitle()});
     }
 
 

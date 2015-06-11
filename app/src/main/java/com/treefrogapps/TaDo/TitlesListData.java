@@ -5,6 +5,7 @@ public class TitlesListData {
 
     private int title_id;
     private String title;
+    private String dateTime;
 
     public void setTitle_id(int title_id){
         this.title_id = title_id;
@@ -20,5 +21,13 @@ public class TitlesListData {
 
     public String getTitle(){
         return this.title;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getDateTime() {
+        return this.dateTime;
     }
 }

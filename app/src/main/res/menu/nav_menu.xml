@@ -4,22 +4,22 @@
         <item
             android:id="@+id/nav_home"
             android:title="@string/nav_home"
-            android:icon="@mipmap/ic_nav_holder"/>
+            android:icon="@mipmap/ic_nav_home"/>
 
         <item
             android:id="@+id/nav_lists"
             android:title="@string/nav_ran_lists"
-            android:icon="@mipmap/ic_nav_holder" />
+            android:icon="@mipmap/ic_nav_mylists" />
 
         <item
             android:id="@+id/nav_drop_box_sync"
             android:title="@string/nav_sync"
-            android:icon="@mipmap/ic_nav_holder" />
+            android:icon="@mipmap/ic_nav_sync" />
 
         <item
             android:id="@+id/nav_schedule"
             android:title="@string/nav_scheduler"
-            android:icon="@mipmap/ic_nav_holder"/>
+            android:icon="@mipmap/ic_nav_scheduler"/>
     </group>
 
 

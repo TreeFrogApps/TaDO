@@ -6,4 +6,8 @@
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
 
+    <color name="brown_text_normal">#5d4037</color>
+    <color name="brown_text_light">#795548</color>
+    <color name="brown_text_dark">#3e2723</color>
+
 </resources>
