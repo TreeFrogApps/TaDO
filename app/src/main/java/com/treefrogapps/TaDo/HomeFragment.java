@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class HomeFragment extends Fragment {
         initialiseTitlesSpinner();
     }
 
+
     public void initialiseTitlesSpinner() {
 
         // initialise spinner
@@ -81,6 +83,19 @@ public class HomeFragment extends Fragment {
         mSpinnerAdapter = new SpinnerAdapter(getActivity(),
                 R.layout.spinner_titles_view, R.id.spinner_list_item, mTitlesSpinnerItemList);
         mTitlesSpinner.setAdapter(mSpinnerAdapter);
+
+        mTitlesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                // TODO - retrieve list from database for title and populate recyclerView
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 

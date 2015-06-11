@@ -13,6 +13,8 @@
     <string name="home_fragment_create_lists_tv">CREATE TaDO LISTS</string>
     <string name="fragment_home_tado_titles">TaDO TITLES</string>
     <string name="fragment_home_pick_title">CHOOSE A LIST TITLE</string>
+    <string name="fragment_home_tado_items">TaDO ITEMS</string>
+    <string name="fragment_home_remove_list">REMOVE LIST</string>
 
 
 </resources>
