@@ -99,6 +99,7 @@
         <Button
             android:id="@+id/homeFragmentRemoveListButton"
             android:text="@string/fragment_home_remove_list"
+            android:textSize="@dimen/text_16sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_selector" />
