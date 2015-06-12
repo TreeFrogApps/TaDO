@@ -1,11 +1,11 @@
 package com.treefrogapps.TaDo;
 
 
-public class SpinnerItem {
+public class SpinnerTitle {
 
     private String spinnerItem;
 
-    public SpinnerItem(String spinnerItem){
+    public SpinnerTitle(String spinnerItem){
         this.spinnerItem = spinnerItem;
     }
 

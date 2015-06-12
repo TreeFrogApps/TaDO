@@ -60,5 +60,7 @@ public class Constants {
     protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, " +
             "dateTime = ? WHERE title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
+    protected final static int NEW_LIST_RESULT_CODE = 30;
+
 
 }

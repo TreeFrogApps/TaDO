@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">TaDO</string>
+    <string name="title_activity_create_list">CreateListActivity</string>
+    <string name="activity_create_list">New List</string>
+
 
     <string name="action_settings">Settings</string>
     <string name="nav_home">Home</string>
@@ -15,6 +18,20 @@
     <string name="fragment_home_pick_title">CHOOSE A LIST TITLE</string>
     <string name="fragment_home_tado_items">TaDO ITEMS</string>
     <string name="fragment_home_remove_list">REMOVE LIST</string>
+    <string name="recycler_item_duration">DURATION</string>
+    <string name="recycler_view_hours">hrs</string>
+    <string name="recycler_view_mins">mins</string>
+
+    <!-- dialog strings -->
+
+    <string name="dialog_remove_list">Confirm List Deletion</string>
+    <string name="dialog_yes">YES</string>
+    <string name="dialog_no">NO</string>
+    <string name="dialog_message">Note: This cannot be undone</string>
+
+
+    <string name="hello_world">Hello world!</string>
+
 
 
 </resources>

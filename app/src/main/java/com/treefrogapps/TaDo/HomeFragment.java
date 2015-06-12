@@ -1,29 +1,48 @@
 package com.treefrogapps.TaDo;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private DBHelper dbHelper;
     private View rootView;
+
+    private Button mRemoveListButton;
+    private FloatingActionButton mFAB;
+    private Animation anim;
+    private AlertDialog mAlertDialog;
+
     private Spinner mTitlesSpinner;
     private List<String> mTitlesSpinnerItemList;
-
     private SpinnerAdapter mSpinnerAdapter;
     private ArrayList<TitlesListData> mTitlesArrayList;
 
+    private RecyclerView mRecyclerView;
+    private ItemRecyclerAdapter mRecyclerAdapter;
+    private ArrayList<ItemsListData> mItemsArrayList;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -32,7 +51,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -40,7 +58,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
-
         return rootView;
     }
 
@@ -48,11 +65,38 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mFAB = (FloatingActionButton) rootView.findViewById(R.id.homeFragmentFAB);
+        anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_anim);
+
+        android.os.Handler handler = new android.os.Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mFAB.setVisibility(View.VISIBLE);
+                mFAB.startAnimation(anim);
+                mFAB.setOnClickListener(HomeFragment.this);
+            }
+        }, 200);
+
+        mRemoveListButton = (Button) rootView.findViewById(R.id.homeFragmentRemoveListButton);
+        mRemoveListButton.setOnClickListener(HomeFragment.this);
+
         dbHelper = new DBHelper(getActivity());
 
+        initialiseRecyclerView();
         initialiseTitlesSpinner();
     }
 
+    public void initialiseRecyclerView(){
+
+        mItemsArrayList = new ArrayList<>();
+
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.homeFragmentRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
 
     public void initialiseTitlesSpinner() {
 
@@ -66,16 +110,16 @@ public class HomeFragment extends Fragment {
         // initialise spinnerArrayList
         mTitlesSpinnerItemList = new ArrayList<>();
 
-        // add the spinnerItem hint
-        SpinnerItem spinnerItem =
-                new SpinnerItem(getResources().getString(R.string.fragment_home_pick_title));
-        mTitlesSpinnerItemList.add(spinnerItem.getSpinnerItem());
+        // add the spinnerTitle hint
+        SpinnerTitle spinnerTitle =
+                new SpinnerTitle(getResources().getString(R.string.fragment_home_pick_title));
+        mTitlesSpinnerItemList.add(spinnerTitle.getSpinnerItem());
 
         for (int i = 0; i < mTitlesArrayList.size(); i++) {
 
-            spinnerItem = new SpinnerItem(mTitlesArrayList.get(i).getTitle());
-            mTitlesSpinnerItemList.add(spinnerItem.getSpinnerItem());
-            Log.v("Spinner Item From DB = ", spinnerItem.getSpinnerItem());
+            spinnerTitle = new SpinnerTitle(mTitlesArrayList.get(i).getTitle());
+            mTitlesSpinnerItemList.add(spinnerTitle.getSpinnerItem());
+            Log.v("Spinner Item From DB = ", spinnerTitle.getSpinnerItem());
         }
 
         Log.v("Total = ", String.valueOf(mTitlesSpinnerItemList.size()));
@@ -88,7 +132,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                // TODO - retrieve list from database for title and populate recyclerView
+                if (position != 0){
+                    String listTitle = mTitlesSpinner.getItemAtPosition(position).toString();
+
+                    populateRecyclerView(listTitle);
+                }
             }
 
             @Override
@@ -98,5 +146,127 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    // method to populate recycler view after any updates
+    public void populateRecyclerView(String listTitle){
 
+        mItemsArrayList.clear();
+        mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
+        mRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    // method to populate SpinnerList after ANY updates
+    public void populateTitlesSpinner(){
+
+        mTitlesSpinnerItemList.clear();
+
+        // add the spinnerTitle hint
+        SpinnerTitle spinnerTitle =
+                new SpinnerTitle(getResources().getString(R.string.fragment_home_pick_title));
+        mTitlesSpinnerItemList.add(spinnerTitle.getSpinnerItem());
+
+        for (int i = 0; i < mTitlesArrayList.size(); i++) {
+
+            spinnerTitle = new SpinnerTitle(mTitlesArrayList.get(i).getTitle());
+            mTitlesSpinnerItemList.add(spinnerTitle.getSpinnerItem());
+            Log.v("Title From DB = ", spinnerTitle.getSpinnerItem());
+        }
+
+        Log.v("Total = ", String.valueOf(mTitlesSpinnerItemList.size()));
+        mSpinnerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v.getId() == mRemoveListButton.getId()){
+
+            if (mTitlesSpinner.getSelectedItemPosition() != 0){
+
+                final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                alertBuilder.setTitle(getActivity().getResources().getString(R.string.dialog_remove_list));
+                alertBuilder.setCancelable(true);
+                alertBuilder.setMessage(getActivity().getResources().getString(R.string.dialog_message));
+                alertBuilder.setPositiveButton(getActivity().getResources()
+                        .getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // delete title - when deleting title all title items from items table
+                        // should be deleted because of ON DELETE CASCADE
+                        String title = mTitlesSpinner.getSelectedItem().toString();
+                        dbHelper.deleteTitle(title);
+
+                        // clear the recycler view
+                        mItemsArrayList.clear();
+                        mRecyclerAdapter.notifyDataSetChanged();
+
+                        // populate spinner with new list with title gone
+                        populateTitlesSpinner();
+                    }
+                });
+
+                alertBuilder.setNegativeButton(getActivity().getResources()
+                        .getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAlertDialog.dismiss();
+                    }
+                });
+
+                mAlertDialog = alertBuilder.create();
+                mAlertDialog.show();
+
+            }
+
+        } else if (v.getId() == mFAB.getId()){
+
+            Intent intent = new Intent(getActivity(),CreateListActivity.class);
+
+            if (mTitlesSpinner.getSelectedItemPosition() != 0){
+                // pass the spinner Title text to next activity to so when returned
+                // it will repopulate with updated list, and also show last list before creating new one
+                intent.putExtra("spinnerPosition", mTitlesSpinner.getSelectedItem().toString());
+            }
+            startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // if requestCode matches from CreateListActivity
+        if (requestCode == Constants.NEW_LIST_RESULT_CODE){
+
+            Log.e("RESULT CODE", String.valueOf(requestCode));
+
+            populateTitlesSpinner();
+
+            // check if there was a string extra passed and populate
+            if (data.getStringExtra("spinnerPosition") != null){
+                mTitlesSpinner.setSelection(getSpinnerIndex(data.getStringExtra("spinnerPosition")));
+                populateRecyclerView(mTitlesSpinner.getSelectedItem().toString());
+                Toast.makeText(getActivity(), "You've Come from the NEW LIST activity " + data.getStringExtra("spinnerPosition"), Toast.LENGTH_SHORT).show();
+            } else {
+                mTitlesSpinner.setSelection(0);
+                mItemsArrayList.clear();
+                mRecyclerAdapter.notifyDataSetChanged();
+            }
+
+
+        }
+    }
+
+    public int getSpinnerIndex(String spinnerPosition){
+
+        int index = 0;
+
+        for (int i = 0; i < mTitlesSpinner.getCount(); i++){
+            if (mTitlesSpinner.getItemAtPosition(i).equals(spinnerPosition)){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
 }
