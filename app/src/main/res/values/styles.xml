@@ -11,11 +11,8 @@
         <item name="colorAccent">@color/primaryColorAccent</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
-
         <!-- text color for nav menu items text -->
         <item name="itemTextColor">#de000000</item>
-
-
     </style>
 
     <style name="ToolbarPopMenu" parent="ThemeOverlay.AppCompat">
@@ -28,6 +25,10 @@
 
     <style name="MySpinnerStyle" parent="">
         <item name="android:textColor">@color/primaryColorDark</item>
+    </style>
+
+    <style name="EditTextColors" parent="">
+        <item name="colorControlNormal">@color/brown_text_light</item>
     </style>
 
 </resources>

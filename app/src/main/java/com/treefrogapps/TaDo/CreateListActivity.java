@@ -4,16 +4,29 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 
 public class CreateListActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
+
+    EditText mCreateListTitleEditText;
+    EditText mCreateListItemEditText;
+
+    ImageView mCreateListAddItem;
+    RecyclerView mCreateListRecyclerView;
+    ItemRecyclerAdapter mItemRecyclerAdapter;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

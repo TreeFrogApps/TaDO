@@ -93,9 +93,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="vertical"
-        android:gravity="bottom">
+        android:layout_height="48dp"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/homeFragmentRemoveListButton"
@@ -103,9 +102,7 @@
             android:textSize="@dimen/text_16sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_selector"
-            android:visibility="invisible"
-            />
+            android:background="@drawable/button_selector" />
 
     </LinearLayout>
 

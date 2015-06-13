@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             case "Home" :
                 fragment = new HomeFragment();
                 break;
-            case "My Lists" :
+            case "TaDO Chooser" :
                 fragment = new MyListsFragment();
                 break;
             case "Sync with Dropbox" :

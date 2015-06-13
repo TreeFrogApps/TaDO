@@ -135,7 +135,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 if (position != 0){
                     String listTitle = mTitlesSpinner.getItemAtPosition(position).toString();
 
+                    if (mRemoveListButton.getVisibility() == View.INVISIBLE){
+                        mRemoveListButton.setVisibility(View.VISIBLE);
+                        anim = AnimationUtils.loadAnimation(getActivity(), R.anim.button_alpha_anim);
+                        mRemoveListButton.startAnimation(anim);
+                    }
                     populateRecyclerView(listTitle);
+
+                } else {
+                    mRemoveListButton.setVisibility(View.INVISIBLE);
                 }
             }
 
