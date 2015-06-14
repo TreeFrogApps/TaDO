@@ -51,7 +51,9 @@ public class DBHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
 
         values.put(Constants.TITLE, titlesListData.getTitle());
+        Log.e("ITEM", titlesListData.getTitle());
         values.put(Constants.TITLE_DATETIME, titlesListData.getDateTime());
+        Log.e("ITEM", titlesListData.getDateTime());
         database.insert(Constants.TITLES_LIST, null, values);
 
         database.close();
@@ -139,11 +141,15 @@ public class DBHelper extends SQLiteOpenHelper{
                 ItemsListData itemsListData = new ItemsListData();
 
                 itemsListData.setItemId(cursor.getString(item_id));
+                Log.e("ITEM ID", itemsListData.getItemId());
                 itemsListData.setTitleId(cursor.getString(title_id));
+                Log.e("ITEM TITLE ID", itemsListData.getTitleId());
                 itemsListData.setItem(cursor.getString(item));
+                Log.e("ITEM", itemsListData.getItem());
                 itemsListData.setDuration(cursor.getString(duration));
+                Log.e("ITEM DURATION", itemsListData.getDuration());
                 itemsListData.setDateTime(cursor.getString(dateTime));
-
+                Log.e("ITEM DATE", itemsListData.getDateTime());
                 itemsListDataArrayList.add(itemsListData);
 
             } while (cursor.moveToNext());

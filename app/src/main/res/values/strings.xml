@@ -35,9 +35,10 @@
     <string name="create_list_edit_button">EDIT</string>
     <string name="create_list_item">ITEM</string>
     <string name="create_list_duration">DURATION (HH:MM)</string>
-    <string name="create_list_time">0</string>
+    <string name="create_list_time">00</string>
     <string name="create_item_add_item">ADD ITEM</string>
     <string name="create_list_time_separator">:</string>
+    <string name="fragment_home_items">ITEMS</string>
 
 
 </resources>

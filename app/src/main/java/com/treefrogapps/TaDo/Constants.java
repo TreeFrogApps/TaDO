@@ -29,7 +29,7 @@ public class Constants {
                     "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " item VARCHAR, title_id INTEGER NOT NULL," +
                     " duration TIME, date DATETIME, " +
-                    " FOREIGN KEY (title_id) REFERENCES title_list(title_id) ON DELETE CASCADE);";
+                    " FOREIGN KEY (title_id) REFERENCES title_list (title_id) ON DELETE CASCADE);";
 
     protected final static String ITEMS_LIST = "items_list";
     protected final static String ITEMS_ID = "item_id";
@@ -40,7 +40,7 @@ public class Constants {
 
     // SQLite Queries - including prepared statement queries
     protected final static String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?," +
-            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME(?));";
+            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME (?));";
     // datetime format = YYYY-MM-YY HH:YY:SS
 
     protected final static String ITEMS_GET_QUERY = "SELECT * FROM items_list WHERE title_id =" +

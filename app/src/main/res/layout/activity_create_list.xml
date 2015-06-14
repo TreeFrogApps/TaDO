@@ -28,11 +28,21 @@
             android:id="@+id/createListTitleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions"
+            android:inputType="textNoSuggestions|textCapSentences"
             android:maxLength="100"
-            style="@style/EditTextColors" />
+            style="@style/EditTextColors"
+            android:imeOptions="actionDone"/>
 
     </LinearLayout>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/createListCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/eight_dp"
+        card_view:cardCornerRadius="4dp"
+        android:visibility="gone">
 
     <LinearLayout
         android:id="@+id/createListAddItemLayout"
@@ -42,7 +52,7 @@
         android:layout_marginRight="@dimen/activity_vertical_margin"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:layout_width="match_parent"
@@ -67,8 +77,8 @@
                     android:id="@+id/createListItemEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textNoSuggestions"
-                    android:theme="@style/EditTextColors" />
+                    android:inputType="textNoSuggestions|textCapSentences"
+                    style="@style/EditTextColors" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -196,10 +206,9 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_light" />
+    </android.support.v7.widget.CardView>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -208,6 +217,9 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/createListRecyclerView"
+            android:layout_marginLeft="@dimen/eight_dp"
+            android:layout_marginRight="@dimen/eight_dp"
+            android:layout_marginTop="@dimen/eight_dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
@@ -217,6 +229,7 @@
 
 
     <LinearLayout
+        android:id="@+id/createListSaveButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="bottom">

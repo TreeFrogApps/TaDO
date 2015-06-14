@@ -4,6 +4,7 @@ package com.treefrogapps.TaDo;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,13 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private Button mRemoveListButton;
     private FloatingActionButton mFAB;
-    private Animation anim;
     private AlertDialog mAlertDialog;
 
     private Spinner mTitlesSpinner;
@@ -68,14 +65,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         mFAB = (FloatingActionButton) rootView.findViewById(R.id.homeFragmentFAB);
-        anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_anim);
 
         android.os.Handler handler = new android.os.Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mFAB.setVisibility(View.VISIBLE);
-                mFAB.startAnimation(anim);
+                mFAB.startAnimation(Animations.floatingActionButtonAnim(getActivity()));
                 mFAB.setOnClickListener(HomeFragment.this);
             }
         }, 200);
@@ -144,13 +140,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                     if (mCreateListButtonLayout.getVisibility() == View.GONE){
                         mCreateListButtonLayout.setVisibility(View.VISIBLE);
-                        anim = AnimationUtils.loadAnimation(getActivity(), R.anim.button_alpha_anim);
-                        mRemoveListButton.startAnimation(anim);
+                        mRemoveListButton.startAnimation(Animations.alphaMoveInAnim(getActivity()));
                     }
                     populateRecyclerView(listTitle);
 
                 } else {
-                    mCreateListButtonLayout.setVisibility(View.GONE);
+                    mRemoveListButton.startAnimation(Animations.alphaMoveOutAnim(getActivity()));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCreateListButtonLayout.setVisibility(View.GONE);
+                            mItemsArrayList.clear();
+                            mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
+                            mRecyclerView.setAdapter(mRecyclerAdapter);
+                        }
+                    }, 500);
+
                 }
             }
 
@@ -166,15 +172,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         mItemsArrayList.clear();
         mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
-        Log.v("First Item = ", mItemsArrayList.get(0).getItem());
 
-        Log.v("First Item = ", mItemsArrayList.get(0).getItemId());
-        Log.v("First Item = ", mItemsArrayList.get(0).getTitle());
-        Log.v("First Item = ", mItemsArrayList.get(0).getTitleId());
-
-
-       // mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
-        //mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
     // method to populate SpinnerList after ANY updates

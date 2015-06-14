@@ -7,22 +7,7 @@
     tools:context="com.treefrogapps.TaDo.HomeFragment"
     android:weightSum="4">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/primaryColorAccent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:text="@string/home_fragment_create_lists_tv"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_16sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +15,7 @@
         android:orientation="vertical"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/eight_dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin">
+        android:layout_marginLeft="@dimen/eight_dp">
 
 
         <Spinner
@@ -48,14 +33,61 @@
         android:orientation="vertical"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/eight_dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin">
+        android:layout_marginLeft="@dimen/eight_dp">
+
+        <LinearLayout
+            android:id="@+id/homeFragmentListSpecLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/eight_dp"
+            android:weightSum="8">
+
+            <TextView
+                android:gravity="end"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_home_tado_items"
+                android:textColor="@color/brown_text_normal"
+                android:textSize="@dimen/text_16sp"/>
+
+            <TextView
+                android:gravity="start"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_home_items"
+                android:textColor="@color/brown_text_normal"
+                android:textSize="@dimen/text_16sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_home_tado_items"
+                android:textColor="@color/brown_text_normal"
+                android:textSize="@dimen/text_16sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_home_tado_items"
+                android:textColor="@color/brown_text_normal"
+                android:textSize="@dimen/text_16sp"/>
+
+
+        </LinearLayout>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fragment_home_tado_items"
             android:textColor="@color/brown_text_normal"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp"
+            android:layout_marginLeft="@dimen/eight_dp"/>
 
         <FrameLayout
             android:layout_width="match_parent"

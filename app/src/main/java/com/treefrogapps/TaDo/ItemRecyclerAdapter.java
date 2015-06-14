@@ -3,10 +3,12 @@ package com.treefrogapps.TaDo;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapter.MyViewHolder> {
 
     private Context context;
-    private ArrayList<ItemsListData> listItemsDataArrayList = new ArrayList<>();
+    private ArrayList<ItemsListData> listItemsDataArrayList;
 
     public ItemRecyclerAdapter (Context context, ArrayList<ItemsListData> listItemsDataArrayList){
 
@@ -26,13 +28,15 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     @Override
     public ItemRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_view, viewGroup, false);
+        Log.e("Recycler adapter size", String.valueOf(getItemCount()));
+
+        View itemView = LayoutInflater.from(viewGroup.getContext().getApplicationContext()).inflate(R.layout.recycler_item_view, viewGroup, false);
 
         return new MyViewHolder(itemView);
     }
 
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener{
 
         private TextView recyclerViewItemID; // use for accessing unique item Id - with this duplicates aren't a problem
 
@@ -49,7 +53,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             recyclerViewHoursTextView = (TextView) itemView.findViewById(R.id.recyclerHoursTextView);
             recyclerViewMinsTextView = (TextView) itemView.findViewById(R.id.recyclerMinsTextView);
 
-            itemView.setOnLongClickListener(this);
+            itemView.setOnClickListener(this);
 
         }
 
@@ -58,6 +62,11 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
             // TODO
             return false;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(itemView.getContext(), "ITEM CLICKED", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,9 +1,12 @@
 package com.treefrogapps.TaDo;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +33,8 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     private Toolbar mToolbar;
     private DBHelper dbHelper;
 
-    private LinearLayout mCreateListAddItemLayout;
+    private CardView mCreateListCardView;
+    private LinearLayout mCreateListSaveButtonLayout;
 
     private EditText mCreateListTitleEditText;
     private EditText mCreateListItemEditText;
@@ -51,7 +54,6 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<ItemsListData> mItemsArrayList;
 
     private Button mCreateListTitleSaveButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +102,11 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         mCreateListAddItem = (ImageView) findViewById(R.id.createListAddItem);
         mCreateListAddItem.setOnClickListener(this);
 
-        mCreateListAddItemLayout = (LinearLayout) findViewById(R.id.createListAddItemLayout);
+        mCreateListCardView = (CardView) findViewById(R.id.createListCardView);
+        mCreateListSaveButtonLayout = (LinearLayout) findViewById(R.id.createListSaveButtonLayout);
     }
 
-    public void initialiseRecyclerView(){
+    public void initialiseRecyclerView() {
 
         mCreateListRecyclerView = (RecyclerView) findViewById(R.id.createListRecyclerView);
         mCreateListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -130,7 +133,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == android.R.id.home){
+        } else if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }
@@ -138,22 +141,21 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         return super.onOptionsItemSelected(item);
     }
 
-    
-    
+
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == mCreateListPlusHour.getId()){
+        if (v.getId() == mCreateListPlusHour.getId()) {
 
             String currentDuration = mCreateListHoursTextView.getText().toString();
 
             mCreateListHoursTextView.setText(setDuration(0, currentDuration));
 
-        } else if (v.getId() == mCreateListMinusHour.getId()){
+        } else if (v.getId() == mCreateListMinusHour.getId()) {
 
             mCreateListHoursTextView.setText(setDuration(1, mCreateListHoursTextView.getText().toString()));
 
-        } else if (v.getId() == mCreateListPlusMins.getId()){
+        } else if (v.getId() == mCreateListPlusMins.getId()) {
 
             mCreateListMinsTextView.setText(setDuration(2, mCreateListMinsTextView.getText().toString()));
 
@@ -161,68 +163,87 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
             mCreateListMinsTextView.setText(setDuration(3, mCreateListMinsTextView.getText().toString()));
 
-        } else if (v.getId() == mCreateListAddItem.getId()){
+        } else if (v.getId() == mCreateListAddItem.getId()) {
 
             addItemToTitleTable(mCreateListTitleEditText.getText().toString(), mCreateListItemEditText.getText().toString(),
                     mCreateListHoursTextView.getText().toString(), mCreateListMinsTextView.getText().toString());
 
-        } else if (v.getId() == mCreateListTitleSaveButton.getId()){
+        } else if (v.getId() == mCreateListTitleSaveButton.getId()) {
 
-            if (!mCreateListTitleEditText.getText().toString().equals("")){
+            if (!mCreateListTitleEditText.getText().toString().equals("")) {
 
                 saveListTitle(mCreateListTitleEditText.getText().toString());
-                mCreateListAddItemLayout.setVisibility(View.VISIBLE);
-                mCreateListTitleEditText.setFocusable(false);
+                mCreateListCardView.setVisibility(View.VISIBLE);
+                mCreateListCardView.startAnimation(Animations.alphaMoveInAnim(getApplicationContext()));
+                mCreateListTitleEditText.setEnabled(false);
+                mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
+                mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
+                mCreateListSaveButtonLayout.startAnimation(Animations.alphaMoveOutAnim(getApplicationContext()));
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCreateListSaveButtonLayout.setVisibility(View.GONE);
+                    }
+                }, 500);
+
             }
         }
 
     }
 
-    public String setDuration(int switchCaseId, String currentDuration){
+    public String setDuration(int switchCaseId, String currentDuration) {
 
         int curTimeAsint = Integer.parseInt(currentDuration);
 
-        switch (switchCaseId){
+        switch (switchCaseId) {
 
-            case 0 :
-                if (curTimeAsint < 24) {
+            case 0:
+                if (curTimeAsint < 24 && curTimeAsint < 9) {
+                    return "0" + String.valueOf(curTimeAsint + 1);
+                } else if (curTimeAsint < 24) {
                     return String.valueOf(curTimeAsint + 1);
                 } else {
                     return String.valueOf(curTimeAsint);
                 }
 
-            case 1 :
-                if (curTimeAsint >= 1) {
+            case 1:
+                if (curTimeAsint <= 10 && curTimeAsint >= 1) {
+                    return "0" + String.valueOf(curTimeAsint - 1);
+                } else if (curTimeAsint > 10) {
                     return String.valueOf(curTimeAsint - 1);
                 } else {
-                    return String.valueOf(curTimeAsint);
+                    return "0" + String.valueOf(curTimeAsint);
                 }
 
-            case 2 :
+            case 2:
                 if (curTimeAsint < 45) {
                     return String.valueOf(curTimeAsint + 15);
                 } else {
                     return String.valueOf(curTimeAsint);
                 }
 
-            case 3 :
-                if (curTimeAsint >= 15) {
+            case 3:
+                if (curTimeAsint >= 30) {
                     return String.valueOf(curTimeAsint - 15);
+                } else if (curTimeAsint >= 15) {
+                    return "0" + String.valueOf(curTimeAsint - 15);
                 } else {
-                    return String.valueOf(curTimeAsint);
+                    return "00";
                 }
 
-            default: return currentDuration;
+            default:
+                return currentDuration;
         }
     }
 
 
-    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins){
+    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins) {
 
         ItemsListData itemsListData = new ItemsListData();
         String duration = hours + ":" + mins;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String date = sdf.format(new Date());
 
         itemsListData.setItem(itemName);
@@ -236,11 +257,11 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         populateRecyclerView(mCreateListTitleEditText.getText().toString());
 
         mCreateListItemEditText.setText("");
-        mCreateListHoursTextView.setText("0");
-        mCreateListMinsTextView.setText("0");
+        mCreateListHoursTextView.setText("00");
+        mCreateListMinsTextView.setText("00");
     }
 
-    public void saveListTitle(String titleName){
+    public void saveListTitle(String titleName) {
 
         TitlesListData titlesListData = new TitlesListData();
 
@@ -253,10 +274,11 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         dbHelper.insertIntoTitlesTable(titlesListData);
     }
 
-    public void populateRecyclerView(String titleName){
-        mItemsArrayList.clear();
+    public void populateRecyclerView(String titleName) {
+
         mItemsArrayList = dbHelper.getItemsForTitle(titleName);
-        mItemRecyclerAdapter.notifyDataSetChanged();
+        mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
+        mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }
 
 
@@ -264,16 +286,15 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     public boolean onLongClick(View v) {
         return false;
     }
-    
-    
-    
+
+
     @Override
     public void onBackPressed() {
         String spinnerPosition;
         Intent intent = new Intent();
 
         Intent getIntent = getIntent();
-        if (getIntent.hasExtra("spinnerPosition")){
+        if (getIntent.hasExtra("spinnerPosition")) {
             spinnerPosition = getIntent.getStringExtra("spinnerPosition");
             Log.e("STRING FROM FRAGMENT", getIntent.getStringExtra("spinnerPosition"));
             intent.putExtra("spinnerPosition", spinnerPosition);
@@ -283,7 +304,4 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-
-
-    
 }
