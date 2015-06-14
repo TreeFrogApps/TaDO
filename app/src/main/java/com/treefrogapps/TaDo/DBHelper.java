@@ -87,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper{
             do {
                 TitlesListData titlesListData = new TitlesListData();
 
-                titlesListData.setTitle_id(cursor.getInt(title_id));
+                titlesListData.setTitle_id(cursor.getString(title_id));
                 titlesListData.setTitle(cursor.getString(title));
                 titlesListData.setDateTime(cursor.getString(dateTime));
 
@@ -100,6 +100,26 @@ public class DBHelper extends SQLiteOpenHelper{
         return titlesListDataArrayList;
     }
 
+    public String getTitleId(String titleName){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        String titleId = null;
+
+        Cursor cursor = database.rawQuery(Constants.TITLES_GET_TITLE_ID, new String[]{titleName});
+
+        int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
+
+        if (cursor.moveToFirst()){
+
+            do {
+                titleId = cursor.getString(title_id);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        return titleId;
+    }
+
     public ArrayList<ItemsListData> getItemsForTitle(String titleName){
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -107,6 +127,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         Cursor cursor = database.rawQuery(Constants.ITEMS_GET_QUERY, new String[]{titleName});
 
+        int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
         int item = cursor.getColumnIndex(Constants.ITEM);
         int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
@@ -117,7 +138,8 @@ public class DBHelper extends SQLiteOpenHelper{
             do {
                 ItemsListData itemsListData = new ItemsListData();
 
-                itemsListData.setTitleId(cursor.getInt(title_id));
+                itemsListData.setItemId(cursor.getString(item_id));
+                itemsListData.setTitleId(cursor.getString(title_id));
                 itemsListData.setItem(cursor.getString(item));
                 itemsListData.setDuration(cursor.getString(duration));
                 itemsListData.setDateTime(cursor.getString(dateTime));
@@ -188,7 +210,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
         executePreparedStatement(2, database, statement,
-                new String[]{newItem.getItem(), newItem.getDuration(), newItem.getDateTime(), oldItem.getTitle()});
+                new String[]{newItem.getItem(), newItem.getDuration(), newItem.getDateTime(), oldItem.getItemId()});
     }
 
 

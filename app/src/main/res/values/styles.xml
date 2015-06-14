@@ -28,6 +28,7 @@
     </style>
 
     <style name="EditTextColors" parent="">
+        <item name="android:color">@color/primaryColorDark</item>
         <item name="colorControlNormal">@color/brown_text_light</item>
     </style>
 

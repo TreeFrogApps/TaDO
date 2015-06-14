@@ -1,35 +1,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.treefrogapps.TaDo.CreateListActivity">
 
     <include
         android:id="@+id/myToolBar"
-        layout="@layout/tool_bar"/>
+        layout="@layout/tool_bar" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin">
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/create_list_title"
             android:textColor="@color/brown_text_normal"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp" />
 
         <EditText
             android:id="@+id/createListTitleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/EditTextColors"
+            android:inputType="textNoSuggestions"
             android:maxLength="100"
-            android:inputType="textNoSuggestions"/>
+            style="@style/EditTextColors" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/createListAddItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
@@ -37,7 +50,7 @@
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:text="@string/create_list_item"
             android:textColor="@color/brown_text_normal"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,139 +59,147 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="9"
                 android:layout_height="wrap_content"
+                android:layout_weight="9"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/createListItemEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/EditTextColors"
-                    android:inputType="textNoSuggestions"/>
+                    android:inputType="textNoSuggestions"
+                    android:theme="@style/EditTextColors" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/eight_dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/eight_dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_gravity="center_vertical"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="2"
                         android:text="@string/create_list_duration"
                         android:textColor="@color/brown_text_normal"
-                        android:textSize="@dimen/text_16sp"/>
+                        android:textSize="@dimen/text_16sp" />
+
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/createListPlusHour"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selector_plus_time"
-                            android:layout_marginBottom="@dimen/four_dp"/>
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/four_dp"
+                            android:background="@drawable/selector_plus_time" />
 
                         <TextView
                             android:id="@+id/createListHoursTextView"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
                             android:text="@string/create_list_time"
-                            android:textSize="@dimen/text_18sp"
-                            android:textColor="@color/primaryColorDark"/>
+                            android:textColor="@color/primaryColorDark"
+                            android:textSize="@dimen/text_18sp" />
 
                         <ImageView
                             android:id="@+id/createListMinusHour"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selector_minus_time"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/four_dp"
                             android:layout_marginTop="@dimen/four_dp"
-                            android:layout_marginBottom="@dimen/four_dp"/>
+                            android:background="@drawable/selector_minus_time" />
 
                     </LinearLayout>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/create_list_time_separator"
+                        android:layout_marginBottom="@dimen/four_dp"
+                        android:textColor="@color/brown_text_normal"
+                        android:textSize="@dimen/text_18sp" />
+
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/createListPlusMins"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selector_plus_time"
-                            android:layout_marginBottom="@dimen/four_dp"/>
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/four_dp"
+                            android:background="@drawable/selector_plus_time" />
 
                         <TextView
                             android:id="@+id/createListMinsTextView"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
                             android:text="@string/create_list_time"
-                            android:textSize="@dimen/text_18sp"
-                            android:textColor="@color/primaryColorDark"/>
+                            android:textColor="@color/primaryColorDark"
+                            android:textSize="@dimen/text_18sp" />
 
                         <ImageView
                             android:id="@+id/createListMinusMins"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selector_minus_time"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/four_dp"
                             android:layout_marginTop="@dimen/four_dp"
-                            android:layout_marginBottom="@dimen/four_dp"/>
+                            android:background="@drawable/selector_minus_time" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/createListAddItem"
-                            android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selector_plus_item"
-                            android:layout_marginBottom="@dimen/eight_dp"/>
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                            android:background="@drawable/selector_plus_item" />
 
                         <TextView
-                            android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:text="@string/create_item_add_item"
                             android:textColor="@color/brown_text_normal"
-                            android:textSize="@dimen/text_16sp"/>
+                            android:textSize="@dimen/text_16sp" />
 
                     </LinearLayout>
-
-
 
                 </LinearLayout>
 
             </LinearLayout>
 
-
         </LinearLayout>
+
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_light"/>
+        android:background="@color/grey_light" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -189,8 +210,8 @@
             android:id="@+id/createListRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context="com.treefrogapps.TaDo.CreateListActivity"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            tools:context="com.treefrogapps.TaDo.CreateListActivity" />
 
     </LinearLayout>
 
@@ -201,18 +222,18 @@
         android:gravity="bottom">
 
         <LinearLayout
-            android:layout_marginTop="@dimen/eight_dp"
-            android:gravity="end|right"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/eight_dp"
+            android:gravity="end|right">
 
 
             <Button
-                android:id="@+id/createListSaveButton"
-                android:text="@string/create_list_save_button"
+                android:id="@+id/createListTitleSaveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"/>
+                android:background="@drawable/button_selector"
+                android:text="@string/create_list_save_button" />
 
         </LinearLayout>
     </LinearLayout>

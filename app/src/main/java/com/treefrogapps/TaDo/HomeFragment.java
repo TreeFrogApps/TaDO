@@ -18,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private RecyclerView mRecyclerView;
     private ItemRecyclerAdapter mRecyclerAdapter;
     private ArrayList<ItemsListData> mItemsArrayList;
+    private LinearLayout mCreateListButtonLayout;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -85,6 +87,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         initialiseRecyclerView();
         initialiseTitlesSpinner();
+
+        mCreateListButtonLayout = (LinearLayout) rootView.findViewById(R.id.createListButtonLayout);
+
+
     }
 
     public void initialiseRecyclerView(){
@@ -132,18 +138,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+
+
                 if (position != 0){
+                    Log.e("Spinner Position", String.valueOf(position));
                     String listTitle = mTitlesSpinner.getItemAtPosition(position).toString();
 
-                    if (mRemoveListButton.getVisibility() == View.INVISIBLE){
-                        mRemoveListButton.setVisibility(View.VISIBLE);
+                    if (mCreateListButtonLayout.getVisibility() == View.GONE){
+                        mCreateListButtonLayout.setVisibility(View.VISIBLE);
                         anim = AnimationUtils.loadAnimation(getActivity(), R.anim.button_alpha_anim);
                         mRemoveListButton.startAnimation(anim);
                     }
                     populateRecyclerView(listTitle);
 
                 } else {
-                    mRemoveListButton.setVisibility(View.INVISIBLE);
+                    mCreateListButtonLayout.setVisibility(View.GONE);
                 }
             }
 

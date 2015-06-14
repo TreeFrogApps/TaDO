@@ -40,13 +40,17 @@ public class Constants {
 
     // SQLite Queries - including prepared statement queries
     protected final static String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?," +
-            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?) TIME (?), DATETIME(?));";
+            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME(?));";
     // datetime format = YYYY-MM-YY HH:YY:SS
 
     protected final static String ITEMS_GET_QUERY = "SELECT * FROM items_list WHERE title_id =" +
             " (SELECT title_id FROM titles_list WHERE titles_list.title = ?) ORDER BY items_list.item COLLATE NOCASE ASC;";
 
     protected final static String TITLES_GET_QUERY = "SELECT * FROM titles_list ORDER BY titles_list.title COLLATE NOCASE ASC";
+
+    protected final static String TITLES_GET_TITLE_ID = "SELECT title_id FROM titles_list WHERE title_id = " +
+            "(SELECT title_id FROM titles_list WHERE titles_list.title = ?)";
+
 
     protected final static String TITLE_DELETE_QUERY = "DELETE FROM title_list WHERE title_id =" +
             " (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
@@ -58,7 +62,7 @@ public class Constants {
             "AND title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
     protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, " +
-            "dateTime = ? WHERE title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
+            "dateTime = ? WHERE item_id = ?;";
 
     protected final static int NEW_LIST_RESULT_CODE = 30;
 

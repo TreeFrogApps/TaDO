@@ -3,18 +3,27 @@ package com.treefrogapps.TaDo;
 
 public class ItemsListData {
 
-    private int titleId;
+    private String itemId;
+    private String titleId;
     // get name from title spinner when querying database -  insertIntoItemsDatabase(ItemsListData itemsListData)
     private String title;
     private String item;
     private String duration;
     private String dateTime;
 
-    public void setTitleId (int title_id){
+    public void setItemId (String item_id){
+        this.itemId = item_id;
+    }
+
+    public String getItemId(){
+        return String.valueOf(this.itemId);
+    }
+
+    public void setTitleId (String title_id){
         this.titleId = title_id;
     }
 
-    public int getTitleId() {
+    public String getTitleId() {
         return this.titleId;
     }
 

@@ -32,12 +32,6 @@
         android:layout_marginRight="@dimen/eight_dp"
         android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fragment_home_tado_titles"
-            android:textColor="@color/brown_text_normal"
-            android:textSize="@dimen/text_16sp"/>
 
         <Spinner
             android:id="@+id/homeFragmentTitlesSpinner"
@@ -92,10 +86,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/createListButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="vertical"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/homeFragmentRemoveListButton"
@@ -104,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_selector"
-            android:visibility="invisible"
+            android:visibility="visible"
             />
 
     </LinearLayout>

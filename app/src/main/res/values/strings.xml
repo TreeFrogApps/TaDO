@@ -31,12 +31,48 @@
 
     <!-- create list activity -->
     <string name="create_list_title">TITLE</string>
-    <string name="create_list_save_button">SAVE</string>
+    <string name="create_list_save_button">SAVE TITLE</string>
     <string name="create_list_edit_button">EDIT</string>
     <string name="create_list_item">ITEM</string>
-    <string name="create_list_duration">DURATION</string>
+    <string name="create_list_duration">DURATION (HH:MM)</string>
     <string name="create_list_time">00</string>
     <string name="create_item_add_item">ADD ITEM</string>
+    <string name="create_list_time_separator">:</string>
+
+    <string-array name="hourArray">
+        <item>00</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+    </string-array>
+
+    <string-array name="minArray">
+        <item>00</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+
+    </string-array>
 
 
 </resources>

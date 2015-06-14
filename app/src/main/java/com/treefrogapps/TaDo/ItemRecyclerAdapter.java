@@ -36,12 +36,16 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
 
+        TextView recyclerViewItemID; // use for accessing unique item Id - with this duplicates aren't a problem
+
         TextView recyclerViewItemTextView;
         TextView recyclerViewHoursTextView;
         TextView recyclerViewMinsTextView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+
+            recyclerViewItemID = (TextView) itemView.findViewById(R.id.recyclerItemID);
 
             recyclerViewItemTextView = (TextView) itemView.findViewById(R.id.recyclerItemTextView);
             recyclerViewHoursTextView = (TextView) itemView.findViewById(R.id.recyclerHoursTextView);
@@ -62,6 +66,8 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     @Override
     public void onBindViewHolder(ItemRecyclerAdapter.MyViewHolder myViewHolder, int i) {
+
+        myViewHolder.recyclerViewItemID.setText(listItemsDataArrayList.get(i).getItemId());
 
         myViewHolder.recyclerViewItemTextView.setText(listItemsDataArrayList.get(i).getItem());
 
