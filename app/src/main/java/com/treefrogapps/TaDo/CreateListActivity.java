@@ -52,12 +52,6 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     private Button mCreateListTitleSaveButton;
 
-    private String[] mHourArray;
-    private String[] mMinArray;
-    
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +72,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
             getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark));
         }
 
+
         initialiseInputs();
         initialiseRecyclerView();
-
-        mHourArray = getApplicationContext().getResources().getStringArray(R.array.hourArray);
-        mMinArray = getApplicationContext().getResources().getStringArray(R.array.minArray);
     }
 
     private void initialiseInputs() {
@@ -153,8 +145,6 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
         if (v.getId() == mCreateListPlusHour.getId()){
 
-            Toast.makeText(getApplicationContext(), "PLUS HOUR CLICKED", Toast.LENGTH_SHORT).show();
-
             String currentDuration = mCreateListHoursTextView.getText().toString();
 
             mCreateListHoursTextView.setText(setDuration(0, currentDuration));
@@ -190,47 +180,40 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     public String setDuration(int switchCaseId, String currentDuration){
 
+        int curTimeAsint = Integer.parseInt(currentDuration);
+
         switch (switchCaseId){
 
             case 0 :
-                for (int i = 0; i < mHourArray.length; i++){
-
-                    if (mHourArray[i].equals(currentDuration) && i != mHourArray.length){
-                        currentDuration = mHourArray[i + 1];
-                        break;
-                    }
+                if (curTimeAsint < 24) {
+                    return String.valueOf(curTimeAsint + 1);
+                } else {
+                    return String.valueOf(curTimeAsint);
                 }
 
             case 1 :
-                for (int i = 0; i < mHourArray.length; i++){
-
-                    if (mHourArray[i].equals(currentDuration) && i != 0){
-                        currentDuration = mHourArray[i - 1];
-                        break;
-                    }
+                if (curTimeAsint >= 1) {
+                    return String.valueOf(curTimeAsint - 1);
+                } else {
+                    return String.valueOf(curTimeAsint);
                 }
 
             case 2 :
-                for (int i = 0; i < mMinArray.length; i++){
-
-                    if (mMinArray[i].equals(currentDuration) && i != mMinArray.length){
-                        currentDuration = mMinArray[i + 1];
-                        break;
-                    }
+                if (curTimeAsint < 45) {
+                    return String.valueOf(curTimeAsint + 15);
+                } else {
+                    return String.valueOf(curTimeAsint);
                 }
 
             case 3 :
-                for (int i = 0; i < mMinArray.length; i++){
-
-                    if (mMinArray[i]. equals(currentDuration) && i != 0){
-                        currentDuration = mMinArray[i - 1];
-                    }
+                if (curTimeAsint >= 15) {
+                    return String.valueOf(curTimeAsint - 15);
+                } else {
+                    return String.valueOf(curTimeAsint);
                 }
 
-            default: break;
+            default: return currentDuration;
         }
-
-        return currentDuration;
     }
 
 
@@ -253,8 +236,8 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         populateRecyclerView(mCreateListTitleEditText.getText().toString());
 
         mCreateListItemEditText.setText("");
-        mCreateListHoursTextView.setText(mHourArray[0]);
-        mCreateListMinsTextView.setText(mMinArray[0]);
+        mCreateListHoursTextView.setText("0");
+        mCreateListMinsTextView.setText("0");
     }
 
     public void saveListTitle(String titleName){

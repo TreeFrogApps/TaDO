@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private AlertDialog mAlertDialog;
 
     private Spinner mTitlesSpinner;
-    private List<String> mTitlesSpinnerItemList;
+    private List<String> mTitlesSpinnerItemList; // just for holding title names
     private SpinnerAdapter mSpinnerAdapter;
     private ArrayList<TitlesListData> mTitlesArrayList;
 
@@ -138,8 +138,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-
-
                 if (position != 0){
                     Log.e("Spinner Position", String.valueOf(position));
                     String listTitle = mTitlesSpinner.getItemAtPosition(position).toString();
@@ -168,13 +166,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         mItemsArrayList.clear();
         mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
-        mRecyclerAdapter.notifyDataSetChanged();
+        Log.v("First Item = ", mItemsArrayList.get(0).getItem());
+
+        Log.v("First Item = ", mItemsArrayList.get(0).getItemId());
+        Log.v("First Item = ", mItemsArrayList.get(0).getTitle());
+        Log.v("First Item = ", mItemsArrayList.get(0).getTitleId());
+
+
+       // mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
+        //mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
     // method to populate SpinnerList after ANY updates
     public void populateTitlesSpinner(){
 
+        // clear current array lists
         mTitlesSpinnerItemList.clear();
+        mTitlesArrayList.clear();
+
+        // query database to return updated titles
+        mTitlesArrayList = dbHelper.getTitles();
 
         // add the spinnerTitle hint
         SpinnerTitle spinnerTitle =
@@ -263,7 +274,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             if (data.getStringExtra("spinnerPosition") != null){
                 mTitlesSpinner.setSelection(getSpinnerIndex(data.getStringExtra("spinnerPosition")));
                 populateRecyclerView(mTitlesSpinner.getSelectedItem().toString());
-                Toast.makeText(getActivity(), "You've Come from the NEW LIST activity " + data.getStringExtra("spinnerPosition"), Toast.LENGTH_SHORT).show();
             } else {
                 mTitlesSpinner.setSelection(0);
                 mItemsArrayList.clear();

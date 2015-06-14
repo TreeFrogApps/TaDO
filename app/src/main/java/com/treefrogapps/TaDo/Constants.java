@@ -64,6 +64,7 @@ public class Constants {
     protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, " +
             "dateTime = ? WHERE item_id = ?;";
 
+    // RequestCode onActivityResult - HomeFragment
     protected final static int NEW_LIST_RESULT_CODE = 30;
 
 

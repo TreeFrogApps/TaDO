@@ -23,8 +23,6 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     }
 
 
-
-
     @Override
     public ItemRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
@@ -36,11 +34,11 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
 
-        TextView recyclerViewItemID; // use for accessing unique item Id - with this duplicates aren't a problem
+        private TextView recyclerViewItemID; // use for accessing unique item Id - with this duplicates aren't a problem
 
-        TextView recyclerViewItemTextView;
-        TextView recyclerViewHoursTextView;
-        TextView recyclerViewMinsTextView;
+        private TextView recyclerViewItemTextView;
+        private TextView recyclerViewHoursTextView;
+        private TextView recyclerViewMinsTextView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
