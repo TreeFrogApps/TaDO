@@ -1,6 +1,7 @@
 package com.treefrogapps.TaDo;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,8 +19,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -113,9 +116,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         if (splashScreenVisible == 1){
 
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    final Dialog dialogBuilder = new Dialog(getActivity(), R.style.myDialogWindowAnimation);
+                    dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialogBuilder.setContentView(R.layout.splash_screen);
+                    dialogBuilder.setCancelable(false);
+
+                    Button okButton = (Button) dialogBuilder.findViewById(R.id.splashScreenButton);
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt(Constants.SPLASH_SCREEN_VISIBILITY, Constants.SPLASH_SCREEN_OFF);
+                            editor.commit();
+                            dialogBuilder.dismiss();
+                        }
+                    });
+                    dialogBuilder.show();
+                }
+            }, 350);
+
 
         }
-
     }
 
     public void initialiseRecyclerView(){

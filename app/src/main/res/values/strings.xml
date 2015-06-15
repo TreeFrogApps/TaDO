@@ -40,5 +40,9 @@
     <string name="create_item_add_item">ADD ITEM</string>
     <string name="create_list_time_separator">:</string>
 
+    <!-- splash screen -->
+    <string name="splash_screen_message">CLICK ON THE PLUS TO START CREATING SOME LISTS</string>
+    <string name="splash_screen_button">GOT IT</string>
+
 
 </resources>
