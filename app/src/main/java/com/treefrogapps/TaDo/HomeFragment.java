@@ -1,8 +1,10 @@
 package com.treefrogapps.TaDo;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -22,17 +24,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private DBHelper dbHelper;
+    private SharedPreferences sharedPreferences;
     private View rootView;
 
     private Button mRemoveListButton;
@@ -75,6 +74,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        checkSplashScreenVisibility();
+
         dbHelper = new DBHelper(getActivity());
 
         mFAB = (FloatingActionButton) rootView.findViewById(R.id.homeFragmentFAB);
@@ -103,6 +104,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (mTitlesSpinner.getSelectedItemPosition() != 0){
             getTotalItemsAndTime();
         }
+    }
+
+    public void checkSplashScreenVisibility(){
+
+        sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
+        int splashScreenVisible = sharedPreferences.getInt(Constants.SPLASH_SCREEN_VISIBILITY, 1);
+
+        if (splashScreenVisible == 1){
+
+
+        }
+
     }
 
     public void initialiseRecyclerView(){

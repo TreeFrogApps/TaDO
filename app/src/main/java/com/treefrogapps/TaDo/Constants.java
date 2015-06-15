@@ -3,6 +3,13 @@ package com.treefrogapps.TaDo;
 
 public class Constants {
 
+    // Shared Preferences constant
+    protected static final String TADO_PREFERENCES = "com.treefrogapps.TaDo.Preferences";
+
+    // splash screen visibility - place in shared prefs
+    protected final static String SPLASH_SCREEN_VISIBILITY = "com.treefrogapps.TaDo.Visibility";
+    protected static final int SPLASH_SCREEN_OFF = 0;
+
     // Database constants
     protected final static String DATABASE_NAME = "main_database.db";
     protected final static int DATABASE_VERSION = 1;
@@ -50,6 +57,8 @@ public class Constants {
 
     protected final static String TITLES_GET_TITLE_ID = "SELECT title_id FROM titles_list WHERE title_id = " +
             "(SELECT title_id FROM titles_list WHERE titles_list.title = ?)";
+
+    protected final static String TITLES_CHECK_TITLE_NAME_EXISTS = "SELECT title FROM titles_list WHERE title = ?";
 
 
     protected final static String TITLE_DELETE_QUERY = "DELETE FROM title_list WHERE title_id =" +

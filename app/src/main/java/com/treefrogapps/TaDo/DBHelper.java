@@ -122,6 +122,26 @@ public class DBHelper extends SQLiteOpenHelper{
         return titleId;
     }
 
+    public String checkTitleNameExists(String titleName){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        String titleId = null;
+
+        Cursor cursor = database.rawQuery(Constants.TITLES_CHECK_TITLE_NAME_EXISTS, new String[]{titleName});
+
+        int title = cursor.getColumnIndex(Constants.TITLE);
+
+        if (cursor.moveToFirst()){
+
+            do {
+                titleId = cursor.getString(title);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        return titleId;
+    }
+
     public ArrayList<ItemsListData> getItemsForTitle(String titleName){
 
         SQLiteDatabase database = this.getWritableDatabase();

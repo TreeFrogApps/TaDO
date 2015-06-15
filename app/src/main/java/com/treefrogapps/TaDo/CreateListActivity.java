@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -256,7 +255,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
         TitlesListData titlesListData = new TitlesListData();
 
-        String checkIfTitleExists  = dbHelper.getTitleId(titleName);
+        String checkIfTitleExists  = dbHelper.checkTitleNameExists(titleName);
 
         if (checkIfTitleExists == null){
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
