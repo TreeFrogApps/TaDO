@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -173,23 +174,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
             if (!mCreateListTitleEditText.getText().toString().equals("")) {
 
                 saveListTitle(mCreateListTitleEditText.getText().toString());
-                mCreateListCardView.setVisibility(View.VISIBLE);
-                mCreateListCardView.startAnimation(Animations.alphaMoveInAnim(getApplicationContext()));
-                mCreateListTitleEditText.setEnabled(false);
-                mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
-                mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
-                mCreateListSaveButtonLayout.startAnimation(Animations.alphaMoveOutAnim(getApplicationContext()));
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCreateListSaveButtonLayout.setVisibility(View.GONE);
-                    }
-                }, 500);
 
             }
         }
-
     }
 
     public String setDuration(int switchCaseId, String currentDuration) {
@@ -240,38 +227,63 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     public void addItemToTitleTable(String titleName, String itemName, String hours, String mins) {
 
-        ItemsListData itemsListData = new ItemsListData();
-        String duration = hours + ":" + mins;
+        if (!mCreateListItemEditText.equals("")){
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String date = sdf.format(new Date());
+            ItemsListData itemsListData = new ItemsListData();
+            String duration = hours + ":" + mins;
 
-        itemsListData.setItem(itemName);
-        itemsListData.setTitle(titleName);
-        itemsListData.setTitleId(dbHelper.getTitleId(titleName));
-        itemsListData.setDuration(duration);
-        itemsListData.setDateTime(date);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            String date = sdf.format(new Date());
 
-        dbHelper.insertIntoItemsTable(itemsListData);
+            itemsListData.setItem(itemName);
+            itemsListData.setTitle(titleName);
+            itemsListData.setTitleId(dbHelper.getTitleId(titleName));
+            itemsListData.setDuration(duration);
+            itemsListData.setDateTime(date);
 
-        populateRecyclerView(mCreateListTitleEditText.getText().toString());
+            dbHelper.insertIntoItemsTable(itemsListData);
 
-        mCreateListItemEditText.setText("");
-        mCreateListHoursTextView.setText("00");
-        mCreateListMinsTextView.setText("00");
+            populateRecyclerView(mCreateListTitleEditText.getText().toString());
+
+            mCreateListItemEditText.setText("");
+            mCreateListHoursTextView.setText("00");
+            mCreateListMinsTextView.setText("00");
+        }
+
     }
 
     public void saveListTitle(String titleName) {
 
         TitlesListData titlesListData = new TitlesListData();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
-        String date = sdf.format(new Date());
+        String checkIfTitleExists  = dbHelper.getTitleId(titleName);
 
-        titlesListData.setTitle(titleName);
-        titlesListData.setDateTime(date);
+        if (checkIfTitleExists == null){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
+            String date = sdf.format(new Date());
 
-        dbHelper.insertIntoTitlesTable(titlesListData);
+            titlesListData.setTitle(titleName);
+            titlesListData.setDateTime(date);
+
+            dbHelper.insertIntoTitlesTable(titlesListData);
+
+            mCreateListCardView.setVisibility(View.VISIBLE);
+            mCreateListCardView.startAnimation(Animations.alphaMoveInAnim(getApplicationContext()));
+            mCreateListTitleEditText.setEnabled(false);
+            mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
+            mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
+            mCreateListSaveButtonLayout.startAnimation(Animations.alphaMoveOutAnim(getApplicationContext()));
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCreateListSaveButtonLayout.setVisibility(View.GONE);
+                }
+            }, 350);
+
+        } else {
+            CustomToasts.Toast(getApplicationContext(), "Title Already Exists");
+        }
     }
 
     public void populateRecyclerView(String titleName) {

@@ -28,7 +28,7 @@
             android:id="@+id/createListTitleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions|textCapSentences"
+            android:inputType="textAutoComplete|textCapSentences"
             android:maxLength="100"
             style="@style/EditTextColors"
             android:imeOptions="actionDone"/>
@@ -51,13 +51,11 @@
         android:layout_marginLeft="@dimen/activity_vertical_margin"
         android:layout_marginRight="@dimen/activity_vertical_margin"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:text="@string/create_list_item"
             android:textColor="@color/brown_text_normal"
             android:textSize="@dimen/text_16sp" />
@@ -77,8 +75,9 @@
                     android:id="@+id/createListItemEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textNoSuggestions|textCapSentences"
-                    style="@style/EditTextColors" />
+                    android:inputType="textAutoComplete|textCapSentences"
+                    style="@style/EditTextColors"
+                    android:imeOptions="actionDone"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

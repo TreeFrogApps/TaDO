@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +20,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -43,6 +49,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<ItemsListData> mItemsArrayList;
     private LinearLayout mCreateListButtonLayout;
 
+    private CardView mHomeFragmentListSpecCardView;
+    private TextView mHomeFragmentTotalItemsTextView;
+    private TextView mHomeFragmentTotalTimeTextView;
+    private TextView mHomeFragmentItemsTextView;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -64,8 +75,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mFAB = (FloatingActionButton) rootView.findViewById(R.id.homeFragmentFAB);
+        dbHelper = new DBHelper(getActivity());
 
+        mFAB = (FloatingActionButton) rootView.findViewById(R.id.homeFragmentFAB);
         android.os.Handler handler = new android.os.Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -79,14 +91,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mRemoveListButton = (Button) rootView.findViewById(R.id.homeFragmentRemoveListButton);
         mRemoveListButton.setOnClickListener(HomeFragment.this);
 
-        dbHelper = new DBHelper(getActivity());
-
         initialiseRecyclerView();
         initialiseTitlesSpinner();
 
         mCreateListButtonLayout = (LinearLayout) rootView.findViewById(R.id.createListButtonLayout);
+        mHomeFragmentListSpecCardView = (CardView) rootView.findViewById(R.id.homeFragmentListSpecCardView);
+        mHomeFragmentTotalItemsTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalItemsTextView);
+        mHomeFragmentTotalTimeTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalTimeTextView);
+        mHomeFragmentItemsTextView = (TextView) rootView.findViewById(R.id.homeFragmentItemsTextView);
 
-
+        if (mTitlesSpinner.getSelectedItemPosition() != 0){
+            getTotalItemsAndTime();
+        }
     }
 
     public void initialiseRecyclerView(){
@@ -143,20 +159,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         mRemoveListButton.startAnimation(Animations.alphaMoveInAnim(getActivity()));
                     }
                     populateRecyclerView(listTitle);
+                    getTotalItemsAndTime();
 
                 } else {
+                    // if spinner does not have selected item animate and hide view
+                    mHomeFragmentListSpecCardView.startAnimation(Animations.alphaMoveOutAnim(getActivity()));
                     mRemoveListButton.startAnimation(Animations.alphaMoveOutAnim(getActivity()));
+                    mHomeFragmentItemsTextView.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
+                    mFAB.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            mHomeFragmentListSpecCardView.setVisibility(View.GONE);
                             mCreateListButtonLayout.setVisibility(View.GONE);
                             mItemsArrayList.clear();
                             mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
                             mRecyclerView.setAdapter(mRecyclerAdapter);
                         }
-                    }, 500);
-
+                    }, 350);
                 }
             }
 
@@ -279,15 +300,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 mItemsArrayList.clear();
                 mRecyclerAdapter.notifyDataSetChanged();
             }
-
-
         }
     }
 
     public int getSpinnerIndex(String spinnerPosition){
 
         int index = 0;
-
         for (int i = 0; i < mTitlesSpinner.getCount(); i++){
             if (mTitlesSpinner.getItemAtPosition(i).equals(spinnerPosition)){
                 index = i;
@@ -295,5 +313,41 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         }
         return index;
+    }
+
+    public void getTotalItemsAndTime(){
+
+        String[] totals = new String[2];
+
+        // get total items from array list size
+        totals[0] = String.valueOf(mItemsArrayList.size());
+
+        int hours = 0;
+        int mins = 0;
+
+        // get total hours mins - iterate through array list durations
+        // adding total hours and total mins
+        for (int i = 0; i < mItemsArrayList.size(); i++){
+
+            String itemDuration = mItemsArrayList.get(i).getDuration().substring(0,
+                    (mItemsArrayList.get(i).getDuration().length() - 3));
+
+            String[] durationArray = itemDuration.split(":");
+            hours += Integer.valueOf(durationArray[0]);
+            mins += Integer.valueOf(durationArray[1]);
+        }
+
+        int totalMins = (hours * 60) + mins;
+        int finalHours = totalMins / 60;
+        // modulus to get remainder minutes
+        int finalMins = totalMins % 60;
+
+        totals[1] = String.valueOf(finalHours) + "hrs " + String.valueOf(finalMins) + "mins";
+
+        mHomeFragmentTotalItemsTextView.setText(totals[0]);
+        mHomeFragmentTotalTimeTextView.setText(totals[1]);
+        mHomeFragmentListSpecCardView.setVisibility(View.VISIBLE);
+        mHomeFragmentListSpecCardView.startAnimation(Animations.alphaMoveInAnim(getActivity()));
+        mHomeFragmentItemsTextView.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
     }
 }

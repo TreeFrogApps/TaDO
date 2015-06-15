@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="eight_dp">8dp</dimen>
     <dimen name="four_dp">4dp</dimen>
+    <dimen name="twenty_four">24dp</dimen>
 
     <!-- TEXT DIMENS -->
     <dimen name="text_12sp">12sp</dimen>

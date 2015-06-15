@@ -21,6 +21,10 @@ public class Animations {
         return animation = AnimationUtils.loadAnimation(context, R.anim.fab_anim);
     }
 
+    public static Animation alphaFadeOutAndIn(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.alpha_fade_out_and_in);
+    }
+
 
 }
 
