@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fragment_home_tado_titles"
-            android:textColor="@color/brown_text_normal"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/text_16sp"/>
 
         <Spinner
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fragment_home_tado_items"
-            android:textColor="@color/brown_text_normal"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/text_16sp"/>
 
         <FrameLayout

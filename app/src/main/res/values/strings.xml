@@ -15,7 +15,7 @@
     <!-- fragment_home & HomeFragment Strings -->
     <string name="home_fragment_create_lists_tv">TaDO LISTS</string>
     <string name="fragment_home_tado_titles">TaDO TITLES</string>
-    <string name="fragment_home_pick_title">CHOOSE A LIST TITLE</string>
+    <string name="fragment_home_pick_title">CHOOSE A LIST</string>
     <string name="fragment_home_tado_items">TaDO ITEMS</string>
     <string name="fragment_home_remove_list">REMOVE LIST</string>
     <string name="fragment_home_items">ITEMS</string>
@@ -39,10 +39,13 @@
     <string name="create_list_time">00</string>
     <string name="create_item_add_item">ADD ITEM</string>
     <string name="create_list_time_separator">:</string>
+    <!-- create list menu -->
+    <string name="create_menu_edit_title">Edit Title Name</string>
 
     <!-- splash screen -->
     <string name="splash_screen_message">CLICK ON THE PLUS TO START CREATING SOME LISTS</string>
     <string name="splash_screen_button">GOT IT</string>
+    <string name="create_list_dialog_ok_button">OK</string>
 
 
 </resources>

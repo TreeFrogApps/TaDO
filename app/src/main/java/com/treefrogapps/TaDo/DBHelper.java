@@ -225,7 +225,7 @@ public class DBHelper extends SQLiteOpenHelper{
         values.put(Constants.TITLE_DATETIME, newTitle.getDateTime());
         // update the database passing the oldTitleName as an argument
         //                     table name  |  new values | where | arguments replacing '?' in where
-        database.update(Constants.TITLES_TABLE, values, "title= ?", new String[]{oldTitle.getTitle()});
+        database.update(Constants.TITLES_LIST, values, "title= ?", new String[]{oldTitle.getTitle()});
         database.close();
     }
 

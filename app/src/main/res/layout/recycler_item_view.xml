@@ -4,8 +4,7 @@
     android:id="@+id/recyclerItemCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/four_dp"
-    android:layout_marginTop="@dimen/four_dp"
+    android:layout_margin="@dimen/four_dp"
     card_view:cardCornerRadius="4dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -70,7 +69,7 @@
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="4dp"
                         android:text="@string/recycler_view_hours"
-                        android:textColor="@color/brown_text_light"
+                        android:textColor="@color/secondaryText"
                         android:textSize="@dimen/text_12sp" />
 
                     <TextView
@@ -86,7 +85,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:text="@string/recycler_view_mins"
-                        android:textColor="@color/brown_text_light"
+                        android:textColor="@color/secondaryText"
                         android:textSize="@dimen/text_12sp" />
 
                 </LinearLayout>

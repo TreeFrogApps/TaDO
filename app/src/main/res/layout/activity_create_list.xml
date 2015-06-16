@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/create_list_title"
-            android:textColor="@color/brown_text_normal"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/text_16sp" />
 
         <EditText
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/create_list_item"
-            android:textColor="@color/brown_text_normal"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/text_16sp" />
 
         <LinearLayout
@@ -91,7 +91,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:text="@string/create_list_duration"
-                        android:textColor="@color/brown_text_normal"
+                        android:textColor="@color/primaryText"
                         android:textSize="@dimen/text_16sp" />
 
 
@@ -135,7 +135,7 @@
                         android:layout_gravity="center_vertical"
                         android:text="@string/create_list_time_separator"
                         android:layout_marginBottom="@dimen/four_dp"
-                        android:textColor="@color/brown_text_normal"
+                        android:textColor="@color/primaryText"
                         android:textSize="@dimen/text_18sp" />
 
                     <LinearLayout
@@ -192,7 +192,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="@string/create_item_add_item"
-                            android:textColor="@color/brown_text_normal"
+                            android:textColor="@color/primaryText"
                             android:textSize="@dimen/text_16sp" />
 
                     </LinearLayout>
@@ -216,8 +216,8 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/createListRecyclerView"
-            android:layout_marginLeft="@dimen/eight_dp"
-            android:layout_marginRight="@dimen/eight_dp"
+            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginRight="@dimen/four_dp"
             android:layout_marginTop="@dimen/eight_dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

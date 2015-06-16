@@ -26,8 +26,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/eight_dp"
-        android:layout_marginRight="@dimen/eight_dp"
+        android:layout_marginLeft="@dimen/four_dp"
+        android:layout_marginRight="@dimen/four_dp"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_weight="4"
         android:orientation="vertical">
@@ -97,12 +97,51 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/eight_dp"
             android:text="@string/fragment_home_tado_items"
-            android:textColor="@color/brown_text_normal"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/text_16sp" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/homeFragmentSplashScreen"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/splash_bg_gradient"
+                android:layout_marginTop="@dimen/eight_dp"
+                android:layout_marginLeft="@dimen/eight_dp"
+                android:layout_marginRight="@dimen/eight_dp"
+                android:layout_marginBottom="96dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="48dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@mipmap/ic_nav_header_icon"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="bottom">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="36dp"
+                        android:textSize="@dimen/text_18sp"
+                        android:textStyle="bold"
+                        android:text="@string/splash_screen_message"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/homeFragmentRecyclerView"

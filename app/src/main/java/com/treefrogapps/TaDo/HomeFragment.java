@@ -1,7 +1,6 @@
 package com.treefrogapps.TaDo;
 
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,10 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,6 +47,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ItemRecyclerAdapter mRecyclerAdapter;
     private ArrayList<ItemsListData> mItemsArrayList;
     private LinearLayout mCreateListButtonLayout;
+    private LinearLayout mHomeFragmentSplashScreen;
 
     private CardView mHomeFragmentListSpecCardView;
     private TextView mHomeFragmentTotalItemsTextView;
@@ -104,48 +102,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mHomeFragmentTotalTimeTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalTimeTextView);
         mHomeFragmentItemsTextView = (TextView) rootView.findViewById(R.id.homeFragmentItemsTextView);
 
-        if (mTitlesSpinner.getSelectedItemPosition() != 0){
+        if (mTitlesSpinner.getSelectedItemPosition() != 0) {
             getTotalItemsAndTime();
         }
     }
 
-    public void checkSplashScreenVisibility(){
+    public void checkSplashScreenVisibility() {
 
         sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         int splashScreenVisible = sharedPreferences.getInt(Constants.SPLASH_SCREEN_VISIBILITY, 1);
 
-        if (splashScreenVisible == 1){
+        mHomeFragmentSplashScreen = (LinearLayout) rootView.findViewById(R.id.homeFragmentSplashScreen);
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    final Dialog dialogBuilder = new Dialog(getActivity(), R.style.myDialogWindowAnimation);
-                    dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialogBuilder.setContentView(R.layout.splash_screen);
-                    dialogBuilder.setCancelable(false);
-
-                    Button okButton = (Button) dialogBuilder.findViewById(R.id.splashScreenButton);
-                    okButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putInt(Constants.SPLASH_SCREEN_VISIBILITY, Constants.SPLASH_SCREEN_OFF);
-                            editor.commit();
-                            dialogBuilder.dismiss();
-                        }
-                    });
-                    dialogBuilder.show();
-                }
-            }, 350);
-
-
+        if (splashScreenVisible == 0) {
+            mHomeFragmentSplashScreen.setVisibility(View.GONE);
         }
     }
 
-    public void initialiseRecyclerView(){
+    public void initialiseRecyclerView() {
 
         mItemsArrayList = new ArrayList<>();
 
@@ -190,11 +164,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position != 0){
+                if (position != 0) {
                     Log.e("Spinner Position", String.valueOf(position));
                     String listTitle = mTitlesSpinner.getItemAtPosition(position).toString();
 
-                    if (mCreateListButtonLayout.getVisibility() == View.GONE){
+                    if (mCreateListButtonLayout.getVisibility() == View.GONE) {
                         mCreateListButtonLayout.setVisibility(View.VISIBLE);
                         mRemoveListButton.startAnimation(Animations.alphaMoveInAnim(getActivity()));
                     }
@@ -229,7 +203,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     // method to populate recycler view after any updates
-    public void populateRecyclerView(String listTitle){
+    public void populateRecyclerView(String listTitle) {
 
         mItemsArrayList.clear();
         mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
@@ -239,7 +213,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     // method to populate SpinnerList after ANY updates
-    public void populateTitlesSpinner(){
+    public void populateTitlesSpinner() {
 
         // clear current array lists
         mTitlesSpinnerItemList.clear();
@@ -267,9 +241,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == mRemoveListButton.getId()){
+        if (v.getId() == mRemoveListButton.getId()) {
 
-            if (mTitlesSpinner.getSelectedItemPosition() != 0){
+            if (mTitlesSpinner.getSelectedItemPosition() != 0) {
 
                 final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                 alertBuilder.setTitle(getActivity().getResources().getString(R.string.dialog_remove_list));
@@ -307,17 +281,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             }
 
-        } else if (v.getId() == mFAB.getId()){
+        } else if (v.getId() == mFAB.getId()) {
 
-            Intent intent = new Intent(getActivity(),CreateListActivity.class);
+            Intent intent = new Intent(getActivity(), CreateListActivity.class);
 
-            if (mTitlesSpinner.getSelectedItemPosition() != 0){
+            if (mTitlesSpinner.getSelectedItemPosition() != 0) {
                 // pass the spinner Title text to next activity to so when returned
                 // it will repopulate with updated list, and also show last list before creating new one
                 intent.putExtra("spinnerPosition", mTitlesSpinner.getSelectedItem().toString());
             }
+            removeSplashScreen();
             startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+
         }
+    }
+
+    public void removeSplashScreen() {
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Constants.SPLASH_SCREEN_VISIBILITY, Constants.SPLASH_SCREEN_OFF);
+        editor.apply();
+
+        mHomeFragmentSplashScreen.setVisibility(View.GONE);
     }
 
     @Override
@@ -325,14 +310,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         // if requestCode matches from CreateListActivity
-        if (requestCode == Constants.NEW_LIST_RESULT_CODE){
+        if (requestCode == Constants.NEW_LIST_RESULT_CODE) {
 
             Log.e("RESULT CODE", String.valueOf(requestCode));
 
             populateTitlesSpinner();
 
             // check if there was a string extra passed and populate
-            if (data.getStringExtra("spinnerPosition") != null){
+            if (data.getStringExtra("spinnerPosition") != null) {
                 mTitlesSpinner.setSelection(getSpinnerIndex(data.getStringExtra("spinnerPosition")));
                 populateRecyclerView(mTitlesSpinner.getSelectedItem().toString());
             } else {
@@ -343,11 +328,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public int getSpinnerIndex(String spinnerPosition){
+    public int getSpinnerIndex(String spinnerPosition) {
 
         int index = 0;
-        for (int i = 0; i < mTitlesSpinner.getCount(); i++){
-            if (mTitlesSpinner.getItemAtPosition(i).equals(spinnerPosition)){
+        for (int i = 0; i < mTitlesSpinner.getCount(); i++) {
+            if (mTitlesSpinner.getItemAtPosition(i).equals(spinnerPosition)) {
                 index = i;
                 break;
             }
@@ -355,7 +340,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         return index;
     }
 
-    public void getTotalItemsAndTime(){
+    public void getTotalItemsAndTime() {
 
         String[] totals = new String[2];
 
@@ -367,7 +352,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         // get total hours mins - iterate through array list durations
         // adding total hours and total mins
-        for (int i = 0; i < mItemsArrayList.size(); i++){
+        for (int i = 0; i < mItemsArrayList.size(); i++) {
 
             String itemDuration = mItemsArrayList.get(i).getDuration().substring(0,
                     (mItemsArrayList.get(i).getDuration().length() - 3));

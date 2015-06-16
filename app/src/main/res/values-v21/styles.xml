@@ -8,7 +8,7 @@
     </style>
 
     <style name="EditTextColors">
-        <item name="android:textColor">@color/brown_text_dark</item>
+        <item name="android:textColor">@color/primaryText</item>
 
     </style>
 

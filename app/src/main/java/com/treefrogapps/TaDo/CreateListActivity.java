@@ -1,5 +1,6 @@
 package com.treefrogapps.TaDo;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -136,9 +138,68 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         } else if (id == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (id == R.id.createListEditTitle){
+
+            if (!mCreateListTitleEditText.getText().toString().equals("")){
+                String currentTitle = mCreateListTitleEditText.getText().toString();
+                Log.e("CURRENT TITLE", currentTitle);
+                changeTitleName(currentTitle);
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void changeTitleName(final String currentTitle){
+
+        final Dialog dialogBuilder = new Dialog(this);
+        dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogBuilder.setContentView(R.layout.dialog_rename_title);
+        dialogBuilder.setCancelable(true);
+
+        final EditText renameDialogEditText = (EditText) dialogBuilder.findViewById(R.id.createListDialogRenameEditText);
+        Button cancelDialogButton = (Button) dialogBuilder.findViewById(R.id.createListDialogCancelButton);
+        Button okDialogButton = (Button) dialogBuilder.findViewById(R.id.createListDialogOkButton);
+
+        renameDialogEditText.setText(currentTitle);
+
+        cancelDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogBuilder.dismiss();
+            }
+        });
+        okDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String newTitle = renameDialogEditText.getText().toString();
+
+                String checkIfTitleExists  = dbHelper.checkTitleNameExists(newTitle);
+
+                if (checkIfTitleExists == null){
+                    TitlesListData oldTitleListData = new TitlesListData();
+                    oldTitleListData.setTitle(currentTitle);
+
+                    TitlesListData newTitleListData = new TitlesListData();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
+                    String date = sdf.format(new Date());
+
+                    newTitleListData.setTitle(newTitle);
+                    newTitleListData.setDateTime(date);
+
+                    dbHelper.updateTitle(oldTitleListData, newTitleListData);
+                    mCreateListTitleEditText.setText(newTitle);
+
+                    dialogBuilder.dismiss();
+
+                } else {
+                    CustomToasts.Toast(getApplicationContext(), "Title Already Exists");
+                }
+            }
+        });
+        dialogBuilder.show();
     }
 
 
