@@ -16,6 +16,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -61,6 +64,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -105,6 +110,35 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (mTitlesSpinner.getSelectedItemPosition() != 0) {
             getTotalItemsAndTime();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.fragment_home_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.homeFragmentEditList) {
+
+            if (mTitlesSpinner.getSelectedItemPosition() != 0) {
+
+                // pass the spinner Title Id to next activity to so when returned
+                // it will repopulate with updated list, and also show last list before creating new one
+                Intent intent = new Intent(getActivity(), CreateListActivity.class);
+                // pass constant to check if this is the intent that starts the activity - check in activity OnCreate
+                intent.putExtra("editList", Constants.EDIT_LIST);
+                intent.putExtra("spinnerPosition", Integer.parseInt(dbHelper.getTitleId(mTitlesSpinner.getSelectedItem().toString())));
+                startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void checkSplashScreenVisibility() {
@@ -206,8 +240,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void populateRecyclerView(String listTitle) {
 
         mItemsArrayList.clear();
-        mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
-
+        if (mTitlesSpinner.getSelectedItemPosition() != 0){
+            mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
+        }
         mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
@@ -258,13 +293,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         // should be deleted because of ON DELETE CASCADE
                         String title = mTitlesSpinner.getSelectedItem().toString();
                         dbHelper.deleteTitle(title);
-
-                        // clear the recycler view
-                        mItemsArrayList.clear();
-                        mRecyclerAdapter.notifyDataSetChanged();
-
                         // populate spinner with new list with title gone
                         populateTitlesSpinner();
+
+                        mTitlesSpinner.setSelection(0);
+                        // clear the recycler view
+                        populateRecyclerView(mTitlesSpinner.getSelectedItem().toString());
                     }
                 });
 
@@ -283,15 +317,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         } else if (v.getId() == mFAB.getId()) {
 
-            Intent intent = new Intent(getActivity(), CreateListActivity.class);
+            final Intent intent = new Intent(getActivity(), CreateListActivity.class);
 
             if (mTitlesSpinner.getSelectedItemPosition() != 0) {
                 // pass the spinner Title text to next activity to so when returned
                 // it will repopulate with updated list, and also show last list before creating new one
-                intent.putExtra("spinnerPosition", mTitlesSpinner.getSelectedItem().toString());
+                intent.putExtra("spinnerPosition", Integer.parseInt(dbHelper.getTitleId(mTitlesSpinner.getSelectedItem().toString())));
             }
-            removeSplashScreen();
-            startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+
+            if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE){
+                mHomeFragmentSplashScreen.startAnimation(Animations.moveOut(getActivity()));
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        removeSplashScreen();
+                        startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+                    }
+                }, 400);
+            } else {
+                startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+            }
+
 
         }
     }
@@ -317,8 +364,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             populateTitlesSpinner();
 
             // check if there was a string extra passed and populate
-            if (data.getStringExtra("spinnerPosition") != null) {
-                mTitlesSpinner.setSelection(getSpinnerIndex(data.getStringExtra("spinnerPosition")));
+            if (data.getIntExtra("spinnerPosition", 0) != 0) {
+                String titleId = String.valueOf(data.getIntExtra("spinnerPosition", 0));
+                mTitlesSpinner.setSelection(getSpinnerIndex(dbHelper.getTitle(titleId)));
                 populateRecyclerView(mTitlesSpinner.getSelectedItem().toString());
             } else {
                 mTitlesSpinner.setSelection(0);

@@ -25,5 +25,8 @@ public class Animations {
         return animation = AnimationUtils.loadAnimation(context, R.anim.alpha_fade_out_and_in);
     }
 
+    public static Animation moveOut(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.move_out_anim);
+    }
 }
 

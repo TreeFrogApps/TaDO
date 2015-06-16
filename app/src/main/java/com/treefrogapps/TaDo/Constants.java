@@ -58,10 +58,12 @@ public class Constants {
     protected final static String TITLES_GET_TITLE_ID = "SELECT title_id FROM titles_list WHERE title_id = " +
             "(SELECT title_id FROM titles_list WHERE titles_list.title = ?)";
 
+    protected final static String TITLES_GET_TITLE = "SELECT title FROM titles_list WHERE titles_list.title_id = ?";
+
     protected final static String TITLES_CHECK_TITLE_NAME_EXISTS = "SELECT title FROM titles_list WHERE title = ?";
 
 
-    protected final static String TITLE_DELETE_QUERY = "DELETE FROM title_list WHERE title_id =" +
+    protected final static String TITLE_DELETE_QUERY = "DELETE FROM titles_list WHERE title_id =" +
             " (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
     protected final static String ITEMS_DELETE_ALL_SINGLE_TITLE = "DELETE FROM items_list WHERE " +
@@ -73,8 +75,12 @@ public class Constants {
     protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, " +
             "dateTime = ? WHERE item_id = ?;";
 
-    // RequestCode onActivityResult - HomeFragment
+    // RequestCode onActivityResult - HomeFragment NEW LIST
     protected final static int NEW_LIST_RESULT_CODE = 30;
+
+    // RequestCode onActivityResult - HomeFragment EDIT LIST
+    protected final static String EDIT_LIST = "com.treefrogapps.TaDo.edit_list";
+    protected final static String EDIT_LIST_ACTIVITY_TITLE = "EDIT LIST";
 
 
 }

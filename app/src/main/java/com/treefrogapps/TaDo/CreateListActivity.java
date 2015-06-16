@@ -76,9 +76,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
             getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark));
         }
 
-
         initialiseInputs();
         initialiseRecyclerView();
+        checkEditIntent();
     }
 
     private void initialiseInputs() {
@@ -116,6 +116,23 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
         mCreateListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void checkEditIntent(){
+
+        Intent getIntent = getIntent();
+        if (getIntent.hasExtra("editList")){
+
+            if (getSupportActionBar() != null) getSupportActionBar().setTitle(Constants.EDIT_LIST_ACTIVITY_TITLE);
+            String titleId = String.valueOf(getIntent.getIntExtra("spinnerPosition", 0));
+            mCreateListTitleEditText.setText(dbHelper.getTitle(titleId));
+            mCreateListCardView.setVisibility(View.VISIBLE);
+            mCreateListTitleEditText.setEnabled(false);
+            mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
+            mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
+            mCreateListSaveButtonLayout.setVisibility(View.GONE);
+            populateRecyclerView(mCreateListTitleEditText.getText().toString());
+        }
     }
 
     @Override
@@ -327,23 +344,28 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
             dbHelper.insertIntoTitlesTable(titlesListData);
 
-            mCreateListCardView.setVisibility(View.VISIBLE);
-            mCreateListCardView.startAnimation(Animations.alphaMoveInAnim(getApplicationContext()));
-            mCreateListTitleEditText.setEnabled(false);
-            mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
-            mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
-            mCreateListSaveButtonLayout.startAnimation(Animations.alphaMoveOutAnim(getApplicationContext()));
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mCreateListSaveButtonLayout.setVisibility(View.GONE);
-                }
-            }, 350);
+            showAddItemRemoveSaveButton(350L);
 
         } else {
             CustomToasts.Toast(getApplicationContext(), "Title Already Exists");
         }
+    }
+
+    public void showAddItemRemoveSaveButton(Long delay) {
+
+        mCreateListCardView.setVisibility(View.VISIBLE);
+        mCreateListCardView.startAnimation(Animations.alphaMoveInAnim(getApplicationContext()));
+        mCreateListTitleEditText.setEnabled(false);
+        mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
+        mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
+        mCreateListSaveButtonLayout.startAnimation(Animations.alphaMoveOutAnim(getApplicationContext()));
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mCreateListSaveButtonLayout.setVisibility(View.GONE);
+            }
+        }, delay);
     }
 
     public void populateRecyclerView(String titleName) {
@@ -362,14 +384,14 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        String spinnerPosition;
+        int spinnerTitleId;
         Intent intent = new Intent();
 
         Intent getIntent = getIntent();
         if (getIntent.hasExtra("spinnerPosition")) {
-            spinnerPosition = getIntent.getStringExtra("spinnerPosition");
-            Log.e("STRING FROM FRAGMENT", getIntent.getStringExtra("spinnerPosition"));
-            intent.putExtra("spinnerPosition", spinnerPosition);
+            spinnerTitleId = getIntent.getIntExtra("spinnerPosition", 0);
+            Log.e("STRING FROM FRAGMENT", String.valueOf(getIntent.getIntExtra("spinnerPosition", 0)));
+            intent.putExtra("spinnerPosition", spinnerTitleId);
         }
         setResult(Constants.NEW_LIST_RESULT_CODE, intent);
         finish();
