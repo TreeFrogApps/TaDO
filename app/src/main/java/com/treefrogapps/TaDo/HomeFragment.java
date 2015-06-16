@@ -368,6 +368,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 String titleId = String.valueOf(data.getIntExtra("spinnerPosition", 0));
                 mTitlesSpinner.setSelection(getSpinnerIndex(dbHelper.getTitle(titleId)));
                 populateRecyclerView(mTitlesSpinner.getSelectedItem().toString());
+                getTotalItemsAndTime();
             } else {
                 mTitlesSpinner.setSelection(0);
                 mItemsArrayList.clear();
