@@ -2,11 +2,13 @@ package com.treefrogapps.TaDo;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +20,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     private Context context;
     private ArrayList<ItemsListData> listItemsDataArrayList;
 
-    public ItemRecyclerAdapter (Context context, ArrayList<ItemsListData> listItemsDataArrayList){
+    public ItemRecyclerAdapter(Context context, ArrayList<ItemsListData> listItemsDataArrayList) {
 
         this.context = context;
         this.listItemsDataArrayList = listItemsDataArrayList;
@@ -36,9 +38,12 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     }
 
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener{
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
 
-        private TextView recyclerViewItemID; // use for accessing unique item Id - with this duplicates aren't a problem
+        private TextView recyclerViewItemID; // visibility - gone - use for accessing unique item Id - with this duplicates aren't a problem
+        private TextView recyclerViewItemDone; // visibility - gone - used just check for tagging 'Done' or 'Not Done'
+        private LinearLayout recyclerViewLinearLayout;
+        private LinearLayout recyclerViewItemDoneView;
 
         private TextView recyclerViewItemTextView;
         private TextView recyclerViewHoursTextView;
@@ -48,6 +53,9 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             super(itemView);
 
             recyclerViewItemID = (TextView) itemView.findViewById(R.id.recyclerItemID);
+            recyclerViewItemDone = (TextView) itemView.findViewById(R.id.recyclerItemDone);
+            recyclerViewLinearLayout = (LinearLayout) itemView.findViewById(R.id.recyclerViewLinearLayout);
+            recyclerViewItemDoneView = (LinearLayout) itemView.findViewById(R.id.recyclerViewItemDoneView);
 
             recyclerViewItemTextView = (TextView) itemView.findViewById(R.id.recyclerItemTextView);
             recyclerViewHoursTextView = (TextView) itemView.findViewById(R.id.recyclerHoursTextView);
@@ -75,6 +83,8 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     public void onBindViewHolder(ItemRecyclerAdapter.MyViewHolder myViewHolder, int i) {
 
         myViewHolder.recyclerViewItemID.setText(listItemsDataArrayList.get(i).getItemId());
+        myViewHolder.recyclerViewItemDone.setText(listItemsDataArrayList.get(i).getItemDone());
+        myViewHolder.recyclerViewItemDone.setText(listItemsDataArrayList.get(i).getItemDone());
 
         myViewHolder.recyclerViewItemTextView.setText(listItemsDataArrayList.get(i).getItem());
 
@@ -83,6 +93,16 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
         myViewHolder.recyclerViewHoursTextView.setText(timeArray[0]);
         myViewHolder.recyclerViewMinsTextView.setText(timeArray[1]);
+
+        //set background color based on item done - 'Y'
+        if (myViewHolder.recyclerViewItemDone.getText().toString().equals(Constants.ITEM_DONE)) {
+            myViewHolder.recyclerViewItemDoneView.setVisibility(View.VISIBLE);
+            myViewHolder.recyclerViewLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.primary_very_light));
+
+        } else {
+            myViewHolder.recyclerViewItemDoneView.setVisibility(View.INVISIBLE);
+            myViewHolder.recyclerViewLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+        }
 
     }
 

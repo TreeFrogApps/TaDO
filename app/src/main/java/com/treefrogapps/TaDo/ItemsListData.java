@@ -10,16 +10,17 @@ public class ItemsListData {
     private String item;
     private String duration;
     private String dateTime;
+    private String itemDone;
 
-    public void setItemId (String item_id){
+    public void setItemId(String item_id) {
         this.itemId = item_id;
     }
 
-    public String getItemId(){
+    public String getItemId() {
         return String.valueOf(this.itemId);
     }
 
-    public void setTitleId (String title_id){
+    public void setTitleId(String title_id) {
         this.titleId = title_id;
     }
 
@@ -27,15 +28,15 @@ public class ItemsListData {
         return this.titleId;
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return this.title;
     }
 
-    public void setItem (String item){
+    public void setItem(String item) {
         this.item = item;
     }
 
@@ -43,19 +44,27 @@ public class ItemsListData {
         return this.item;
     }
 
-    public void setDuration(String duration){
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
-    public String getDuration(){
+    public String getDuration() {
         return this.duration;
     }
 
-    public void setDateTime(String dateTime){
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 
-    public String getDateTime(){
+    public String getDateTime() {
         return this.dateTime;
+    }
+
+    public void setItemDone(String itemDone) {
+        this.itemDone = itemDone;
+    }
+
+    public String getItemDone() {
+        return this.itemDone;
     }
 }

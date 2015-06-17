@@ -12,13 +12,13 @@
         android:textSize="@dimen/text_20sp"
         android:textStyle="bold"
         android:textColor="@color/primaryColorAccent"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+        android:layout_marginBottom="@dimen/activity_horizontal_margin" />
 
     <EditText
         android:id="@+id/createListDialogRenameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="13"/>
+        android:ems="13" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,8 +35,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/createListDialogOkButton"
@@ -47,12 +46,10 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
 
     </LinearLayout>
-
 
 
 </LinearLayout>

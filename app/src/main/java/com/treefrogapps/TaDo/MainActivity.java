@@ -31,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
         initialiseMenu();
         dbHelper = new DBHelper(this);
 
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             updateDisplayFragment("Home");
         }
     }
 
-    public void initialiseMenu(){
+    public void initialiseMenu() {
 
         mToolbar = (Toolbar) findViewById(R.id.myToolBar);
         setSupportActionBar(mToolbar);
@@ -71,28 +71,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void updateDisplayFragment(String menuTitle){
+    public void updateDisplayFragment(String menuTitle) {
 
         Fragment fragment = null;
 
-        switch (menuTitle){
+        switch (menuTitle) {
 
-            case "Home" :
+            case "Home":
                 fragment = new HomeFragment();
                 break;
-            case "TaDO Chooser" :
+            case "TaDO Chooser":
                 fragment = new MyListsFragment();
                 break;
-            case "Sync with Dropbox" :
+            case "Sync with Dropbox":
                 fragment = new SyncFragment();
                 break;
-            case "Scheduler" :
+            case "Scheduler":
                 fragment = new SchedulerFragment();
                 break;
-            default : break;
+            default:
+                break;
         }
 
-        if (fragment != null){
+        if (fragment != null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.frameContainer, fragment);
             fragmentTransaction.commit();
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(menuTitle);
                 }
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 e.printStackTrace();
                 Log.e("ERROR", "PROBLEM LOADING FRAGMENT");
             }

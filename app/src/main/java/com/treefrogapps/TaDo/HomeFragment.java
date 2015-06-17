@@ -54,7 +54,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private CardView mHomeFragmentListSpecCardView;
     private TextView mHomeFragmentTotalItemsTextView;
-    private TextView mHomeFragmentTotalTimeTextView;
+    private TextView mHomeFragmentTotalItemsTadoTextView;
+    private TextView mHomeFragmentTotalTimeLeftTextView;
     private TextView mHomeFragmentItemsTextView;
 
     public HomeFragment() {
@@ -104,7 +105,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mCreateListButtonLayout = (LinearLayout) rootView.findViewById(R.id.createListButtonLayout);
         mHomeFragmentListSpecCardView = (CardView) rootView.findViewById(R.id.homeFragmentListSpecCardView);
         mHomeFragmentTotalItemsTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalItemsTextView);
-        mHomeFragmentTotalTimeTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalTimeTextView);
+        mHomeFragmentTotalItemsTadoTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalItemsTadoTextView);
+        mHomeFragmentTotalTimeLeftTextView = (TextView) rootView.findViewById(R.id.homeFragmentTotalTimeTextView);
         mHomeFragmentItemsTextView = (TextView) rootView.findViewById(R.id.homeFragmentItemsTextView);
 
         if (mTitlesSpinner.getSelectedItemPosition() != 0) {
@@ -240,8 +242,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void populateRecyclerView(String listTitle) {
 
         mItemsArrayList.clear();
-        if (mTitlesSpinner.getSelectedItemPosition() != 0){
-            mItemsArrayList = dbHelper.getItemsForTitle(listTitle);
+        if (mTitlesSpinner.getSelectedItemPosition() != 0) {
+            mItemsArrayList = dbHelper.getItemsForTitleNotDone(listTitle);
+            mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(listTitle));
         }
         mRecyclerAdapter = new ItemRecyclerAdapter(getActivity(), mItemsArrayList);
         mRecyclerView.setAdapter(mRecyclerAdapter);
@@ -325,7 +328,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 intent.putExtra("spinnerPosition", Integer.parseInt(dbHelper.getTitleId(mTitlesSpinner.getSelectedItem().toString())));
             }
 
-            if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE){
+            if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE) {
                 mHomeFragmentSplashScreen.startAnimation(Animations.moveOut(getActivity()));
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -391,20 +394,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     public void getTotalItemsAndTime() {
 
-        String[] totals = new String[2];
+        String[] totals = new String[3];
 
         // get total items from array list size
         totals[0] = String.valueOf(mItemsArrayList.size());
+
+        ArrayList<ItemsListData> itemsNotDoneArrayList =
+                dbHelper.getItemsForTitleNotDone(mTitlesSpinner.getSelectedItem().toString());
+
+        // get total items from array list size of NOT DONE items
+        totals[1] = String.valueOf(itemsNotDoneArrayList.size());
+
 
         int hours = 0;
         int mins = 0;
 
         // get total hours mins - iterate through array list durations
         // adding total hours and total mins
-        for (int i = 0; i < mItemsArrayList.size(); i++) {
+        for (int i = 0; i < itemsNotDoneArrayList.size(); i++) {
 
-            String itemDuration = mItemsArrayList.get(i).getDuration().substring(0,
-                    (mItemsArrayList.get(i).getDuration().length() - 3));
+            String itemDuration = itemsNotDoneArrayList.get(i).getDuration().substring(0,
+                    (itemsNotDoneArrayList.get(i).getDuration().length() - 3));
 
             String[] durationArray = itemDuration.split(":");
             hours += Integer.valueOf(durationArray[0]);
@@ -416,10 +426,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         // modulus to get remainder minutes
         int finalMins = totalMins % 60;
 
-        totals[1] = String.valueOf(finalHours) + "hrs " + String.valueOf(finalMins) + "mins";
+        totals[2] = String.valueOf(finalHours) + "hrs " + String.valueOf(finalMins) + "mins";
 
         mHomeFragmentTotalItemsTextView.setText(totals[0]);
-        mHomeFragmentTotalTimeTextView.setText(totals[1]);
+        mHomeFragmentTotalItemsTadoTextView.setText(totals[1]);
+        mHomeFragmentTotalTimeLeftTextView.setText(totals[2]);
         mHomeFragmentListSpecCardView.setVisibility(View.VISIBLE);
         mHomeFragmentListSpecCardView.startAnimation(Animations.alphaMoveInAnim(getActivity()));
         mHomeFragmentItemsTextView.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));

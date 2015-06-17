@@ -3,14 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.treefrogapps.TaDo.CreateListActivity">
 
-    <item android:id="@+id/createListEditTitle"
+    <item
+        android:id="@+id/createListEditTitle"
         android:title="@string/create_menu_edit_title"
         android:orderInCategory="1"
         android:icon="@mipmap/ic_edit"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/action_settings"
+    <item
+        android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
 </menu>

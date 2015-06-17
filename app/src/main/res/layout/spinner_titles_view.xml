@@ -9,4 +9,4 @@
     android:textStyle="bold"
     android:paddingLeft="@dimen/eight_dp"
     android:paddingTop="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_horizontal_margin"/>
+    android:paddingBottom="@dimen/activity_horizontal_margin" />

@@ -9,6 +9,7 @@
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#727272</color>
 
+    <color name="primary_very_light">#162953ff</color>
     <color name="grey_light">#D8D8D8</color>
     <color name="grey_medium">#ffaeaeae</color>
     <color name="grey_dark">#ff868686</color>

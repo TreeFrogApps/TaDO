@@ -12,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -116,14 +117,63 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
         mCreateListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                if (direction == ItemTouchHelper.LEFT) {
+                    removeItemFromRViewAndDB(viewHolder.getLayoutPosition());
+
+                } else if (direction == ItemTouchHelper.RIGHT) {
+                    markItemAsDone(viewHolder.getLayoutPosition());
+                }
+
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(mCreateListRecyclerView);
     }
 
-    public void checkEditIntent(){
+    private void removeItemFromRViewAndDB(int layoutPosition) {
+
+        String itemIdToDelete = mItemsArrayList.get(layoutPosition).getItemId();
+
+        ItemsListData itemsListData = new ItemsListData();
+        itemsListData.setItemId(itemIdToDelete);
+        dbHelper.deleteItem(itemsListData);
+
+        mItemRecyclerAdapter.notifyItemRemoved(layoutPosition);
+        mItemsArrayList.remove(layoutPosition);
+    }
+
+    public void markItemAsDone(final int layoutPosition) {
+
+        String itemIdToUpdate = mItemsArrayList.get(layoutPosition).getItemId();
+
+        ItemsListData itemsListData = new ItemsListData();
+        itemsListData.setItemId(itemIdToUpdate);
+        itemsListData.setItemDone(Constants.ITEM_DONE);
+
+        dbHelper.updateItemDone(itemsListData);
+        mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_DONE);
+        mItemRecyclerAdapter.notifyItemChanged(layoutPosition);
+
+    }
+
+    public void checkEditIntent() {
 
         Intent getIntent = getIntent();
-        if (getIntent.hasExtra("editList")){
+        if (getIntent.hasExtra("editList")) {
 
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle(Constants.EDIT_LIST_ACTIVITY_TITLE);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(Constants.EDIT_LIST_ACTIVITY_TITLE);
             String titleId = String.valueOf(getIntent.getIntExtra("spinnerPosition", 0));
             mCreateListTitleEditText.setText(dbHelper.getTitle(titleId));
             mCreateListCardView.setVisibility(View.VISIBLE);
@@ -155,9 +205,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         } else if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (id == R.id.createListEditTitle){
+        } else if (id == R.id.createListEditTitle) {
 
-            if (!mCreateListTitleEditText.getText().toString().equals("")){
+            if (!mCreateListTitleEditText.getText().toString().equals("")) {
                 String currentTitle = mCreateListTitleEditText.getText().toString();
                 Log.e("CURRENT TITLE", currentTitle);
                 changeTitleName(currentTitle);
@@ -168,7 +218,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    public void changeTitleName(final String currentTitle){
+    public void changeTitleName(final String currentTitle) {
 
         final Dialog dialogBuilder = new Dialog(this);
         dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -193,9 +243,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
                 String newTitle = renameDialogEditText.getText().toString();
 
-                String checkIfTitleExists  = dbHelper.checkTitleNameExists(newTitle);
+                String checkIfTitleExists = dbHelper.checkTitleNameExists(newTitle);
 
-                if (checkIfTitleExists == null){
+                if (checkIfTitleExists == null) {
                     TitlesListData oldTitleListData = new TitlesListData();
                     oldTitleListData.setTitle(currentTitle);
 
@@ -244,7 +294,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         } else if (v.getId() == mCreateListAddItem.getId()) {
 
             addItemToTitleTable(mCreateListTitleEditText.getText().toString(), mCreateListItemEditText.getText().toString(),
-                    mCreateListHoursTextView.getText().toString(), mCreateListMinsTextView.getText().toString());
+                    mCreateListHoursTextView.getText().toString(), mCreateListMinsTextView.getText().toString(), Constants.ITEM_NOT_DONE);
 
         } else if (v.getId() == mCreateListTitleSaveButton.getId()) {
 
@@ -302,9 +352,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins) {
+    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins, String itemDone) {
 
-        if (!mCreateListItemEditText.equals("")){
+        if (!mCreateListItemEditText.equals("")) {
 
             ItemsListData itemsListData = new ItemsListData();
             String duration = hours + ":" + mins;
@@ -317,6 +367,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
             itemsListData.setTitleId(dbHelper.getTitleId(titleName));
             itemsListData.setDuration(duration);
             itemsListData.setDateTime(date);
+            itemsListData.setItemDone(itemDone);
 
             dbHelper.insertIntoItemsTable(itemsListData);
 
@@ -333,9 +384,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
         TitlesListData titlesListData = new TitlesListData();
 
-        String checkIfTitleExists  = dbHelper.checkTitleNameExists(titleName);
+        String checkIfTitleExists = dbHelper.checkTitleNameExists(titleName);
 
-        if (checkIfTitleExists == null){
+        if (checkIfTitleExists == null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
             String date = sdf.format(new Date());
 
@@ -370,7 +421,9 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     public void populateRecyclerView(String titleName) {
 
-        mItemsArrayList = dbHelper.getItemsForTitle(titleName);
+        mItemsArrayList = dbHelper.getItemsForTitleNotDone(titleName);
+        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(titleName));
+
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }

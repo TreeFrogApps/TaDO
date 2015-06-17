@@ -11,25 +11,25 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class DBHelper extends SQLiteOpenHelper{
+public class DBHelper extends SQLiteOpenHelper {
 
     // database query = "PRAGMA foreign_keys = ON" maybe required in onCreate (ON DELETE CASCADE), or every time database in isWriteable
     // task - use in onCreate only see if it works just only there!
 
-    public DBHelper(Context context){
+    public DBHelper(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        try{
+        try {
             db.execSQL(Constants.TITLES_TABLE);
             db.execSQL(Constants.ITEMS_TABLE);
             db.execSQL(Constants.FOREIGN_KEY_CASCADE);
             Log.d("INFO", "DATABASE CREATED");
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
             Log.e("ERROR", "DATABASE CREATION");
@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public void insertIntoTitlesTable(TitlesListData titlesListData){
+    public void insertIntoTitlesTable(TitlesListData titlesListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -59,7 +59,7 @@ public class DBHelper extends SQLiteOpenHelper{
         database.close();
     }
 
-    public void insertIntoItemsTable(ItemsListData itemsListData){
+    public void insertIntoItemsTable(ItemsListData itemsListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
@@ -70,7 +70,8 @@ public class DBHelper extends SQLiteOpenHelper{
 
         // execute method to handle statement request
         executePreparedStatement(3, database, statement,
-                new String[]{itemsListData.getItem(), itemsListData.getTitle(), itemsListData.getDuration(), itemsListData.getDateTime()});
+                new String[]{itemsListData.getItem(), itemsListData.getTitle(),
+                        itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone()});
     }
 
     public ArrayList<TitlesListData> getTitles() {
@@ -84,7 +85,7 @@ public class DBHelper extends SQLiteOpenHelper{
         int title = cursor.getColumnIndex(Constants.TITLE);
         int dateTime = cursor.getColumnIndex(Constants.TITLE_DATETIME);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 TitlesListData titlesListData = new TitlesListData();
@@ -102,7 +103,7 @@ public class DBHelper extends SQLiteOpenHelper{
         return titlesListDataArrayList;
     }
 
-    public String getTitleId(String titleName){
+    public String getTitleId(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         String titleId = null;
@@ -111,7 +112,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 titleId = cursor.getString(title_id);
@@ -122,7 +123,7 @@ public class DBHelper extends SQLiteOpenHelper{
         return titleId;
     }
 
-    public String getTitle(String titleId){
+    public String getTitle(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         String titleName = null;
@@ -131,7 +132,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         int title = cursor.getColumnIndex(Constants.TITLE);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 titleName = cursor.getString(title);
@@ -142,7 +143,7 @@ public class DBHelper extends SQLiteOpenHelper{
         return titleName;
     }
 
-    public String checkTitleNameExists(String titleName){
+    public String checkTitleNameExists(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         String titleId = null;
@@ -151,7 +152,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         int title = cursor.getColumnIndex(Constants.TITLE);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 titleId = cursor.getString(title);
@@ -162,20 +163,21 @@ public class DBHelper extends SQLiteOpenHelper{
         return titleId;
     }
 
-    public ArrayList<ItemsListData> getItemsForTitle(String titleName){
+    public ArrayList<ItemsListData> getItemsForTitleDone(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         ArrayList<ItemsListData> itemsListDataArrayList = new ArrayList<>();
 
-        Cursor cursor = database.rawQuery(Constants.ITEMS_GET_QUERY, new String[]{titleName});
+        Cursor cursor = database.rawQuery(Constants.ITEMS_DONE_GET_QUERY, new String[]{titleName});
 
         int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
         int item = cursor.getColumnIndex(Constants.ITEM);
         int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
         int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
+        int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 ItemsListData itemsListData = new ItemsListData();
@@ -190,6 +192,9 @@ public class DBHelper extends SQLiteOpenHelper{
                 Log.e("ITEM DURATION", itemsListData.getDuration());
                 itemsListData.setDateTime(cursor.getString(dateTime));
                 Log.e("ITEM DATE", itemsListData.getDateTime());
+                itemsListData.setItemDone(cursor.getString(itemDone));
+                Log.e("ITEM DONE", itemsListData.getItemDone());
+
                 itemsListDataArrayList.add(itemsListData);
 
             } while (cursor.moveToNext());
@@ -199,7 +204,48 @@ public class DBHelper extends SQLiteOpenHelper{
         return itemsListDataArrayList;
     }
 
-    public void deleteTitle(String titleName){
+    public ArrayList<ItemsListData> getItemsForTitleNotDone(String titleName) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        ArrayList<ItemsListData> itemsListDataArrayList = new ArrayList<>();
+
+        Cursor cursor = database.rawQuery(Constants.ITEMS_NOT_DONE_GET_QUERY, new String[]{titleName});
+
+        int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
+        int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
+        int item = cursor.getColumnIndex(Constants.ITEM);
+        int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
+        int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
+        int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                ItemsListData itemsListData = new ItemsListData();
+
+                itemsListData.setItemId(cursor.getString(item_id));
+                Log.e("ITEM ID", itemsListData.getItemId());
+                itemsListData.setTitleId(cursor.getString(title_id));
+                Log.e("ITEM TITLE ID", itemsListData.getTitleId());
+                itemsListData.setItem(cursor.getString(item));
+                Log.e("ITEM", itemsListData.getItem());
+                itemsListData.setDuration(cursor.getString(duration));
+                Log.e("ITEM DURATION", itemsListData.getDuration());
+                itemsListData.setDateTime(cursor.getString(dateTime));
+                Log.e("ITEM DATE", itemsListData.getDateTime());
+                itemsListData.setItemDone(cursor.getString(itemDone));
+                Log.e("ITEM DONE", itemsListData.getItemDone());
+
+                itemsListDataArrayList.add(itemsListData);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        return itemsListDataArrayList;
+    }
+
+    public void deleteTitle(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
@@ -209,25 +255,25 @@ public class DBHelper extends SQLiteOpenHelper{
         executePreparedStatement(2, database, statement, new String[]{titleName});
     }
 
-    public void deleteItem(ItemsListData itemsListData){
+    public void deleteItem(ItemsListData itemsListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
         database.beginTransactionNonExclusive();
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_DELETE_SINGLE);
-        executePreparedStatement(2, database, statement, new String[] {itemsListData.getItem(), itemsListData.getTitle()});
+        executePreparedStatement(2, database, statement, new String[]{itemsListData.getItemId()});
     }
 
-    public void deleteAllItemsForTitle(String titleName){
+    public void deleteAllItemsForTitle(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
         database.beginTransactionNonExclusive();
         SQLiteStatement statement = database.compileStatement(Constants.ITEMS_DELETE_ALL_SINGLE_TITLE);
-        executePreparedStatement(2, database, statement, new String[] {titleName});
+        executePreparedStatement(2, database, statement, new String[]{titleName});
     }
 
-    public void deleteAllTitlesAndItems(){
+    public void deleteAllTitlesAndItems() {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // delete all titles & items
@@ -236,7 +282,7 @@ public class DBHelper extends SQLiteOpenHelper{
         database.close();
     }
 
-    public void updateTitle(TitlesListData oldTitle, TitlesListData newTitle){
+    public void updateTitle(TitlesListData oldTitle, TitlesListData newTitle) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // put new values
@@ -249,7 +295,7 @@ public class DBHelper extends SQLiteOpenHelper{
         database.close();
     }
 
-    public void updateItem(ItemsListData oldItem, ItemsListData newItem){
+    public void updateItemName(ItemsListData oldItem, ItemsListData newItem) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         database.beginTransactionNonExclusive();
@@ -259,22 +305,32 @@ public class DBHelper extends SQLiteOpenHelper{
                 new String[]{newItem.getItem(), newItem.getDuration(), newItem.getDateTime(), oldItem.getItemId()});
     }
 
+    public void updateItemDone(ItemsListData itemsListData) {
 
-    public void executePreparedStatement(int executeType, SQLiteDatabase database, SQLiteStatement statement, String[] stringBindings){
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.beginTransactionNonExclusive();
 
-        for (int i = 0; i < stringBindings.length; i++){
-            statement.bindString((i+1), stringBindings[i]);
+        SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE_ITEM_DONE);
+        executePreparedStatement(2, database, statement,
+                new String[]{itemsListData.getItemDone(), itemsListData.getItemId()});
+    }
+
+
+    public void executePreparedStatement(int executeType, SQLiteDatabase database, SQLiteStatement statement, String[] stringBindings) {
+
+        for (int i = 0; i < stringBindings.length; i++) {
+            statement.bindString((i + 1), stringBindings[i]);
         }
 
-        if (executeType == 1){
+        if (executeType == 1) {
             // CREATE and DROP
             statement.execute();
 
-        } else if (executeType == 2){
+        } else if (executeType == 2) {
             // UPDATE and DELETE
             statement.executeUpdateDelete();
 
-        } else if (executeType == 3){
+        } else if (executeType == 3) {
             // INSERT
             statement.executeInsert();
         }
@@ -285,9 +341,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
 
-    // todo - checking titles list doesn't match any new title lists made - duplicates = database nightmare
     // todo - checking items list doesn't match any new item made with same title name
-    // todo   same ITEM name duplicates allowed but not same title
 
 
     // todo - check duplicate entries titles - query database on titles - a cursor result means a duplicate (query done EVERY title entry)

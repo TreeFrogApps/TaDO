@@ -10,21 +10,21 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-            <include
-                android:id="@+id/myToolBar"
-                layout="@layout/tool_bar"/>
+        <include
+            android:id="@+id/myToolBar"
+            layout="@layout/tool_bar" />
 
-            <FrameLayout
-                android:id="@+id/frameContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+        <FrameLayout
+            android:id="@+id/frameContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        </LinearLayout>
+    </LinearLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navView"
@@ -32,6 +32,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_menu"/>
+        app:menu="@menu/nav_menu" />
 
 </android.support.v4.widget.DrawerLayout>

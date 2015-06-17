@@ -37,13 +37,13 @@
             android:layout_height="wrap_content"
             android:text="@string/fragment_home_tado_titles"
             android:textColor="@color/primaryText"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp" />
 
         <Spinner
             android:id="@+id/homeFragmentTitlesSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_dots_menu"/>
+            android:background="@drawable/selector_dots_menu" />
 
     </LinearLayout>
 
@@ -61,31 +61,31 @@
             android:layout_height="wrap_content"
             android:text="@string/fragment_home_tado_items"
             android:textColor="@color/primaryText"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/homeFragmentRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context="com.treefrogapps.TaDo.HomeFragment"
-            android:scrollbars="vertical"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/homeFragmentRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:context="com.treefrogapps.TaDo.HomeFragment"
+                android:scrollbars="vertical" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/homeFragmentFAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            app:borderWidth="0dp"
-            android:layout_gravity="bottom|end"
-            android:src="@mipmap/ic_fab_plus"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:visibility="invisible"/>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/homeFragmentFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                app:borderWidth="0dp"
+                android:layout_gravity="bottom|end"
+                android:src="@mipmap/ic_fab_plus"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:visibility="invisible" />
 
         </FrameLayout>
 
