@@ -81,6 +81,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
+
         checkSplashScreenVisibility();
 
         dbHelper = new DBHelper(getActivity());
@@ -145,7 +147,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     public void checkSplashScreenVisibility() {
 
-        sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         int splashScreenVisible = sharedPreferences.getInt(Constants.SPLASH_SCREEN_VISIBILITY, 1);
 
         mHomeFragmentSplashScreen = (LinearLayout) rootView.findViewById(R.id.homeFragmentSplashScreen);
@@ -196,6 +197,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 R.layout.spinner_titles_view, R.id.spinner_list_item, mTitlesSpinnerItemList);
         mTitlesSpinner.setAdapter(mSpinnerAdapter);
 
+        // get saved Spinner Position form sharedpreferences
+        Constants.SPINNER_POSITION = sharedPreferences.getInt(Constants.SAVED_SPINNER_POSITION, 0);
+        mTitlesSpinner.setSelection(Constants.SPINNER_POSITION);
+
         mTitlesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -207,6 +212,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     if (mCreateListButtonLayout.getVisibility() == View.GONE) {
                         mCreateListButtonLayout.setVisibility(View.VISIBLE);
                         mRemoveListButton.startAnimation(Animations.alphaMoveInAnim(getActivity()));
+                        mHomeFragmentItemsTextView.setAlpha(1);
                     }
                     populateRecyclerView(listTitle);
                     getTotalItemsAndTime();
@@ -215,6 +221,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     // if spinner does not have selected item animate and hide view
                     mHomeFragmentListSpecCardView.startAnimation(Animations.alphaMoveOutAnim(getActivity()));
                     mRemoveListButton.startAnimation(Animations.alphaMoveOutAnim(getActivity()));
+                    mHomeFragmentItemsTextView.setAlpha(1);
                     mHomeFragmentItemsTextView.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
                     mFAB.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
                     Handler handler = new Handler();
@@ -434,5 +441,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mHomeFragmentListSpecCardView.setVisibility(View.VISIBLE);
         mHomeFragmentListSpecCardView.startAnimation(Animations.alphaMoveInAnim(getActivity()));
         mHomeFragmentItemsTextView.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // save spinner position
+        Constants.SPINNER_POSITION = mTitlesSpinner.getSelectedItemPosition();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Constants.SAVED_SPINNER_POSITION, Constants.SPINNER_POSITION);
+        editor.apply();
+
+
     }
 }

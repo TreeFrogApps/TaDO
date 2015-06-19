@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         private TextView recyclerViewItemDone; // visibility - gone - used just check for tagging 'Done' or 'Not Done'
         private LinearLayout recyclerViewLinearLayout;
         private LinearLayout recyclerViewItemDoneView;
+        private ImageView recyclerViewImageView;
 
         private TextView recyclerViewItemTextView;
         private TextView recyclerViewHoursTextView;
@@ -56,6 +58,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             recyclerViewItemDone = (TextView) itemView.findViewById(R.id.recyclerItemDone);
             recyclerViewLinearLayout = (LinearLayout) itemView.findViewById(R.id.recyclerViewLinearLayout);
             recyclerViewItemDoneView = (LinearLayout) itemView.findViewById(R.id.recyclerViewItemDoneView);
+            recyclerViewImageView = (ImageView) itemView.findViewById(R.id.recyclerViewImageView);
 
             recyclerViewItemTextView = (TextView) itemView.findViewById(R.id.recyclerItemTextView);
             recyclerViewHoursTextView = (TextView) itemView.findViewById(R.id.recyclerHoursTextView);
@@ -96,11 +99,11 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
         //set background color based on item done - 'Y'
         if (myViewHolder.recyclerViewItemDone.getText().toString().equals(Constants.ITEM_DONE)) {
-            myViewHolder.recyclerViewItemDoneView.setVisibility(View.VISIBLE);
+            myViewHolder.recyclerViewImageView.setBackgroundResource(R.mipmap.ic_item_done);
             myViewHolder.recyclerViewLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.primary_very_light));
 
         } else {
-            myViewHolder.recyclerViewItemDoneView.setVisibility(View.INVISIBLE);
+            myViewHolder.recyclerViewImageView.setBackgroundResource(R.mipmap.ic_item_tado);
             myViewHolder.recyclerViewLinearLayout.setBackgroundColor(Color.TRANSPARENT);
         }
 

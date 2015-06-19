@@ -4,11 +4,18 @@ package com.treefrogapps.TaDo;
 public class Constants {
 
     // Shared Preferences constant
-    protected static final String TADO_PREFERENCES = "com.treefrogapps.TaDo.Preferences";
+    protected final static String TADO_PREFERENCES = "com.treefrogapps.TaDo.Preferences";
 
     // splash screen visibility - place in shared prefs
     protected final static String SPLASH_SCREEN_VISIBILITY = "com.treefrogapps.TaDo.Visibility";
-    protected static final int SPLASH_SCREEN_OFF = 0;
+    protected final static int SPLASH_SCREEN_OFF = 0;
+
+    protected final static String SWIPE_SPLASH_SCREEN_VISIBILITY = "com.treefrogapps.TaDo.SwipeVisibility";
+    protected final static int SWIPE_SPLASH_SCREEN_OFF = 0;
+
+    // last spinner position on exit
+    protected static int SPINNER_POSITION = 0;
+    protected final static String SAVED_SPINNER_POSITION = "com.treefrogapps.TaDo.SpinnerPosition";
 
     // Database constants
     protected final static String DATABASE_NAME = "main_database.db";

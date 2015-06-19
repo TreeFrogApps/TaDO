@@ -118,7 +118,8 @@
             android:layout_margin="@dimen/eight_dp"
             android:text="@string/fragment_home_tado_items"
             android:textColor="@color/primaryText"
-            android:textSize="@dimen/text_16sp" />
+            android:textSize="@dimen/text_16sp"
+            android:alpha="0"/>
 
         <FrameLayout
             android:layout_width="match_parent"

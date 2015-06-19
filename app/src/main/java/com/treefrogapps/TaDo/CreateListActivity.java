@@ -1,7 +1,9 @@
 package com.treefrogapps.TaDo;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +37,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     private Toolbar mToolbar;
     private DBHelper dbHelper;
+    private SharedPreferences sharedPreferences;
 
     private CardView mCreateListCardView;
     private LinearLayout mCreateListSaveButtonLayout;
@@ -58,12 +61,16 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     private Button mCreateListTitleSaveButton;
 
+    private LinearLayout mCreateListSwipeActionLinearLayout;
+    private Button mCreateListSplashButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_list);
 
         dbHelper = new DBHelper(this);
+        sharedPreferences = getApplicationContext().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
 
         mToolbar = (Toolbar) findViewById(R.id.myToolBar);
         mToolbar.setTitle(getResources().getString(R.string.activity_create_list));
@@ -80,6 +87,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         initialiseInputs();
         initialiseRecyclerView();
         checkEditIntent();
+        checkSwipeScreenVisibility();
     }
 
     private void initialiseInputs() {
@@ -107,6 +115,10 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
         mCreateListCardView = (CardView) findViewById(R.id.createListCardView);
         mCreateListSaveButtonLayout = (LinearLayout) findViewById(R.id.createListSaveButtonLayout);
+
+        mCreateListSwipeActionLinearLayout  = (LinearLayout) findViewById(R.id.createListSwipeActionLinearLayout);
+        mCreateListSplashButton = (Button) findViewById(R.id.createListSplashButton);
+        mCreateListSplashButton.setOnClickListener(this);
     }
 
     public void initialiseRecyclerView() {
@@ -131,7 +143,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
                     removeItemFromRViewAndDB(viewHolder.getLayoutPosition());
 
                 } else if (direction == ItemTouchHelper.RIGHT) {
-                    markItemAsDone(viewHolder.getLayoutPosition());
+                    markItemAsDoneToggle(viewHolder.getLayoutPosition());
                 }
 
             }
@@ -153,16 +165,23 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         mItemsArrayList.remove(layoutPosition);
     }
 
-    public void markItemAsDone(final int layoutPosition) {
+    public void markItemAsDoneToggle(final int layoutPosition) {
 
+        // method for toggling on and off the done status of items based on current state
         String itemIdToUpdate = mItemsArrayList.get(layoutPosition).getItemId();
 
         ItemsListData itemsListData = new ItemsListData();
         itemsListData.setItemId(itemIdToUpdate);
-        itemsListData.setItemDone(Constants.ITEM_DONE);
+
+        if (mItemsArrayList.get(layoutPosition).getItemDone().equals(Constants.ITEM_NOT_DONE)){
+            itemsListData.setItemDone(Constants.ITEM_DONE);
+            mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_DONE);
+        } else {
+            itemsListData.setItemDone(Constants.ITEM_NOT_DONE);
+            mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_NOT_DONE);
+        }
 
         dbHelper.updateItemDone(itemsListData);
-        mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_DONE);
         mItemRecyclerAdapter.notifyItemChanged(layoutPosition);
 
     }
@@ -303,6 +322,20 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
                 saveListTitle(mCreateListTitleEditText.getText().toString());
 
             }
+        } else if (v.getId() == mCreateListSplashButton.getId()){
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(Constants.SWIPE_SPLASH_SCREEN_VISIBILITY, Constants.SWIPE_SPLASH_SCREEN_OFF).apply();
+            mCreateListSwipeActionLinearLayout.setVisibility(View.GONE);
+        }
+    }
+
+    public void checkSwipeScreenVisibility() {
+
+        int swipeSplashScreenVisible = sharedPreferences.getInt(Constants.SWIPE_SPLASH_SCREEN_VISIBILITY, 1);
+
+        if (swipeSplashScreenVisible == 0) {
+            mCreateListSwipeActionLinearLayout.setVisibility(View.GONE);
         }
     }
 
@@ -415,6 +448,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void run() {
                 mCreateListSaveButtonLayout.setVisibility(View.GONE);
+
             }
         }, delay);
     }

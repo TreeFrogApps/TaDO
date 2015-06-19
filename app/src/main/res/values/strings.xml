@@ -39,6 +39,10 @@
     <string name="create_list_time">00</string>
     <string name="create_item_add_item">ADD ITEM</string>
     <string name="create_list_time_separator">:</string>
+    <string name="create_list_swipe_left">SWIPE LEFT = DELETE</string>
+    <string name="create_list_swipe_right">SWIPE RIGHT = TOGGLE COMPLETE ITEMS</string>
+    <string name="create_list_splah_button">GOT IT</string>
+
     <!-- create list menu -->
     <string name="create_menu_edit_title">Edit Title Name</string>
 
@@ -46,6 +50,7 @@
     <string name="splash_screen_message">CLICK ON THE PLUS TO START CREATING SOME LISTS</string>
     <string name="splash_screen_button">GOT IT</string>
     <string name="create_list_dialog_ok_button">OK</string>
+
 
 
 </resources>
