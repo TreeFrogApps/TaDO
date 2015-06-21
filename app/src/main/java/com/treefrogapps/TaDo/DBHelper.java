@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // execute method to handle statement request
         executePreparedStatement(3, database, statement,
                 new String[]{itemsListData.getItem(), itemsListData.getTitle(),
-                        itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone()});
+                        itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone(), itemsListData.getItemPriority()});
     }
 
     public ArrayList<TitlesListData> getTitles() {
@@ -176,6 +176,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
         int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
         int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
+        int itemPriority = cursor.getColumnIndex(Constants.ITEM_PRIORITY);
 
         if (cursor.moveToFirst()) {
 
@@ -194,6 +195,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 Log.e("ITEM DATE", itemsListData.getDateTime());
                 itemsListData.setItemDone(cursor.getString(itemDone));
                 Log.e("ITEM DONE", itemsListData.getItemDone());
+                itemsListData.setItemPriority(cursor.getString(itemPriority));
+                Log.e("ITEM PRIORITY", itemsListData.getItemPriority());
 
                 itemsListDataArrayList.add(itemsListData);
 
@@ -217,6 +220,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
         int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
         int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
+        int itemPriority = cursor.getColumnIndex(Constants.ITEM_PRIORITY);
 
         if (cursor.moveToFirst()) {
 
@@ -235,6 +239,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 Log.e("ITEM DATE", itemsListData.getDateTime());
                 itemsListData.setItemDone(cursor.getString(itemDone));
                 Log.e("ITEM DONE", itemsListData.getItemDone());
+                itemsListData.setItemPriority(cursor.getString(itemPriority));
+                Log.e("ITEM PRIORITY", itemsListData.getItemPriority());
 
                 itemsListDataArrayList.add(itemsListData);
 
@@ -302,7 +308,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
         executePreparedStatement(2, database, statement,
-                new String[]{newItem.getItem(), newItem.getDuration(), newItem.getDateTime(), oldItem.getItemId()});
+                new String[]{newItem.getItem(), newItem.getDuration(), newItem.getItemPriority(), oldItem.getItemId()});
     }
 
     public void updateItemDone(ItemsListData itemsListData) {

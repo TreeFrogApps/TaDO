@@ -42,7 +42,7 @@ public class Constants {
             "CREATE TABLE IF NOT EXISTS items_list " +
                     "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " item VARCHAR, title_id INTEGER NOT NULL," +
-                    " duration TIME, date DATETIME, item_done CHAR, " +
+                    " duration TIME, date DATETIME, item_done CHAR, priority CHAR," +
                     " FOREIGN KEY (title_id) REFERENCES title_list (title_id) ON DELETE CASCADE);";
 
     protected final static String ITEMS_LIST = "items_list";
@@ -53,11 +53,16 @@ public class Constants {
     protected final static String ITEM_DONE_COLUMN = "item_done";
     protected final static String ITEM_DONE = "Y";
     protected final static String ITEM_NOT_DONE = "N";
+    protected final static String ITEM_PRIORITY = "priority";
+    protected final static String ITEM_PRIORITY_HIGH = "H";
+    protected final static String ITEM_PRIORITY_MEDIUM = "M";
+    protected final static String ITEM_PRIORITY_LOW = "L";
+
 
 
     // SQLite Queries - including prepared statement queries
     protected final static String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?," +
-            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME (?), ?);";
+            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME (?), ?, ?);";
     // datetime format = YYYY-MM-YY HH:YY:SS
 
     protected final static String ITEMS_NOT_DONE_GET_QUERY = "SELECT * FROM items_list WHERE title_id =" +
@@ -74,7 +79,7 @@ public class Constants {
     protected final static String TITLES_GET_TITLE = "SELECT title FROM titles_list WHERE titles_list.title_id = ?";
 
     protected final static String TITLES_CHECK_TITLE_NAME_EXISTS = "SELECT title FROM titles_list WHERE title = ?";
-    
+
     protected final static String TITLE_DELETE_QUERY = "DELETE FROM titles_list WHERE title_id =" +
             " (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
 
@@ -83,7 +88,7 @@ public class Constants {
 
     protected final static String ITEM_DELETE_SINGLE = "DELETE FROM items_list WHERE items_list.item_id = ?;";
 
-    protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, " +
+    protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, priority = ? WHERE item_id = ?;" +
             "dateTime = ? WHERE item_id = ?;";
 
     protected final static String ITEM_UPDATE_ITEM_DONE = "UPDATE items_list SET item_done = ? WHERE item_id = ?;";

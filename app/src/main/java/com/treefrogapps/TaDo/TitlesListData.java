@@ -7,6 +7,10 @@ public class TitlesListData {
     private String title;
     private String dateTime;
 
+    public TitlesListData(){
+
+    }
+
     public void setTitle_id(String title_id) {
         this.title_id = title_id;
     }

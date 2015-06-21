@@ -313,7 +313,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
         } else if (v.getId() == mCreateListAddItem.getId()) {
 
             addItemToTitleTable(mCreateListTitleEditText.getText().toString(), mCreateListItemEditText.getText().toString(),
-                    mCreateListHoursTextView.getText().toString(), mCreateListMinsTextView.getText().toString(), Constants.ITEM_NOT_DONE);
+                    mCreateListHoursTextView.getText().toString(), mCreateListMinsTextView.getText().toString(), Constants.ITEM_NOT_DONE, Constants.ITEM_PRIORITY_LOW);
 
         } else if (v.getId() == mCreateListTitleSaveButton.getId()) {
 
@@ -385,7 +385,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins, String itemDone) {
+    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins, String itemDone, String itemPriority) {
 
         if (!mCreateListItemEditText.equals("")) {
 
@@ -401,6 +401,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
             itemsListData.setDuration(duration);
             itemsListData.setDateTime(date);
             itemsListData.setItemDone(itemDone);
+            itemsListData.setItemPriority(itemPriority);
 
             dbHelper.insertIntoItemsTable(itemsListData);
 

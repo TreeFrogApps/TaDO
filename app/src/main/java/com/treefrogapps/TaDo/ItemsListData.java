@@ -11,6 +11,12 @@ public class ItemsListData {
     private String duration;
     private String dateTime;
     private String itemDone;
+    private String itemPriority;
+
+    public ItemsListData(){
+
+    }
+
 
     public void setItemId(String item_id) {
         this.itemId = item_id;
@@ -66,5 +72,13 @@ public class ItemsListData {
 
     public String getItemDone() {
         return this.itemDone;
+    }
+
+    public void setItemPriority(String itemPriority){
+        this.itemPriority = itemPriority;
+    }
+
+    public String getItemPriority(){
+        return this.itemPriority;
     }
 }
