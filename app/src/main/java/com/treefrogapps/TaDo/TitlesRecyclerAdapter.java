@@ -2,6 +2,7 @@ package com.treefrogapps.TaDo;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,9 +16,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
     private Context context;
     private ArrayList<TitlesListData> titlesListDataArrayList;
-
-    private int circleState = 1;
-    private DBHelper dbHelper = new DBHelper(context);
 
     public TitlesRecyclerAdapter(Context context, ArrayList<TitlesListData> titlesListDataArrayList) {
 
@@ -41,6 +39,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private int circleState = 1;
+
         private TextView recyclerTitleIDTextView;
 
         private TextView recyclerTitleCircleTextView;
@@ -54,7 +54,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             recyclerTitleIDTextView = (TextView) itemView.findViewById(R.id.recyclerTitleIDTextView);
 
             recyclerTitleCircleTextView = (TextView) itemView.findViewById(R.id.recyclerTitleCircleTextView);
-            recyclerTitleCircleTextView.setOnClickListener(this);
 
             recyclerTitleTextView = (TextView) itemView.findViewById(R.id.recyclerTitleTextView);
             recyclerTitleTadoTextView = (TextView) itemView.findViewById(R.id.recyclerTitleTadoTextView);
@@ -64,39 +63,50 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         @Override
         public void onClick(View v) {
 
-            if (v.getId() == recyclerTitleCircleTextView.getId()) {
 
-                recyclerTitleCircleTextView.startAnimation(Animations.scale1to0(itemView.getContext()));
+        }
+    }
+
+
+    @Override
+    public void onBindViewHolder(final TitlesRecyclerAdapter.MyViewHolder holder, final int position) {
+
+        holder.recyclerTitleIDTextView.setText(titlesListDataArrayList.get(position).getTitle_id());
+
+        holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
+                (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
+
+        holder.recyclerTitleCircleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.recyclerTitleCircleTextView.startAnimation(Animations.scale1to0(context));
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
-                        if (circleState == 1) {
-                            recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
-                            circleState = 0;
+                        if (holder.circleState == 1) {
+                            holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
+                            holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
+                            holder.circleState = 0;
                         } else {
-                            // TODO - set correct color for letter
-                            recyclerTitleCircleTextView.setBackgroundColor(itemView.getResources().getColor(R.color.circle_other));
-                            circleState = 1;
+
+                            holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
+                                    (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
+                            holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.circleState = 1;
                         }
-                        recyclerTitleCircleTextView.startAnimation(Animations.scale0to1(itemView.getContext()));
+                        holder.recyclerTitleCircleTextView.startAnimation(Animations.scale0to1(context));
                     }
-                }, 200);
+                }, 100);
             }
-        }
-    }
-
-
-    @Override
-    public void onBindViewHolder(TitlesRecyclerAdapter.MyViewHolder holder, int position) {
-
-        holder.recyclerTitleIDTextView.setText(titlesListDataArrayList.get(position).getTitle_id());
+        });
 
         holder.recyclerTitleCircleTextView.setText(titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1));
         holder.recyclerTitleTextView.setText(titlesListDataArrayList.get(position).getTitle());
 
+        DBHelper dbHelper = new DBHelper(context);
         // query database for counts of items - complete total and not done total
         ArrayList<ItemsListData> itemsListDataDone = dbHelper.getItemsForTitleDone(titlesListDataArrayList.get(position).getTitle());
         ArrayList<ItemsListData> itemsListDataNotDone = dbHelper.getItemsForTitleNotDone(titlesListDataArrayList.get(position).getTitle());
@@ -105,6 +115,39 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         holder.recyclerTitleItemsTextView.setText(String.valueOf(itemsListDataDone.size()));
         holder.recyclerTitleTadoTextView.setText(String.valueOf(itemsListDataNotDone.size()));
 
+    }
+
+    public int setTitleCircleColorResource(String listChar){
+
+        switch(listChar){
+            case "A": return R.drawable.circle_a_40dp;
+            case "B": return R.drawable.circle_b_40dp;
+            case "C": return R.drawable.circle_c_40dp;
+            case "D": return R.drawable.circle_d_40dp;
+            case "E": return R.drawable.circle_e_40dp;
+            case "F": return R.drawable.circle_f_40dp;
+            case "G": return R.drawable.circle_g_40dp;
+            case "H": return R.drawable.circle_h_40dp;
+            case "I": return R.drawable.circle_i_40dp;
+            case "J": return R.drawable.circle_j_40dp;
+            case "K": return R.drawable.circle_k_40dp;
+            case "L": return R.drawable.circle_l_40dp;
+            case "M": return R.drawable.circle_m_40dp;
+            case "N": return R.drawable.circle_n_40dp;
+            case "O": return R.drawable.circle_o_40dp;
+            case "P": return R.drawable.circle_p_40dp;
+            case "Q": return R.drawable.circle_q_40dp;
+            case "R": return R.drawable.circle_r_40dp;
+            case "S": return R.drawable.circle_s_40dp;
+            case "T": return R.drawable.circle_t_40dp;
+            case "U": return R.drawable.circle_u_40dp;
+            case "V": return R.drawable.circle_v_40dp;
+            case "W": return R.drawable.circle_w_40dp;
+            case "X": return R.drawable.circle_x_40dp;
+            case "Y": return R.drawable.circle_y_40dp;
+            case "Z": return R.drawable.circle_z_40dp;
+            default : return R.drawable.circle_other_40dp;
+        }
     }
 
 }

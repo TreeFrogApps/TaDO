@@ -16,7 +16,7 @@
     <color name="grey_dark">#ff868686</color>
 
     <color name="action_urgency_high">#EE5015</color>
-    <color name="action_urgency_medium">#fffec940</color>
+    <color name="action_urgency_medium">#fffea234</color>
     <color name="action_urgency_low">#8DC74A</color>
 
     <!-- Circle Colors -->

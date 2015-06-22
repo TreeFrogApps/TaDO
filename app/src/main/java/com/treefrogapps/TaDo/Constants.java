@@ -71,7 +71,7 @@ public class Constants {
     protected final static String ITEMS_DONE_GET_QUERY = "SELECT * FROM items_list WHERE title_id =" +
             " (SELECT title_id FROM titles_list WHERE titles_list.title = ?) AND item_done = 'Y' ORDER BY items_list.item COLLATE NOCASE ASC;";
 
-    protected final static String TITLES_GET_QUERY = "SELECT * FROM titles_list ORDER BY titles_list.title+0 COLLATE NOCASE ASC";
+    protected final static String TITLES_GET_QUERY = "SELECT * FROM titles_list ORDER BY titles_list.title COLLATE NOCASE ASC";
 
     protected final static String TITLES_GET_TITLE_ID = "SELECT title_id FROM titles_list WHERE title_id = " +
             "(SELECT title_id FROM titles_list WHERE titles_list.title = ?)";
