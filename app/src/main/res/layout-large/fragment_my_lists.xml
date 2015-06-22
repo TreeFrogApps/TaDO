@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.treefrogapps.TaDo.HomeFragment"
+    tools:context="com.treefrogapps.TaDo.MyListsFragment"
     android:weightSum="4">
 
     <LinearLayout
@@ -71,7 +71,7 @@
                 android:id="@+id/homeFragmentRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context="com.treefrogapps.TaDo.HomeFragment"
+                tools:context="com.treefrogapps.TaDo.MyListsFragment"
                 android:scrollbars="vertical" />
 
             <android.support.design.widget.FloatingActionButton

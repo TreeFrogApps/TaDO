@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
 
         if (savedInstanceState == null) {
-            updateDisplayFragment("Home");
+            updateDisplayFragment("My Lists");
         }
     }
 
@@ -77,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
 
         switch (menuTitle) {
 
-            case "Home":
-                fragment = new HomeFragment();
-                break;
-            case "TaDO Chooser":
+            case "My Lists":
                 fragment = new MyListsFragment();
                 break;
-            case "Sync with Dropbox":
+            case "TaDO Chooser":
+                fragment = new TaDOChooserFragment();
+                break;
+            case "Sync with Google Drive":
                 fragment = new SyncFragment();
                 break;
             case "Scheduler":

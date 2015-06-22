@@ -100,7 +100,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         //set background color based on item done - 'Y'
         if (myViewHolder.recyclerViewItemDone.getText().toString().equals(Constants.ITEM_DONE)) {
             myViewHolder.recyclerViewImageView.setBackgroundResource(R.mipmap.ic_item_done);
-            myViewHolder.recyclerViewLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.primary_very_light));
+            myViewHolder.recyclerViewLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_very_light));
 
         } else {
             myViewHolder.recyclerViewImageView.setBackgroundResource(R.mipmap.ic_item_tado);

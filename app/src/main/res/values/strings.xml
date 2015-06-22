@@ -5,9 +5,9 @@
 
 
     <string name="action_settings">Settings</string>
-    <string name="nav_home">Home</string>
+    <string name="nav_home">My Lists</string>
     <string name="nav_ran_lists">TaDO Chooser</string>
-    <string name="nav_sync">Sync with Dropbox</string>
+    <string name="nav_sync">Sync with Google Drive</string>
     <string name="nav_scheduler">Scheduler</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -16,9 +16,9 @@
     <string name="home_fragment_create_lists_tv">TaDO LISTS</string>
     <string name="fragment_home_tado_titles">TaDO TITLES</string>
     <string name="fragment_home_pick_title">CHOOSE A LIST</string>
-    <string name="fragment_home_tado_items">TaDO ITEMS</string>
+    <string name="fragment_home_tado_items">TaDO</string>
     <string name="fragment_home_remove_list">REMOVE LIST</string>
-    <string name="fragment_home_items">ITEMS</string>
+    <string name="fragment_home_items">Items</string>
     <string name="recycler_item_duration">DURATION</string>
     <string name="recycler_view_hours">hrs</string>
     <string name="recycler_view_mins">mins</string>

@@ -10,7 +10,7 @@
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#727272</color>
 
-    <color name="primary_very_light">#162953ff</color>
+    <color name="grey_very_light">#162953ff</color>
     <color name="grey_light">#D8D8D8</color>
     <color name="grey_medium">#ffaeaeae</color>
     <color name="grey_dark">#ff868686</color>
@@ -18,6 +18,35 @@
     <color name="action_urgency_high">#EE5015</color>
     <color name="action_urgency_medium">#fffec940</color>
     <color name="action_urgency_low">#8DC74A</color>
+
+    <!-- Circle Colors -->
+    <color name="circle_a">#ef5350</color>
+    <color name="circle_b">#e53935</color>
+    <color name="circle_c">#ec407a</color>
+    <color name="circle_d">#d81b60</color>
+    <color name="circle_e">#ab47bc</color>
+    <color name="circle_f">#8e24aa</color>
+    <color name="circle_g">#7e57c2</color>
+    <color name="circle_h">#5e35b1</color>
+    <color name="circle_i">#5c6bc0</color>
+    <color name="circle_j">#3949ab</color>
+    <color name="circle_k">#42a5f5</color>
+    <color name="circle_l">#1e88e5</color>
+    <color name="circle_m">#29b6f6</color>
+    <color name="circle_n">#039be5</color>
+    <color name="circle_o">#26c6da</color>
+    <color name="circle_p">#00acc1</color>
+    <color name="circle_q">#26a69a</color>
+    <color name="circle_r">#00897b</color>
+    <color name="circle_s">#66bb6a</color>
+    <color name="circle_t">#43a047</color>
+    <color name="circle_u">#9ccc65</color>
+    <color name="circle_v">#7cb342</color>
+    <color name="circle_w">#ff7043</color>
+    <color name="circle_x">#f4511e</color>
+    <color name="circle_y">#8d6e63</color>
+    <color name="circle_z">#6d4c41</color>
+    <color name="circle_other">#546e7a</color>
 
 
 </resources>
