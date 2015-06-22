@@ -28,5 +28,13 @@ public class Animations {
     public static Animation moveOut(Context context) {
         return animation = AnimationUtils.loadAnimation(context, R.anim.move_out_anim);
     }
+
+    public static Animation scale1to0(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.scale_x_1_to_0);
+    }
+
+    public static Animation scale0to1(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.scale_x_0_to_1);
+    }
 }
 

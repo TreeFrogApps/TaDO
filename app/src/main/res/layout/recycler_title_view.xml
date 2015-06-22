@@ -7,11 +7,18 @@
     android:layout_margin="@dimen/four_dp"
     card_view:cardCornerRadius="4dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/recyclerTitleLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/recycler_item_selector"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/recyclerTitleIDTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
