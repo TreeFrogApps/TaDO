@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recyclerItemCardView"
+    android:id="@+id/recyclerTitleCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/four_dp"
@@ -34,6 +34,7 @@
                 android:background="@drawable/circle_other_40dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_24sp" />
 
@@ -43,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:maxLines="1"
+                android:maxLines="3"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/primaryText"
                 android:textSize="@dimen/text_22sp" />
 
@@ -119,10 +121,10 @@
                     android:id="@+id/recyclerTitleLowPriorityTextView"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/priority_circle_low_30dp"
+                    android:background="@drawable/priority_circle_zero_30dp"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
-                    android:text="2"
+                    android:text="0"
                     android:maxLength="3"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_16sp" />
@@ -131,7 +133,7 @@
                     android:id="@+id/recyclerTitleMediumPriorityTextView"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/priority_circle_med_30dp"
+                    android:background="@drawable/priority_circle_zero_30dp"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:layout_marginLeft="@dimen/eight_dp"
@@ -145,7 +147,7 @@
                     android:id="@+id/recyclerTitleHighPriorityTextView"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/priority_circle_high_30dp"
+                    android:background="@drawable/priority_circle_zero_30dp"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:text="0"

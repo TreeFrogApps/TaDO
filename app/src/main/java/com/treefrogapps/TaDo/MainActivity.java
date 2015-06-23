@@ -136,7 +136,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // include super as it will pass to the superclass and allow the fragment to
-        // get the activity result
+        // get the activity result - only if started from fragment (below to push to fragment)
 
+        // get fragment in container and push the onActivityResult to it - necessary
+        // if starting startingActivityForResult not from initiating fragment i.e. from recyclerAdapter
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frameContainer);
+        fragment.onActivityResult(requestCode, resultCode, data);
     }
 }

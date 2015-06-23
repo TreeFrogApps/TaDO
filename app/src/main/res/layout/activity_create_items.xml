@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.treefrogapps.TaDo.CreateListActivity">
+    tools:context="com.treefrogapps.TaDo.CreateItemsActivity">
 
     <include
         android:id="@+id/myToolBar"
@@ -269,7 +269,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
-            tools:context="com.treefrogapps.TaDo.CreateListActivity" />
+            tools:context="com.treefrogapps.TaDo.CreateItemsActivity" />
 
     </LinearLayout>
 

@@ -93,14 +93,14 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
         if (id == R.id.homeFragmentEditList) {
 
-                // pass Title Id to next activity to so when returned
-                // it will repopulate with updated list, and also show last list before creating new one
-                Intent intent = new Intent(getActivity(), CreateListActivity.class);
-                // pass constant to check if this is the intent that starts the activity - check in activity OnCreate
-                intent.putExtra("editList", Constants.EDIT_LIST);
-                // TODO -
-                // intent.putExtra("spinnerPosition", Integer.parseInt(dbHelper.getTitleId());
-                startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+            // pass Title Id to next activity to so when returned
+            // it will repopulate with updated list, and also show last list before creating new one
+            Intent intent = new Intent(getActivity(), CreateItemsActivity.class);
+            // pass constant to check if this is the intent that starts the activity - check in activity OnCreate
+            intent.putExtra("editList", Constants.EDIT_LIST);
+            // TODO -
+            // intent.putExtra("spinnerPosition", Integer.parseInt(dbHelper.getTitleId());
+            startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
 
         }
 
@@ -117,7 +117,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void initialiseRecyclerView(){
+    public void initialiseRecyclerView() {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.homeFragmentRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -127,7 +127,12 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
         mRecyclerView.setAdapter(mTitlesRecyclerAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return super.getMovementFlags(recyclerView, viewHolder);
+            }
+
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -138,7 +143,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
                 if (direction == ItemTouchHelper.LEFT) {
 
-                } else if (direction == ItemTouchHelper.RIGHT) {
+                    deleteTitle(viewHolder.getLayoutPosition());
 
                 }
 
@@ -147,11 +152,20 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
-
     }
 
-    public void populateRecyclerView(){
+    public void deleteTitle(int positionToDelete) {
 
+        String titleId = mTitlesListDataArrayList.get(positionToDelete).getTitle_id();
+
+        dbHelper.deleteTitle(titleId);
+        mTitlesRecyclerAdapter.notifyItemRemoved(positionToDelete);
+        mTitlesListDataArrayList.remove(positionToDelete);
+    }
+
+    public void populateRecyclerView() {
+
+        mTitlesListDataArrayList.clear();
         mTitlesListDataArrayList = dbHelper.getTitles();
         mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList);
         mRecyclerView.setAdapter(mTitlesRecyclerAdapter);
@@ -162,7 +176,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
         if (v.getId() == mFAB.getId()) {
 
-            final Intent intent = new Intent(getActivity(), CreateListActivity.class);
+            final Intent intent = new Intent(getActivity(), CreateItemsActivity.class);
 
             if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE) {
                 mHomeFragmentSplashScreen.startAnimation(Animations.moveOut(getActivity()));
@@ -171,11 +185,11 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void run() {
                         removeSplashScreen();
-                        startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+                        startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
                     }
                 }, 400);
             } else {
-                startActivityForResult(intent, Constants.NEW_LIST_RESULT_CODE);
+                startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
             }
 
 
@@ -191,17 +205,17 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // if requestCode matches from CreateListActivity
-        if (requestCode == Constants.NEW_LIST_RESULT_CODE) {
+        Log.e("CALLED", "OnActivity Result");
+
+        // if requestCode matches from CreateItemsActivity
+        if (requestCode == Constants.NEW_ITEMS_REQUEST_CODE) {
 
             Log.e("RESULT CODE", String.valueOf(requestCode));
-
-            // TODO
+            populateRecyclerView();
         }
     }
 
@@ -258,4 +272,5 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
 
     }
+
 }

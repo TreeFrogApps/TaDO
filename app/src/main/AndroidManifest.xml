@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateListActivity"
+            android:name=".CreateItemsActivity"
             android:label="@string/title_activity_create_list"
             android:windowSoftInputMode="adjustNothing"
             android:parentActivityName=".MainActivity">

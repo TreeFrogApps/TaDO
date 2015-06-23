@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-public class CreateListActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class CreateItemsActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     private Toolbar mToolbar;
     private DBHelper dbHelper;
@@ -67,7 +67,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_list);
+        setContentView(R.layout.activity_create_items);
 
         dbHelper = new DBHelper(this);
         sharedPreferences = getApplicationContext().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
@@ -387,7 +387,7 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     public void addItemToTitleTable(String titleName, String itemName, String hours, String mins, String itemDone, String itemPriority) {
 
-        if (!mCreateListItemEditText.equals("")) {
+        if (!mCreateListItemEditText.toString().equals("")) {
 
             ItemsListData itemsListData = new ItemsListData();
             String duration = hours + ":" + mins;
@@ -472,18 +472,11 @@ public class CreateListActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        int spinnerTitleId;
-        Intent intent = new Intent();
 
-        Intent getIntent = getIntent();
-        if (getIntent.hasExtra("spinnerPosition")) {
-            spinnerTitleId = getIntent.getIntExtra("spinnerPosition", 0);
-            Log.e("STRING FROM FRAGMENT", String.valueOf(getIntent.getIntExtra("spinnerPosition", 0)));
-            intent.putExtra("spinnerPosition", spinnerTitleId);
-        }
-        setResult(Constants.NEW_LIST_RESULT_CODE, intent);
+        Intent intent = new Intent();
+        setResult(Constants.NEW_ITEMS_REQUEST_CODE, intent);
+        super.onBackPressed();
         finish();
     }
-
 
 }

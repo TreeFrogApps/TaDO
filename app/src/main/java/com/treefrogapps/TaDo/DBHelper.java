@@ -13,9 +13,6 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    // database query = "PRAGMA foreign_keys = ON" maybe required in onCreate (ON DELETE CASCADE), or every time database in isWriteable
-    // task - use in onCreate only see if it works just only there!
-
     public DBHelper(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
     }
@@ -44,6 +41,15 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints - onOpen called each time access to the db is requested (this.getWritableDatabase)
+            db.execSQL(Constants.FOREIGN_KEY_CASCADE);
+        }
+    }
+
     public void insertIntoTitlesTable(TitlesListData titlesListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -51,9 +57,9 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(Constants.TITLE, titlesListData.getTitle());
-        Log.e("ITEM", titlesListData.getTitle());
+        Log.e("LIST TITLE", titlesListData.getTitle());
         values.put(Constants.TITLE_DATETIME, titlesListData.getDateTime());
-        Log.e("ITEM", titlesListData.getDateTime());
+        Log.e("LIST DATETIME", titlesListData.getDateTime());
         database.insert(Constants.TITLES_LIST, null, values);
 
         database.close();
@@ -251,14 +257,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return itemsListDataArrayList;
     }
 
-    public void deleteTitle(String titleName) {
+    public void deleteTitle(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // Non-exclusive mode allows database file to be in readable by other threads executing queries.
         database.beginTransactionNonExclusive();
         SQLiteStatement statement = database.compileStatement(Constants.TITLE_DELETE_QUERY);
 
-        executePreparedStatement(2, database, statement, new String[]{titleName});
+        executePreparedStatement(2, database, statement, new String[]{titleId});
     }
 
     public void deleteItem(ItemsListData itemsListData) {

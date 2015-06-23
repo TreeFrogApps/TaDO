@@ -1,7 +1,9 @@
 package com.treefrogapps.TaDo;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +49,9 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         private TextView recyclerTitleTextView;
         private TextView recyclerTitleTadoTextView;
         private TextView recyclerTitleItemsTextView;
+        private TextView recyclerTitleLowPriorityTextView;
+        private TextView recyclerTitleMediumPriorityTextView;
+        private TextView recyclerTitleHighPriorityTextView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -58,12 +63,21 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             recyclerTitleTextView = (TextView) itemView.findViewById(R.id.recyclerTitleTextView);
             recyclerTitleTadoTextView = (TextView) itemView.findViewById(R.id.recyclerTitleTadoTextView);
             recyclerTitleItemsTextView = (TextView) itemView.findViewById(R.id.recyclerTitleItemsTextView);
+            recyclerTitleLowPriorityTextView = (TextView) itemView.findViewById(R.id.recyclerTitleLowPriorityTextView);
+            recyclerTitleMediumPriorityTextView = (TextView) itemView.findViewById(R.id.recyclerTitleMediumPriorityTextView);
+            recyclerTitleHighPriorityTextView = (TextView) itemView.findViewById(R.id.recyclerTitleHighPriorityTextView);
+
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
 
+            String titleId = titlesListDataArrayList.get(getLayoutPosition()).getTitle_id();
 
+            Intent intent = new Intent(context, CreateItemsActivity.class);
+            intent.putExtra("TITLE_ID", titleId);
+            ((Activity)context).startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
         }
     }
 
@@ -90,13 +104,14 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
                             holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
                             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
                             holder.circleState = 0;
-                        } else {
 
+                        } else {
                             holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
                                     (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
                             holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
                             holder.circleState = 1;
                         }
+
                         holder.recyclerTitleCircleTextView.startAnimation(Animations.scale0to1(context));
                     }
                 }, 100);
@@ -114,6 +129,41 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
         holder.recyclerTitleItemsTextView.setText(String.valueOf(itemsListDataDone.size()));
         holder.recyclerTitleTadoTextView.setText(String.valueOf(itemsListDataNotDone.size()));
+
+        int low = 0;
+        int med = 0;
+        int high = 0;
+
+        for(int i = 0; i < itemsListDataNotDone.size(); i++){
+
+            if (itemsListDataNotDone.get(i).getItemPriority().equals(Constants.ITEM_PRIORITY_LOW)) low++;
+            if (itemsListDataNotDone.get(i).getItemPriority().equals(Constants.ITEM_PRIORITY_MEDIUM)) med++;
+            if (itemsListDataNotDone.get(i).getItemPriority().equals(Constants.ITEM_PRIORITY_HIGH)) high++;
+        }
+
+        if (low > 0){
+            holder.recyclerTitleLowPriorityTextView.setBackgroundResource(R.drawable.priority_circle_low_30dp);
+            holder.recyclerTitleLowPriorityTextView.setText(String.valueOf(low));
+        } else {
+            holder.recyclerTitleLowPriorityTextView.setBackgroundResource(R.drawable.priority_circle_zero_30dp);
+            holder.recyclerTitleLowPriorityTextView.setText(String.valueOf(low));
+        }
+
+        if (med > 0){
+            holder.recyclerTitleMediumPriorityTextView.setBackgroundResource(R.drawable.priority_circle_med_30dp);
+            holder.recyclerTitleMediumPriorityTextView.setText(String.valueOf(med));
+        } else {
+            holder.recyclerTitleMediumPriorityTextView.setBackgroundResource(R.drawable.priority_circle_zero_30dp);
+            holder.recyclerTitleMediumPriorityTextView.setText(String.valueOf(med));
+        }
+
+        if (high > 0){
+            holder.recyclerTitleHighPriorityTextView.setBackgroundResource(R.drawable.priority_circle_high_30dp);
+            holder.recyclerTitleHighPriorityTextView.setText(String.valueOf(high));
+        } else {
+            holder.recyclerTitleHighPriorityTextView.setBackgroundResource(R.drawable.priority_circle_zero_30dp);
+            holder.recyclerTitleHighPriorityTextView.setText(String.valueOf(high));
+        }
 
     }
 
@@ -149,5 +199,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             default : return R.drawable.circle_other_40dp;
         }
     }
+
+
 
 }

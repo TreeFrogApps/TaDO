@@ -21,7 +21,7 @@ public class Constants {
     protected final static String DATABASE_NAME = "main_database.db";
     protected final static int DATABASE_VERSION = 1;
     // to allow on cascade delete
-    protected final static String FOREIGN_KEY_CASCADE = "PRAGMA foreign_keys = ON";
+    protected final static String FOREIGN_KEY_CASCADE = "PRAGMA foreign_keys = ON;";
     protected final static String DROP_TITLES_TABLE = "DROP TABLE IF EXISTS titles_list;";
     protected final static String DROP_ITEMS_TABLE = "DROP TABLE IF EXISTS items_list;";
 
@@ -43,7 +43,7 @@ public class Constants {
                     "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " item VARCHAR, title_id INTEGER NOT NULL," +
                     " duration TIME, date DATETIME, item_done CHAR, priority CHAR," +
-                    " FOREIGN KEY (title_id) REFERENCES title_list (title_id) ON DELETE CASCADE);";
+                    " FOREIGN KEY (title_id) REFERENCES titles_list (title_id) ON DELETE CASCADE);";
 
     protected final static String ITEMS_LIST = "items_list";
     protected final static String ITEMS_ID = "item_id";
@@ -80,8 +80,7 @@ public class Constants {
 
     protected final static String TITLES_CHECK_TITLE_NAME_EXISTS = "SELECT title FROM titles_list WHERE title = ?";
 
-    protected final static String TITLE_DELETE_QUERY = "DELETE FROM titles_list WHERE title_id =" +
-            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
+    protected final static String TITLE_DELETE_QUERY = "DELETE FROM titles_list WHERE title_id = ?;";
 
     protected final static String ITEMS_DELETE_ALL_SINGLE_TITLE = "DELETE FROM items_list WHERE " +
             "title_id = (SELECT title_id FROM titles_list WHERE titles_list.title = ?);";
@@ -94,7 +93,7 @@ public class Constants {
     protected final static String ITEM_UPDATE_ITEM_DONE = "UPDATE items_list SET item_done = ? WHERE item_id = ?;";
 
     // RequestCode onActivityResult - HomeFragment NEW LIST
-    protected final static int NEW_LIST_RESULT_CODE = 30;
+    protected final static int NEW_ITEMS_REQUEST_CODE = 30;
 
     // RequestCode onActivityResult - HomeFragment EDIT LIST
     protected final static String EDIT_LIST = "com.treefrogapps.TaDo.edit_list";
