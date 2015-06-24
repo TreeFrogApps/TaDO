@@ -1,6 +1,7 @@
 package com.treefrogapps.TaDo;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,9 +20,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class MyListsFragment extends Fragment implements View.OnClickListener {
@@ -33,8 +40,10 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
     private FloatingActionButton mFAB;
 
     private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
     private TitlesRecyclerAdapter mTitlesRecyclerAdapter;
     private ArrayList<TitlesListData> mTitlesListDataArrayList;
+    private RestoreRecyclerPosition mRestoreRecyclerPosition;
 
     private LinearLayout mHomeFragmentSplashScreen;
 
@@ -83,7 +92,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.fragment_home_menu, menu);
+        inflater.inflate(R.menu.fragment_my_lists_menu, menu);
     }
 
     @Override
@@ -91,17 +100,9 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
         int id = item.getItemId();
 
-        if (id == R.id.homeFragmentEditList) {
+        if (id == R.id.homeFragmentSearch) {
 
-            // pass Title Id to next activity to so when returned
-            // it will repopulate with updated list, and also show last list before creating new one
-            Intent intent = new Intent(getActivity(), CreateItemsActivity.class);
-            // pass constant to check if this is the intent that starts the activity - check in activity OnCreate
-            intent.putExtra("editList", Constants.EDIT_LIST);
-            // TODO -
-            // intent.putExtra("spinnerPosition", Integer.parseInt(dbHelper.getTitleId());
-            startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
-
+            // TODO
         }
 
         return super.onOptionsItemSelected(item);
@@ -120,7 +121,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
     public void initialiseRecyclerView() {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.homeFragmentRecyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         mTitlesListDataArrayList = dbHelper.getTitles();
         mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList);
@@ -142,11 +144,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
                 if (direction == ItemTouchHelper.LEFT) {
-
                     deleteTitle(viewHolder.getLayoutPosition());
-
                 }
-
             }
         };
 
@@ -185,14 +184,12 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void run() {
                         removeSplashScreen();
-                        startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
+                        newTitleDialog();
                     }
                 }, 400);
             } else {
-                startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
+                newTitleDialog();
             }
-
-
         }
     }
 
@@ -202,6 +199,59 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
         editor.putInt(Constants.SPLASH_SCREEN_VISIBILITY, Constants.SPLASH_SCREEN_OFF);
         editor.apply();
         mHomeFragmentSplashScreen.setVisibility(View.GONE);
+    }
+
+    public void newTitleDialog(){
+
+        final Dialog titleDialog = new Dialog(getActivity());
+                titleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                titleDialog.setContentView(R.layout.fragment_my_lists_dialog);
+                titleDialog.setCancelable(false);
+
+        final EditText dialogTitleEditText = (EditText) titleDialog.findViewById(R.id.dialogTitleEditText);
+
+        Button dialogTitleCancelButton = (Button) titleDialog.findViewById(R.id.dialogTitleCancelButton);
+        dialogTitleCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                titleDialog.dismiss();
+            }
+        });
+
+        Button dialogTitleDoneButton = (Button) titleDialog.findViewById(R.id.dialogTitleDoneButton);
+        dialogTitleDoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String titleName = dialogTitleEditText.getText().toString().trim();
+
+                TitlesListData titlesListData = new TitlesListData();
+                String checkIfTitleExists = dbHelper.checkTitleNameExists(titleName);
+
+                // return null means no title already exists
+                if (checkIfTitleExists == null && !titleName.equals("")) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
+                    String date = sdf.format(new Date());
+
+                    titlesListData.setTitle(titleName);
+                    titlesListData.setDateTime(date);
+                    dbHelper.insertIntoTitlesTable(titlesListData);
+
+                    // use helper class to get current position of recyclerView
+                    mRestoreRecyclerPosition = new RestoreRecyclerPosition(mRecyclerView, mLinearLayoutManager);
+                    RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
+
+                    populateRecyclerView();
+                    mRestoreRecyclerPosition.setCurrentPosition(recyclerPositionValues);
+                    titleDialog.dismiss();
+
+                } else {
+                    CustomToasts.Toast(getActivity(), "Title already exists");
+                }
+            }
+        });
+
+        titleDialog.show();
     }
 
 

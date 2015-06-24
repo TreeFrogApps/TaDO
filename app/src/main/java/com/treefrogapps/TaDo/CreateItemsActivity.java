@@ -4,18 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +21,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,30 +34,12 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     private DBHelper dbHelper;
     private SharedPreferences sharedPreferences;
 
-    private CardView mCreateListCardView;
-    private LinearLayout mCreateListSaveButtonLayout;
-
-    private EditText mCreateListTitleEditText;
-    private EditText mCreateListItemEditText;
-
-    private ImageView mCreateListPlusHour;
-    private TextView mCreateListHoursTextView;
-    private ImageView mCreateListMinusHour;
-
-    private ImageView mCreateListPlusMins;
-    private TextView mCreateListMinsTextView;
-    private ImageView mCreateListMinusMins;
-
-    private ImageView mCreateListAddItem;
-
     private RecyclerView mCreateListRecyclerView;
     private ItemRecyclerAdapter mItemRecyclerAdapter;
     private ArrayList<ItemsListData> mItemsArrayList;
+    private FloatingActionButton mCreateItemFAB;
+    private String mTitleId;
 
-    private Button mCreateListTitleSaveButton;
-
-    private LinearLayout mCreateListSwipeActionLinearLayout;
-    private Button mCreateListSplashButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,44 +63,61 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         initialiseInputs();
         initialiseRecyclerView();
-        checkEditIntent();
-        checkSwipeScreenVisibility();
+
+        // get the titleId passed from title recycler adapter click
+        Intent getIntent = getIntent();
+        if (getIntent.hasExtra("TITLE_ID")) {
+            mTitleId = getIntent.getStringExtra("TITLE_ID");
+            setTitlePopulateRecyclerView(mTitleId);
+        }
+
     }
 
-    private void initialiseInputs() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_create_list, menu);
+        return true;
+    }
 
-        mCreateListTitleEditText = (EditText) findViewById(R.id.createListTitleEditText);
-        mCreateListItemEditText = (EditText) findViewById(R.id.createListItemEditText);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        mCreateListPlusHour = (ImageView) findViewById(R.id.createListPlusHour);
-        mCreateListPlusHour.setOnClickListener(this);
-        mCreateListHoursTextView = (TextView) findViewById(R.id.createListHoursTextView);
-        mCreateListMinusHour = (ImageView) findViewById(R.id.createListMinusHour);
-        mCreateListMinusHour.setOnClickListener(this);
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (id == R.id.createListEditTitle) {
+            changeTitleName(dbHelper.getTitle(mTitleId));
+        } else if (id == R.id.createListEditSearch) {
+            // TODO - search Items
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        mCreateListPlusMins = (ImageView) findViewById(R.id.createListPlusMins);
-        mCreateListPlusMins.setOnClickListener(this);
-        mCreateListMinsTextView = (TextView) findViewById(R.id.createListMinsTextView);
-        mCreateListMinusMins = (ImageView) findViewById(R.id.createListMinusMins);
-        mCreateListMinusMins.setOnClickListener(this);
+    public void initialiseInputs() {
 
-        mCreateListTitleSaveButton = (Button) findViewById(R.id.createListTitleSaveButton);
-        mCreateListTitleSaveButton.setOnClickListener(this);
-
-        mCreateListAddItem = (ImageView) findViewById(R.id.createListAddItem);
-        mCreateListAddItem.setOnClickListener(this);
-
-        mCreateListCardView = (CardView) findViewById(R.id.createListCardView);
-        mCreateListSaveButtonLayout = (LinearLayout) findViewById(R.id.createListSaveButtonLayout);
-
-        mCreateListSwipeActionLinearLayout  = (LinearLayout) findViewById(R.id.createListSwipeActionLinearLayout);
-        mCreateListSplashButton = (Button) findViewById(R.id.createListSplashButton);
-        mCreateListSplashButton.setOnClickListener(this);
+        mCreateItemFAB = (FloatingActionButton) findViewById(R.id.createItemsFAB);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mCreateItemFAB.setVisibility(View.VISIBLE);
+                mCreateItemFAB.startAnimation(Animations.floatingActionButtonAnim(getApplicationContext()));
+                mCreateItemFAB.setOnClickListener(CreateItemsActivity.this);
+            }
+        }, 200);
     }
 
     public void initialiseRecyclerView() {
 
-        mCreateListRecyclerView = (RecyclerView) findViewById(R.id.createListRecyclerView);
+        mCreateListRecyclerView = (RecyclerView) findViewById(R.id.createItemRecyclerView);
         mCreateListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mItemsArrayList = new ArrayList<>();
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
@@ -153,6 +147,22 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         itemTouchHelper.attachToRecyclerView(mCreateListRecyclerView);
     }
 
+    @Override
+    public void onClick(View v) {
+
+        if (v.getId() == mCreateItemFAB.getId()) {
+
+            addItemDialog(dbHelper.getTitle(mTitleId));
+        }
+
+    }
+
+    private void addItemDialog(String title) {
+
+        Dialog dialogBuilder = new Dialog(getApplicationContext());
+            dialogBuilder.setContentView(R.layout.fragment_my_lists_dialog);
+    }
+
     private void removeItemFromRViewAndDB(int layoutPosition) {
 
         String itemIdToDelete = mItemsArrayList.get(layoutPosition).getItemId();
@@ -173,7 +183,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         ItemsListData itemsListData = new ItemsListData();
         itemsListData.setItemId(itemIdToUpdate);
 
-        if (mItemsArrayList.get(layoutPosition).getItemDone().equals(Constants.ITEM_NOT_DONE)){
+        if (mItemsArrayList.get(layoutPosition).getItemDone().equals(Constants.ITEM_NOT_DONE)) {
             itemsListData.setItemDone(Constants.ITEM_DONE);
             mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_DONE);
         } else {
@@ -186,67 +196,25 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    public void checkEditIntent() {
+    public void setTitlePopulateRecyclerView(String titleId) {
 
-        Intent getIntent = getIntent();
-        if (getIntent.hasExtra("editList")) {
-
-            if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(Constants.EDIT_LIST_ACTIVITY_TITLE);
-            String titleId = String.valueOf(getIntent.getIntExtra("spinnerPosition", 0));
-            mCreateListTitleEditText.setText(dbHelper.getTitle(titleId));
-            mCreateListCardView.setVisibility(View.VISIBLE);
-            mCreateListTitleEditText.setEnabled(false);
-            mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
-            mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
-            mCreateListSaveButtonLayout.setVisibility(View.GONE);
-            populateRecyclerView(mCreateListTitleEditText.getText().toString());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(dbHelper.getTitle(titleId));
         }
+        populateRecyclerView(dbHelper.getTitle(titleId));
+
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (id == R.id.createListEditTitle) {
-
-            if (!mCreateListTitleEditText.getText().toString().equals("")) {
-                String currentTitle = mCreateListTitleEditText.getText().toString();
-                Log.e("CURRENT TITLE", currentTitle);
-                changeTitleName(currentTitle);
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public void changeTitleName(final String currentTitle) {
 
         final Dialog dialogBuilder = new Dialog(this);
         dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogBuilder.setContentView(R.layout.dialog_rename_title);
+        dialogBuilder.setContentView(R.layout.activity_create_items_dialog_rename_title);
         dialogBuilder.setCancelable(true);
 
-        final EditText renameDialogEditText = (EditText) dialogBuilder.findViewById(R.id.createListDialogRenameEditText);
-        Button cancelDialogButton = (Button) dialogBuilder.findViewById(R.id.createListDialogCancelButton);
-        Button okDialogButton = (Button) dialogBuilder.findViewById(R.id.createListDialogOkButton);
+        final EditText renameDialogEditText = (EditText) dialogBuilder.findViewById(R.id.createItemDialogRenameEditText);
+        Button cancelDialogButton = (Button) dialogBuilder.findViewById(R.id.createItemDialogCancelButton);
+        Button okDialogButton = (Button) dialogBuilder.findViewById(R.id.createItemDialogOkButton);
 
         renameDialogEditText.setText(currentTitle);
 
@@ -260,11 +228,11 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View v) {
 
-                String newTitle = renameDialogEditText.getText().toString();
+                String newTitle = renameDialogEditText.getText().toString().trim();
 
                 String checkIfTitleExists = dbHelper.checkTitleNameExists(newTitle);
 
-                if (checkIfTitleExists == null) {
+                if (checkIfTitleExists == null && !newTitle.equals("")) {
                     TitlesListData oldTitleListData = new TitlesListData();
                     oldTitleListData.setTitle(currentTitle);
 
@@ -276,10 +244,14 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
                     newTitleListData.setDateTime(date);
 
                     dbHelper.updateTitle(oldTitleListData, newTitleListData);
-                    mCreateListTitleEditText.setText(newTitle);
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setTitle(newTitle);
+                    }
 
                     dialogBuilder.dismiss();
 
+                } else if (newTitle.equals("")) {
+                    CustomToasts.Toast(getApplicationContext(), "Choose a title name");
                 } else {
                     CustomToasts.Toast(getApplicationContext(), "Title Already Exists");
                 }
@@ -288,56 +260,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         dialogBuilder.show();
     }
 
-
-    @Override
-    public void onClick(View v) {
-
-        if (v.getId() == mCreateListPlusHour.getId()) {
-
-            String currentDuration = mCreateListHoursTextView.getText().toString();
-
-            mCreateListHoursTextView.setText(setDuration(0, currentDuration));
-
-        } else if (v.getId() == mCreateListMinusHour.getId()) {
-
-            mCreateListHoursTextView.setText(setDuration(1, mCreateListHoursTextView.getText().toString()));
-
-        } else if (v.getId() == mCreateListPlusMins.getId()) {
-
-            mCreateListMinsTextView.setText(setDuration(2, mCreateListMinsTextView.getText().toString()));
-
-        } else if (v.getId() == mCreateListMinusMins.getId()) {
-
-            mCreateListMinsTextView.setText(setDuration(3, mCreateListMinsTextView.getText().toString()));
-
-        } else if (v.getId() == mCreateListAddItem.getId()) {
-
-            addItemToTitleTable(mCreateListTitleEditText.getText().toString(), mCreateListItemEditText.getText().toString(),
-                    mCreateListHoursTextView.getText().toString(), mCreateListMinsTextView.getText().toString(), Constants.ITEM_NOT_DONE, Constants.ITEM_PRIORITY_LOW);
-
-        } else if (v.getId() == mCreateListTitleSaveButton.getId()) {
-
-            if (!mCreateListTitleEditText.getText().toString().equals("")) {
-
-                saveListTitle(mCreateListTitleEditText.getText().toString());
-
-            }
-        } else if (v.getId() == mCreateListSplashButton.getId()){
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt(Constants.SWIPE_SPLASH_SCREEN_VISIBILITY, Constants.SWIPE_SPLASH_SCREEN_OFF).apply();
-            mCreateListSwipeActionLinearLayout.setVisibility(View.GONE);
-        }
-    }
-
-    public void checkSwipeScreenVisibility() {
-
-        int swipeSplashScreenVisible = sharedPreferences.getInt(Constants.SWIPE_SPLASH_SCREEN_VISIBILITY, 1);
-
-        if (swipeSplashScreenVisible == 0) {
-            mCreateListSwipeActionLinearLayout.setVisibility(View.GONE);
-        }
-    }
 
     public String setDuration(int switchCaseId, String currentDuration) {
 
@@ -385,74 +307,29 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    public void addItemToTitleTable(String titleName, String itemName, String hours, String mins, String itemDone, String itemPriority) {
+    public void addItemToTitleTable(String titleName, String itemName, String itemDetail,
+                                    String hours, String mins, String itemDone, String itemPriority) {
 
-        if (!mCreateListItemEditText.toString().equals("")) {
+        ItemsListData itemsListData = new ItemsListData();
+        String duration = hours + ":" + mins;
 
-            ItemsListData itemsListData = new ItemsListData();
-            String duration = hours + ":" + mins;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String date = sdf.format(new Date());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            String date = sdf.format(new Date());
+        itemsListData.setItem(itemName);
+        itemsListData.setItemDetail(itemDetail);
+        itemsListData.setTitle(titleName);
+        itemsListData.setTitleId(dbHelper.getTitleId(titleName));
+        itemsListData.setDuration(duration);
+        itemsListData.setDateTime(date);
+        itemsListData.setItemDone(itemDone);
+        itemsListData.setItemPriority(itemPriority);
 
-            itemsListData.setItem(itemName);
-            itemsListData.setTitle(titleName);
-            itemsListData.setTitleId(dbHelper.getTitleId(titleName));
-            itemsListData.setDuration(duration);
-            itemsListData.setDateTime(date);
-            itemsListData.setItemDone(itemDone);
-            itemsListData.setItemPriority(itemPriority);
+        dbHelper.insertIntoItemsTable(itemsListData);
 
-            dbHelper.insertIntoItemsTable(itemsListData);
-
-            populateRecyclerView(mCreateListTitleEditText.getText().toString());
-
-            mCreateListItemEditText.setText("");
-            mCreateListHoursTextView.setText("00");
-            mCreateListMinsTextView.setText("00");
-        }
-
+        populateRecyclerView(dbHelper.getTitle(mTitleId));
     }
 
-    public void saveListTitle(String titleName) {
-
-        TitlesListData titlesListData = new TitlesListData();
-
-        String checkIfTitleExists = dbHelper.checkTitleNameExists(titleName);
-
-        if (checkIfTitleExists == null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
-            String date = sdf.format(new Date());
-
-            titlesListData.setTitle(titleName);
-            titlesListData.setDateTime(date);
-
-            dbHelper.insertIntoTitlesTable(titlesListData);
-
-            showAddItemRemoveSaveButton(350L);
-
-        } else {
-            CustomToasts.Toast(getApplicationContext(), "Title Already Exists");
-        }
-    }
-
-    public void showAddItemRemoveSaveButton(Long delay) {
-
-        mCreateListCardView.setVisibility(View.VISIBLE);
-        mCreateListCardView.startAnimation(Animations.alphaMoveInAnim(getApplicationContext()));
-        mCreateListTitleEditText.setEnabled(false);
-        mCreateListTitleEditText.setTypeface(null, Typeface.BOLD);
-        mCreateListTitleEditText.setTextColor(getResources().getColor(R.color.primaryColorDark));
-        mCreateListSaveButtonLayout.startAnimation(Animations.alphaMoveOutAnim(getApplicationContext()));
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCreateListSaveButtonLayout.setVisibility(View.GONE);
-
-            }
-        }, delay);
-    }
 
     public void populateRecyclerView(String titleName) {
 
@@ -462,7 +339,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }
-
 
     @Override
     public boolean onLongClick(View v) {
@@ -478,5 +354,4 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         super.onBackPressed();
         finish();
     }
-
 }

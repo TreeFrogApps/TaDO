@@ -76,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // execute method to handle statement request
         executePreparedStatement(3, database, statement,
-                new String[]{itemsListData.getItem(), itemsListData.getTitle(),
+                new String[]{itemsListData.getItem(), itemsListData.getItemDetail(), itemsListData.getTitle(),
                         itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone(), itemsListData.getItemPriority()});
     }
 
@@ -179,6 +179,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
         int item = cursor.getColumnIndex(Constants.ITEM);
+        int itemDetail = cursor.getColumnIndex(Constants.ITEM_DETAIL);
         int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
         int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
         int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
@@ -195,6 +196,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 Log.e("ITEM TITLE ID", itemsListData.getTitleId());
                 itemsListData.setItem(cursor.getString(item));
                 Log.e("ITEM", itemsListData.getItem());
+                itemsListData.setItemDetail(cursor.getString(itemDetail));
+                Log.e("ITEM DETAIL", itemsListData.getItemDetail());
                 itemsListData.setDuration(cursor.getString(duration));
                 Log.e("ITEM DURATION", itemsListData.getDuration());
                 itemsListData.setDateTime(cursor.getString(dateTime));
@@ -223,6 +226,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
         int item = cursor.getColumnIndex(Constants.ITEM);
+        int itemDetail = cursor.getColumnIndex(Constants.ITEM_DETAIL);
         int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
         int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
         int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
@@ -239,6 +243,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 Log.e("ITEM TITLE ID", itemsListData.getTitleId());
                 itemsListData.setItem(cursor.getString(item));
                 Log.e("ITEM", itemsListData.getItem());
+                itemsListData.setItemDetail(cursor.getString(itemDetail));
+                Log.e("ITEM DETAIL", itemsListData.getItemDetail());
                 itemsListData.setDuration(cursor.getString(duration));
                 Log.e("ITEM DURATION", itemsListData.getDuration());
                 itemsListData.setDateTime(cursor.getString(dateTime));
@@ -289,7 +295,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // delete all titles & items
-        database.delete(Constants.ITEMS_TABLE, null, null);
+        database.delete(Constants.ITEMS_LIST, null, null);
         database.delete(Constants.TITLES_LIST, null, null);
         database.close();
     }
@@ -314,7 +320,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
         executePreparedStatement(2, database, statement,
-                new String[]{newItem.getItem(), newItem.getDuration(), newItem.getItemPriority(), oldItem.getItemId()});
+                new String[]{newItem.getItem(), newItem.getItemDetail(), newItem.getDuration(), newItem.getItemPriority(), oldItem.getItemId()});
     }
 
     public void updateItemDone(ItemsListData itemsListData) {
@@ -351,13 +357,6 @@ public class DBHelper extends SQLiteOpenHelper {
         database.endTransaction();
         database.close();
     }
-
-
-    // todo - checking items list doesn't match any new item made with same title name
-
-
-    // todo - check duplicate entries titles - query database on titles - a cursor result means a duplicate (query done EVERY title entry)
-    // todo - check duplicate entries items - query database items WHERE title = 'movies' - a cursor result means a duplicate (query done EVERY item entry
 
     // http://stackoverflow.com/questions/433392/how-do-i-use-prepared-statements-in-sqlite-in-android
 

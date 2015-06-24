@@ -4,10 +4,10 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/homeFragmentEditList"
-        android:title="@string/create_menu_edit_title"
+        android:id="@+id/homeFragmentSearch"
+        android:title="@string/fragment_my_list_menu_search"
         android:orderInCategory="1"
-        android:icon="@mipmap/ic_edit"
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
         app:showAsAction="ifRoom" />
 
 

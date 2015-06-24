@@ -5,9 +5,9 @@ public class ItemsListData {
 
     private String itemId;
     private String titleId;
-    // get name from title spinner when querying database -  insertIntoItemsDatabase(ItemsListData itemsListData)
     private String title;
     private String item;
+    private String itemDetail;
     private String duration;
     private String dateTime;
     private String itemDone;
@@ -48,6 +48,14 @@ public class ItemsListData {
 
     public String getItem() {
         return this.item;
+    }
+
+    public void setItemDetail(String itemDetail){
+        this.itemDetail = itemDetail;
+    }
+
+    public String getItemDetail(){
+        return this.itemDetail;
     }
 
     public void setDuration(String duration) {

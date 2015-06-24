@@ -29,8 +29,7 @@
     <string name="dialog_no">NO</string>
     <string name="dialog_message">Note: This cannot be undone</string>
 
-
-    <!-- create list activity -->
+    <!-- create items activity -->
     <string name="create_list_title">TITLE</string>
     <string name="create_list_save_button">SAVE TITLE</string>
     <string name="create_list_edit_button">EDIT</string>
@@ -43,7 +42,7 @@
     <string name="create_list_swipe_right">SWIPE RIGHT = TOGGLE COMPLETE ITEMS</string>
     <string name="create_list_splah_button">GOT IT</string>
 
-    <!-- create list menu -->
+    <!-- create items menu -->
     <string name="create_menu_edit_title">Edit Title Name</string>
 
     <!-- splash screen -->
@@ -51,6 +50,22 @@
     <string name="splash_screen_button">GOT IT</string>
     <string name="create_list_dialog_ok_button">OK</string>
 
+
+    <!-- MyListsFragment Dialog - create new list -->
+    <string name="fragment_my_lists_dialog_add_a_list">Create a new list</string>
+    <string name="fragment_my_lists_dialog_title">Title</string>
+    <string name="fragment_my_lists_dialog_cancel">CANCEL</string>
+    <string name="fragment_my_lists_dialog_done">DONE</string>
+
+    <!-- CreateItemsActivity Dialog - rename title -->
+    <string name="activity_create_items_dialog_title">Rename title</string>
+
+    <!-- CreateItemsActivity Dialog - add item -->
+    <string name="activity_create_items_dialog_add_item">Add a task</string>
+    <string name="activity_create_items_dialog_add_details">Details</string>
+
+    <!-- MyListsFragment menu -->
+    <string name="fragment_my_list_menu_search">Search</string>
 
 
 </resources>

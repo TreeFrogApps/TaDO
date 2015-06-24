@@ -196,6 +196,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             case "X": return R.drawable.circle_x_40dp;
             case "Y": return R.drawable.circle_y_40dp;
             case "Z": return R.drawable.circle_z_40dp;
+            case "": return R.drawable.circle_other_40dp;
             default : return R.drawable.circle_other_40dp;
         }
     }

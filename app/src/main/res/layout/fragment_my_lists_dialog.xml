@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical|start"
+        android:background="@color/primaryColor"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_margin="@dimen/twenty_four"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_my_lists_dialog_add_a_list"
+            android:textSize="@dimen/text_20sp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical|start"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        
+        <EditText
+            android:id="@+id/dialogTitleEditText"
+            android:layout_marginTop="@dimen/twenty_four"
+            android:layout_marginLeft="@dimen/twenty_four"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:layout_marginBottom="@dimen/twenty_four"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textAutoCorrect|textCapSentences"
+            android:textColor="@color/primaryText"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical|end"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialogTitleCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/four_dp"
+            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginBottom="@dimen/eight_dp"
+            android:text="@string/fragment_my_lists_dialog_cancel"
+            android:textColor="@color/primaryColor"
+            android:background="@drawable/button_selector"/>
+
+        <Button
+            android:id="@+id/dialogTitleDoneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginBottom="@dimen/eight_dp"
+            android:text="@string/fragment_my_lists_dialog_done"
+            android:textColor="@color/primaryColor"
+            android:background="@drawable/button_selector"/>
+    </LinearLayout>
+    
+    
+
+</LinearLayout>

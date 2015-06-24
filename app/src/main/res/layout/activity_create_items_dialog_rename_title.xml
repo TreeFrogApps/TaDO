@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/primaryColor"
+        android:gravity="center_vertical|start"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/twenty_four"
+            android:text="@string/activity_create_items_dialog_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/white"
+        android:gravity="center_vertical|start"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/createItemDialogRenameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/twenty_four"
+            android:layout_marginBottom="@dimen/twenty_four"
+            android:layout_marginLeft="@dimen/twenty_four"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:inputType="textAutoCorrect|textCapSentences"
+            android:textColor="@color/primaryText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/white"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/createItemDialogCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/eight_dp"
+            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginRight="@dimen/four_dp"
+            android:background="@drawable/button_selector"
+            android:text="@string/fragment_my_lists_dialog_cancel"
+            android:textColor="@color/primaryColor" />
+
+        <Button
+            android:id="@+id/createItemDialogOkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/eight_dp"
+            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:background="@drawable/button_selector"
+            android:text="@string/fragment_my_lists_dialog_done"
+            android:textColor="@color/primaryColor" />
+    </LinearLayout>
+
+</LinearLayout>
+

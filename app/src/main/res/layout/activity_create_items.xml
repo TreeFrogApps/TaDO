@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,291 +10,36 @@
         android:id="@+id/myToolBar"
         layout="@layout/tool_bar" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/create_list_title"
-            android:textColor="@color/primaryText"
-            android:textSize="@dimen/text_16sp" />
-
-        <EditText
-            android:id="@+id/createListTitleEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textAutoComplete|textCapSentences"
-            android:maxLength="100"
-            style="@style/EditTextColors"
-            android:imeOptions="actionDone" />
-
-    </LinearLayout>
-
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/createListCardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/eight_dp"
-        card_view:cardCornerRadius="4dp"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/createListAddItemLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_vertical_margin"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/create_list_item"
-                android:textColor="@color/primaryText"
-                android:textSize="@dimen/text_16sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="9">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:orientation="vertical">
-
-                    <EditText
-                        android:id="@+id/createListItemEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textAutoComplete|textCapSentences"
-                        style="@style/EditTextColors"
-                        android:imeOptions="actionDone" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/eight_dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="2"
-                            android:text="@string/create_list_duration"
-                            android:textColor="@color/primaryText"
-                            android:textSize="@dimen/text_16sp" />
-
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/createListPlusHour"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginBottom="@dimen/four_dp"
-                                android:background="@drawable/selector_plus_time" />
-
-                            <TextView
-                                android:id="@+id/createListHoursTextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:text="@string/create_list_time"
-                                android:textColor="@color/primaryColorDark"
-                                android:textSize="@dimen/text_18sp" />
-
-                            <ImageView
-                                android:id="@+id/createListMinusHour"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginBottom="@dimen/four_dp"
-                                android:layout_marginTop="@dimen/four_dp"
-                                android:background="@drawable/selector_minus_time" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/create_list_time_separator"
-                            android:layout_marginBottom="@dimen/four_dp"
-                            android:textColor="@color/primaryText"
-                            android:textSize="@dimen/text_18sp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/createListPlusMins"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginBottom="@dimen/four_dp"
-                                android:background="@drawable/selector_plus_time" />
-
-                            <TextView
-                                android:id="@+id/createListMinsTextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:text="@string/create_list_time"
-                                android:textColor="@color/primaryColorDark"
-                                android:textSize="@dimen/text_18sp" />
-
-                            <ImageView
-                                android:id="@+id/createListMinusMins"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginBottom="@dimen/four_dp"
-                                android:layout_marginTop="@dimen/four_dp"
-                                android:background="@drawable/selector_minus_time" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="2"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/createListAddItem"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                                android:background="@drawable/selector_plus_item" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="@string/create_item_add_item"
-                                android:textColor="@color/primaryText"
-                                android:textSize="@dimen/text_16sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/createListSwipeActionLinearLayout"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/splash_bg_gradient"
-            android:layout_marginTop="@dimen/eight_dp"
-            android:layout_marginLeft="@dimen/eight_dp"
-            android:layout_marginRight="@dimen/eight_dp"
-            android:visibility="visible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:layout_marginTop="@dimen/eight_dp"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_14sp"
-                android:textStyle="bold"
-                android:text="@string/create_list_swipe_left" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_marginTop="@dimen/eight_dp"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_14sp"
-                android:textStyle="bold"
-                android:text="@string/create_list_swipe_right" />
-
-            <Button
-                android:id="@+id/createListSplashButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/eight_dp"
-                android:background="@drawable/button_selector_splash_screen"
-                android:text="@string/create_list_splah_button"
-                android:layout_gravity="center_horizontal"/>
-
-
-
-        </LinearLayout>
+        android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/createListRecyclerView"
-            android:layout_marginLeft="@dimen/four_dp"
-            android:layout_marginRight="@dimen/four_dp"
-            android:layout_marginTop="@dimen/eight_dp"
+            android:id="@+id/createItemRecyclerView"
+            android:layout_margin="@dimen/four_dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
             tools:context="com.treefrogapps.TaDo.CreateItemsActivity" />
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/createListSaveButtonLayout"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="bottom">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/createItemsFAB"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/eight_dp"
-            android:gravity="end|right">
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:src="@mipmap/ic_fab_plus_item"
+            android:visibility="invisible"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp" />
+
+    </FrameLayout>
 
 
-            <Button
-                android:id="@+id/createListTitleSaveButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:text="@string/create_list_save_button" />
 
-        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+
+

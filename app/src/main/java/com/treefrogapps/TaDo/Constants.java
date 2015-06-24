@@ -13,10 +13,6 @@ public class Constants {
     protected final static String SWIPE_SPLASH_SCREEN_VISIBILITY = "com.treefrogapps.TaDo.SwipeVisibility";
     protected final static int SWIPE_SPLASH_SCREEN_OFF = 0;
 
-    // last spinner position on exit
-    protected static int SPINNER_POSITION = 0;
-    protected final static String SAVED_SPINNER_POSITION = "com.treefrogapps.TaDo.SpinnerPosition";
-
     // Database constants
     protected final static String DATABASE_NAME = "main_database.db";
     protected final static int DATABASE_VERSION = 1;
@@ -41,13 +37,14 @@ public class Constants {
     protected final static String ITEMS_TABLE =
             "CREATE TABLE IF NOT EXISTS items_list " +
                     "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " item VARCHAR, title_id INTEGER NOT NULL," +
+                    " item VARCHAR, item_detail VARCHAR, title_id INTEGER NOT NULL," +
                     " duration TIME, date DATETIME, item_done CHAR, priority CHAR," +
                     " FOREIGN KEY (title_id) REFERENCES titles_list (title_id) ON DELETE CASCADE);";
 
     protected final static String ITEMS_LIST = "items_list";
     protected final static String ITEMS_ID = "item_id";
     protected final static String ITEM = "item";
+    protected final static String ITEM_DETAIL = "item_detail";
     protected final static String ITEM_DURATION = "duration";
     protected final static String ITEM_DATETIME = "date";
     protected final static String ITEM_DONE_COLUMN = "item_done";
@@ -61,7 +58,7 @@ public class Constants {
 
 
     // SQLite Queries - including prepared statement queries
-    protected final static String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?," +
+    protected final static String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?, ?," +
             " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME (?), ?, ?);";
     // datetime format = YYYY-MM-YY HH:YY:SS
 
@@ -87,8 +84,7 @@ public class Constants {
 
     protected final static String ITEM_DELETE_SINGLE = "DELETE FROM items_list WHERE items_list.item_id = ?;";
 
-    protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, duration = ?, priority = ? WHERE item_id = ?;" +
-            "dateTime = ? WHERE item_id = ?;";
+    protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, item_detail = ?, duration = ?, priority = ? WHERE item_id = ?;";
 
     protected final static String ITEM_UPDATE_ITEM_DONE = "UPDATE items_list SET item_done = ? WHERE item_id = ?;";
 
