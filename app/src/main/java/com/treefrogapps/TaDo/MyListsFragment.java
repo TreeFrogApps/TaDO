@@ -1,7 +1,6 @@
 package com.treefrogapps.TaDo;
 
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,18 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 
-public class MyListsFragment extends Fragment implements View.OnClickListener {
+public class MyListsFragment extends Fragment implements View.OnClickListener, MyListsFragmentDialog.onDialogDonePressedCallBack {
 
     private DBHelper dbHelper;
     private SharedPreferences sharedPreferences;
@@ -47,6 +40,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout mHomeFragmentSplashScreen;
 
+    private MyListsFragmentDialog myListsFragmentDialog;
+
     public MyListsFragment() {
         // Required empty public constructor
     }
@@ -55,12 +50,18 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.e("CALLED", "onCreate");
+
         setHasOptionsMenu(true);
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.e("CALLED", "onCreateView");
 
         rootView = inflater.inflate(R.layout.fragment_my_lists, container, false);
         return rootView;
@@ -69,6 +70,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Log.e("CALLED", "onActivityCreated");
 
         sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         checkSplashScreenVisibility();
@@ -175,7 +178,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
 
         if (v.getId() == mFAB.getId()) {
 
-            final Intent intent = new Intent(getActivity(), CreateItemsActivity.class);
 
             if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE) {
                 mHomeFragmentSplashScreen.startAnimation(Animations.moveOut(getActivity()));
@@ -184,12 +186,43 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void run() {
                         removeSplashScreen();
-                        newTitleDialog();
+                        // show dialog fragment
+                        // custom dialog fragment initialised
+                        myListsFragmentDialog = new MyListsFragmentDialog();
+                        myListsFragmentDialog.mOnDialogDonePressedCallBack = MyListsFragment.this;
+                        myListsFragmentDialog.show(getFragmentManager(), "Dialog");
                     }
                 }, 400);
             } else {
-                newTitleDialog();
+                // show dialog fragment
+                // custom dialog fragment initialised
+                myListsFragmentDialog = new MyListsFragmentDialog();
+                myListsFragmentDialog.mOnDialogDonePressedCallBack = MyListsFragment.this;
+                myListsFragmentDialog.show(getFragmentManager(), "Dialog");
             }
+        }
+    }
+
+    // dialog fragment interface callback
+    @Override
+    public void updateRecyclerViewCallBack() {
+
+        // use helper class to get current position of recyclerView
+        mRestoreRecyclerPosition = new RestoreRecyclerPosition(mRecyclerView, mLinearLayoutManager);
+        RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
+
+        populateRecyclerView();
+        mRestoreRecyclerPosition.setCurrentPosition(recyclerPositionValues);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("CALLED", "onResume");
+        // required to set the dialog callback listener after screen rotation it is lost
+        myListsFragmentDialog = (MyListsFragmentDialog) getFragmentManager().findFragmentByTag("Dialog");
+        if(myListsFragmentDialog  != null){
+            myListsFragmentDialog.setCallBack(MyListsFragment.this);
         }
     }
 
@@ -200,60 +233,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
         editor.apply();
         mHomeFragmentSplashScreen.setVisibility(View.GONE);
     }
-
-    public void newTitleDialog(){
-
-        final Dialog titleDialog = new Dialog(getActivity());
-                titleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                titleDialog.setContentView(R.layout.fragment_my_lists_dialog);
-                titleDialog.setCancelable(false);
-
-        final EditText dialogTitleEditText = (EditText) titleDialog.findViewById(R.id.dialogTitleEditText);
-
-        Button dialogTitleCancelButton = (Button) titleDialog.findViewById(R.id.dialogTitleCancelButton);
-        dialogTitleCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                titleDialog.dismiss();
-            }
-        });
-
-        Button dialogTitleDoneButton = (Button) titleDialog.findViewById(R.id.dialogTitleDoneButton);
-        dialogTitleDoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String titleName = dialogTitleEditText.getText().toString().trim();
-
-                TitlesListData titlesListData = new TitlesListData();
-                String checkIfTitleExists = dbHelper.checkTitleNameExists(titleName);
-
-                // return null means no title already exists
-                if (checkIfTitleExists == null && !titleName.equals("")) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
-                    String date = sdf.format(new Date());
-
-                    titlesListData.setTitle(titleName);
-                    titlesListData.setDateTime(date);
-                    dbHelper.insertIntoTitlesTable(titlesListData);
-
-                    // use helper class to get current position of recyclerView
-                    mRestoreRecyclerPosition = new RestoreRecyclerPosition(mRecyclerView, mLinearLayoutManager);
-                    RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
-
-                    populateRecyclerView();
-                    mRestoreRecyclerPosition.setCurrentPosition(recyclerPositionValues);
-                    titleDialog.dismiss();
-
-                } else {
-                    CustomToasts.Toast(getActivity(), "Title already exists");
-                }
-            }
-        });
-
-        titleDialog.show();
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -322,5 +301,4 @@ public class MyListsFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
 
     }
-
 }

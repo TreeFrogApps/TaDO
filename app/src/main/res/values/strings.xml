@@ -64,6 +64,10 @@
     <string name="activity_create_items_dialog_add_item">Add a task</string>
     <string name="activity_create_items_dialog_add_details">Details</string>
 
+    <!-- CreateItemsActivity Dialog - Estimated -->
+    <string name="activity_create_items_dialog_item_info">Estimated time</string>
+
+
     <!-- MyListsFragment menu -->
     <string name="fragment_my_list_menu_search">Search</string>
 
