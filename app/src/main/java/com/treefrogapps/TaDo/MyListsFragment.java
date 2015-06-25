@@ -50,18 +50,12 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.e("CALLED", "onCreate");
-
         setHasOptionsMenu(true);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Log.e("CALLED", "onCreateView");
 
         rootView = inflater.inflate(R.layout.fragment_my_lists, container, false);
         return rootView;
@@ -70,8 +64,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        Log.e("CALLED", "onActivityCreated");
 
         sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         checkSplashScreenVisibility();
@@ -105,9 +97,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
 
         if (id == R.id.homeFragmentSearch) {
 
-            // TODO
+            // TODO - database search
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -190,7 +181,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
                         // custom dialog fragment initialised
                         myListsFragmentDialog = new MyListsFragmentDialog();
                         myListsFragmentDialog.mOnDialogDonePressedCallBack = MyListsFragment.this;
-                        myListsFragmentDialog.show(getFragmentManager(), "Dialog");
+                        myListsFragmentDialog.show(getFragmentManager(), "Dialog01");
                     }
                 }, 400);
             } else {
@@ -198,7 +189,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
                 // custom dialog fragment initialised
                 myListsFragmentDialog = new MyListsFragmentDialog();
                 myListsFragmentDialog.mOnDialogDonePressedCallBack = MyListsFragment.this;
-                myListsFragmentDialog.show(getFragmentManager(), "Dialog");
+                myListsFragmentDialog.show(getFragmentManager(), "Dialog01");
             }
         }
     }
@@ -218,7 +209,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("CALLED", "onResume");
+
         // required to set the dialog callback listener after screen rotation it is lost
         myListsFragmentDialog = (MyListsFragmentDialog) getFragmentManager().findFragmentByTag("Dialog");
         if(myListsFragmentDialog  != null){

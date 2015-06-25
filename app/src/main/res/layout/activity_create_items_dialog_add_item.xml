@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/createListAddItemTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/twenty_four"
@@ -25,45 +26,163 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="@color/white"
-        android:gravity="center_vertical|start"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-
-        <EditText
-            android:id="@+id/createItemDialogTaskEditText"
+        <LinearLayout
+            android:id="@+id/createListAddItemFirstLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/twenty_four"
-            android:layout_marginBottom="@dimen/twenty_four"
-            android:layout_marginLeft="@dimen/twenty_four"
-            android:layout_marginRight="@dimen/twenty_four"
-            android:inputType="textAutoCorrect|textCapSentences"
-            android:textColor="@color/primaryText" />
+            android:layout_gravity="top"
+            android:background="@color/white"
+            android:gravity="center_vertical|start"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/twenty_four"
-            android:layout_marginLeft="@dimen/twenty_four"
-            android:layout_marginRight="@dimen/twenty_four"
-            android:text="@string/activity_create_items_dialog_add_details"
-            android:textColor="@color/grey_medium"
-            android:textSize="@dimen/text_14sp" />
+            <EditText
+                android:id="@+id/createItemDialogTaskEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/twenty_four"
+                android:layout_marginLeft="@dimen/twenty_four"
+                android:layout_marginRight="@dimen/twenty_four"
+                android:layout_marginTop="@dimen/twenty_four"
+                android:inputType="textAutoCorrect|textCapSentences"
+                android:textColor="@color/primaryText" />
 
-        <EditText
-            android:id="@+id/createItemDialogDetailsEditText"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/twenty_four"
+                android:layout_marginLeft="@dimen/twenty_four"
+                android:layout_marginRight="@dimen/twenty_four"
+                android:text="@string/activity_create_items_dialog_add_details"
+                android:textColor="@color/grey_medium"
+                android:textSize="@dimen/text_14sp" />
+
+            <EditText
+                android:id="@+id/createItemDialogDetailsEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/twenty_four"
+                android:layout_marginLeft="@dimen/twenty_four"
+                android:layout_marginRight="@dimen/twenty_four"
+                android:gravity="top|start"
+                android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
+                android:lines="2"
+                android:textColor="@color/primaryText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/createListAddItemSecondLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/twenty_four"
-            android:layout_marginLeft="@dimen/twenty_four"
-            android:layout_marginRight="@dimen/twenty_four"
-            android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
-            android:gravity="top|start"
-            android:textColor="@color/primaryText"
-            android:lines="2"/>
+            android:layout_gravity="top"
+            android:background="@color/white"
+            android:gravity="center_vertical|start"
+            android:orientation="vertical"
+            android:visibility="gone">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/twenty_four"
+                android:layout_marginRight="@dimen/twenty_four"
+                android:layout_marginTop="@dimen/twenty_four"
+                android:gravity="start"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/createItemRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checkedButton="@+id/sound"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <RadioButton
+                        android:id="@+id/createItemRadioButtonLow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/activity_create_items_dialog_item_low" />
+
+                    <RadioButton
+                        android:id="@+id/createItemRadioButtonMed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/activity_create_items_dialog_item_medium" />
+
+                    <RadioButton
+                        android:id="@+id/createItemRadioButtonHigh"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/activity_create_items_dialog_item_high" />
+
+                </RadioGroup>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/twenty_four"
+                android:layout_marginTop="@dimen/twenty_four"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="@dimen/activity_vertical_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/eight_dp"
+                        android:text="@string/activity_create_items_dialog_item_hours"
+                        android:textColor="@color/primaryText"
+                        android:textSize="@dimen/text_14sp" />
+
+                    <NumberPicker
+                        android:id="@+id/createListAddItemHourPicker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="@dimen/activity_vertical_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/eight_dp"
+                        android:text="@string/activity_create_items_dialog_item_minutes"
+                        android:textColor="@color/primaryText"
+                        android:textSize="@dimen/text_14sp" />
+
+                    <NumberPicker
+                        android:id="@+id/createListAddItemMinutePicker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -86,14 +205,14 @@
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/createItemDialogOkButton"
+            android:id="@+id/createItemDialogPositiveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/twenty_four"
             android:background="@drawable/button_selector"
-            android:text="@string/fragment_my_lists_dialog_done"
+            android:text="@string/activity_create_items_dialog_item_next"
             android:textColor="@color/primaryColor" />
     </LinearLayout>
 

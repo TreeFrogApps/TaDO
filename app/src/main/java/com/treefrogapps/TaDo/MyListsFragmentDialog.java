@@ -76,8 +76,10 @@ public class MyListsFragmentDialog extends DialogFragment {
                     mOnDialogDonePressedCallBack.updateRecyclerViewCallBack();
                     titleDialog.dismiss();
 
+                } else if (titleName.equals("")) {
+                    CustomToasts.Toast(getActivity(), "Choose a title name");
                 } else {
-                    CustomToasts.Toast(getActivity(), "Title already exists");
+                    CustomToasts.Toast(getActivity(), "Title Already Exists");
                 }
             }
         });

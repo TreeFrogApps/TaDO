@@ -1,6 +1,5 @@
 package com.treefrogapps.TaDo;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,10 +16,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 
-public class CreateItemsActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class CreateItemsActivity extends AppCompatActivity implements View.OnClickListener,
+        CreateItemsRenameTitleDialog.onRenameDialogCallBack, CreateItemsAddEditItemDialog.OnAddEditItemCallback {
 
     private Toolbar mToolbar;
     private DBHelper dbHelper;
@@ -39,6 +36,9 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     private ArrayList<ItemsListData> mItemsArrayList;
     private FloatingActionButton mCreateItemFAB;
     private String mTitleId;
+
+    private CreateItemsRenameTitleDialog createItemsRenameTitleDialog;
+    private CreateItemsAddEditItemDialog createItemsAddEditItemDialog;
 
 
     @Override
@@ -94,11 +94,44 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
             onBackPressed();
             return true;
         } else if (id == R.id.createListEditTitle) {
-            changeTitleName(dbHelper.getTitle(mTitleId));
+            openRenameDialog(mTitleId);
+            return true;
         } else if (id == R.id.createListEditSearch) {
             // TODO - search Items
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openRenameDialog(String titleId){
+
+        createItemsRenameTitleDialog = new CreateItemsRenameTitleDialog();
+        createItemsRenameTitleDialog.mOnRenameDialogCallBack = CreateItemsActivity.this;
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.TITLE_ID, titleId);
+        createItemsRenameTitleDialog.setArguments(bundle);
+        createItemsRenameTitleDialog.show(getSupportFragmentManager(), "Dialog02");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // required for reestablishing the callback from the dialog(s) after rotation
+        createItemsRenameTitleDialog = (CreateItemsRenameTitleDialog) getSupportFragmentManager().findFragmentByTag("Dialog02");
+        if (createItemsRenameTitleDialog != null){
+            createItemsRenameTitleDialog.setCallBack(CreateItemsActivity.this);
+        }
+
+        createItemsAddEditItemDialog = (CreateItemsAddEditItemDialog) getSupportFragmentManager().findFragmentByTag("Dialog03");
+        if (createItemsAddEditItemDialog != null){
+            createItemsAddEditItemDialog.setCallBack(CreateItemsActivity.this);
+        }
+    }
+
+    @Override
+    public void updateRecyclerViewCallBack(String titleId) {
+        // callback method from Rename title dialog - pass to method below to handle
+        setTitlePopulateRecyclerView(titleId);
     }
 
     public void initialiseInputs() {
@@ -151,16 +184,23 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
 
         if (v.getId() == mCreateItemFAB.getId()) {
-
-            addItemDialog(dbHelper.getTitle(mTitleId));
+            addItemDialog(mTitleId);
         }
-
     }
 
-    private void addItemDialog(String title) {
+    private void addItemDialog(String titleId) {
 
-        Dialog dialogBuilder = new Dialog(getApplicationContext());
-            dialogBuilder.setContentView(R.layout.fragment_my_lists_dialog);
+        createItemsAddEditItemDialog = new CreateItemsAddEditItemDialog();
+        createItemsAddEditItemDialog.mOnAddItemCallBack = CreateItemsActivity.this;
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.TITLE_ID, titleId);
+        createItemsAddEditItemDialog.setArguments(bundle);
+        createItemsAddEditItemDialog.show(getSupportFragmentManager(), "Dialog03");
+    }
+
+    @Override
+    public void addEditItemDialogCallBack() {
+        updateRecyclerViewCallBack(mTitleId);
     }
 
     private void removeItemFromRViewAndDB(int layoutPosition) {
@@ -202,62 +242,15 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
             getSupportActionBar().setTitle(dbHelper.getTitle(titleId));
         }
         populateRecyclerView(dbHelper.getTitle(titleId));
-
     }
 
-    public void changeTitleName(final String currentTitle) {
+    public void populateRecyclerView(String titleName) {
 
-        final Dialog dialogBuilder = new Dialog(this);
-        dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogBuilder.setContentView(R.layout.activity_create_items_dialog_rename_title);
-        dialogBuilder.setCancelable(true);
+        mItemsArrayList = dbHelper.getItemsForTitleNotDone(titleName);
+        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(titleName));
 
-        final EditText renameDialogEditText = (EditText) dialogBuilder.findViewById(R.id.createItemDialogRenameEditText);
-        Button cancelDialogButton = (Button) dialogBuilder.findViewById(R.id.createItemDialogCancelButton);
-        Button okDialogButton = (Button) dialogBuilder.findViewById(R.id.createItemDialogOkButton);
-
-        renameDialogEditText.setText(currentTitle);
-
-        cancelDialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogBuilder.dismiss();
-            }
-        });
-        okDialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String newTitle = renameDialogEditText.getText().toString().trim();
-
-                String checkIfTitleExists = dbHelper.checkTitleNameExists(newTitle);
-
-                if (checkIfTitleExists == null && !newTitle.equals("")) {
-                    TitlesListData oldTitleListData = new TitlesListData();
-                    oldTitleListData.setTitle(currentTitle);
-
-                    TitlesListData newTitleListData = new TitlesListData();
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
-                    String date = sdf.format(new Date());
-
-                    newTitleListData.setTitle(newTitle);
-                    newTitleListData.setDateTime(date);
-
-                    dbHelper.updateTitle(oldTitleListData, newTitleListData);
-                    if (getSupportActionBar() != null) {
-                        getSupportActionBar().setTitle(newTitle);
-                    }
-
-                    dialogBuilder.dismiss();
-
-                } else if (newTitle.equals("")) {
-                    CustomToasts.Toast(getApplicationContext(), "Choose a title name");
-                } else {
-                    CustomToasts.Toast(getApplicationContext(), "Title Already Exists");
-                }
-            }
-        });
-        dialogBuilder.show();
+        mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
+        mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }
 
 
@@ -329,23 +322,8 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         populateRecyclerView(dbHelper.getTitle(mTitleId));
     }
-
-
-    public void populateRecyclerView(String titleName) {
-
-        mItemsArrayList = dbHelper.getItemsForTitleNotDone(titleName);
-        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(titleName));
-
-        mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
-        mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        return false;
-    }
-
-
+    
+    
     @Override
     public void onBackPressed() {
 
@@ -354,4 +332,5 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         super.onBackPressed();
         finish();
     }
+
 }
