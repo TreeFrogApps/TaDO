@@ -59,7 +59,7 @@ public class Constants {
 
     // SQLite Queries - including prepared statement queries
     protected final static String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?, ?," +
-            " (SELECT title_id FROM titles_list WHERE titles_list.title = ?), TIME (?), DATETIME (?), ?, ?);";
+            " ?, TIME (?), DATETIME (?), ?, ?);";
     // datetime format = YYYY-MM-YY HH:YY:SS
 
     protected final static String ITEMS_NOT_DONE_GET_QUERY = "SELECT * FROM items_list WHERE title_id =" +

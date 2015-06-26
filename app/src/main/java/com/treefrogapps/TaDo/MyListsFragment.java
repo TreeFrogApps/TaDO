@@ -198,12 +198,15 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
     @Override
     public void updateRecyclerViewCallBack() {
 
-        // use helper class to get current position of recyclerView
-        mRestoreRecyclerPosition = new RestoreRecyclerPosition(mRecyclerView, mLinearLayoutManager);
-        RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
-
-        populateRecyclerView();
-        mRestoreRecyclerPosition.setCurrentPosition(recyclerPositionValues);
+        if (mTitlesListDataArrayList.size() > 1){
+            // use helper class to get current position of recyclerView
+            mRestoreRecyclerPosition = new RestoreRecyclerPosition(mRecyclerView, mLinearLayoutManager);
+            RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
+            populateRecyclerView();
+            mRestoreRecyclerPosition.setCurrentPosition(recyclerPositionValues);
+        } else {
+            populateRecyclerView();
+        }
     }
 
     @Override

@@ -76,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // execute method to handle statement request
         executePreparedStatement(3, database, statement,
-                new String[]{itemsListData.getItem(), itemsListData.getItemDetail(), itemsListData.getTitle(),
+                new String[]{itemsListData.getItem(), itemsListData.getItemDetail(), itemsListData.getTitleId(),
                         itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone(), itemsListData.getItemPriority()});
     }
 

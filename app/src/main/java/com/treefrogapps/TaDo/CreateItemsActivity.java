@@ -18,10 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class CreateItemsActivity extends AppCompatActivity implements View.OnClickListener,
@@ -200,7 +197,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void addEditItemDialogCallBack() {
-        updateRecyclerViewCallBack(mTitleId);
+        setTitlePopulateRecyclerView(mTitleId);
     }
 
     private void removeItemFromRViewAndDB(int layoutPosition) {
@@ -252,77 +249,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }
-
-
-    public String setDuration(int switchCaseId, String currentDuration) {
-
-        int curTimeAsint = Integer.parseInt(currentDuration);
-
-        switch (switchCaseId) {
-
-            case 0:
-                if (curTimeAsint < 24 && curTimeAsint < 9) {
-                    return "0" + String.valueOf(curTimeAsint + 1);
-                } else if (curTimeAsint < 24) {
-                    return String.valueOf(curTimeAsint + 1);
-                } else {
-                    return String.valueOf(curTimeAsint);
-                }
-
-            case 1:
-                if (curTimeAsint <= 10 && curTimeAsint >= 1) {
-                    return "0" + String.valueOf(curTimeAsint - 1);
-                } else if (curTimeAsint > 10) {
-                    return String.valueOf(curTimeAsint - 1);
-                } else {
-                    return "0" + String.valueOf(curTimeAsint);
-                }
-
-            case 2:
-                if (curTimeAsint < 45) {
-                    return String.valueOf(curTimeAsint + 15);
-                } else {
-                    return String.valueOf(curTimeAsint);
-                }
-
-            case 3:
-                if (curTimeAsint >= 30) {
-                    return String.valueOf(curTimeAsint - 15);
-                } else if (curTimeAsint >= 15) {
-                    return "0" + String.valueOf(curTimeAsint - 15);
-                } else {
-                    return "00";
-                }
-
-            default:
-                return currentDuration;
-        }
-    }
-
-
-    public void addItemToTitleTable(String titleName, String itemName, String itemDetail,
-                                    String hours, String mins, String itemDone, String itemPriority) {
-
-        ItemsListData itemsListData = new ItemsListData();
-        String duration = hours + ":" + mins;
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String date = sdf.format(new Date());
-
-        itemsListData.setItem(itemName);
-        itemsListData.setItemDetail(itemDetail);
-        itemsListData.setTitle(titleName);
-        itemsListData.setTitleId(dbHelper.getTitleId(titleName));
-        itemsListData.setDuration(duration);
-        itemsListData.setDateTime(date);
-        itemsListData.setItemDone(itemDone);
-        itemsListData.setItemPriority(itemPriority);
-
-        dbHelper.insertIntoItemsTable(itemsListData);
-
-        populateRecyclerView(dbHelper.getTitle(mTitleId));
-    }
-    
     
     @Override
     public void onBackPressed() {
