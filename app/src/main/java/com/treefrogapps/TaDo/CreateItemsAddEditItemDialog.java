@@ -4,6 +4,7 @@ package com.treefrogapps.TaDo;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -109,7 +110,10 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
             if (createListAddItemFirstLayout.getVisibility() == View.VISIBLE) {
                 dialogBuilder.dismiss();
             } else if (createListAddItemFirstLayout.getVisibility() == View.GONE) {
-                createListAddItemSecondLayout.setVisibility(View.GONE);
+
+                createListAddItemSecondLayout.startAnimation(Animations.moveOutAnimRight(getActivity()));
+                myHandler(createListAddItemSecondLayout, View.GONE);
+
                 createListAddItemFirstLayout.setVisibility(View.VISIBLE);
                 createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_add_item));
                 createItemDialogCancelButton.setText(getResources().getString(R.string.fragment_my_lists_dialog_cancel));
@@ -208,20 +212,21 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
 
         createListAddItemHourPicker.setMinValue(0);
         createListAddItemHourPicker.setMaxValue(23);
+        createListAddItemHourPicker.setWrapSelectorWheel(false);
 
         createListAddItemMinutePicker.setMinValue(0);
         createListAddItemMinutePicker.setMaxValue(3);
         createListAddItemMinutePicker.setDisplayedValues(numberPickerMinsDisplay);
-
     }
+
 
     public String getNumberPickerValues() {
 
         int hours = createListAddItemHourPicker.getValue();
         // get mins by getting the position in the string array
-        int mins = Integer.parseInt(numberPickerMinsDisplay[createListAddItemMinutePicker.getValue()]);
+        String mins = numberPickerMinsDisplay[createListAddItemMinutePicker.getValue()];
 
-        return String.valueOf(hours < 10 ? "0" + hours : hours) + ":" + String.valueOf(mins < 15 ? "0" + mins : mins);
+        return String.valueOf(hours < 10 ? "0" + hours : hours) + ":" + mins;
     }
 
     public void setNumberPickerValues(String duration) {
@@ -264,5 +269,16 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         itemsListData.setItemPriority(itemPriority);
 
         dbHelper.insertIntoItemsTable(itemsListData);
+    }
+
+    public void myHandler(final LinearLayout linearLayout, final int visibility){
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                linearLayout.setVisibility(visibility);
+            }
+        }, 100);
     }
 }

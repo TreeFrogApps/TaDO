@@ -54,7 +54,7 @@
         <Button
             android:id="@+id/createItemDialogCancelButton"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/four_dp"
@@ -65,7 +65,7 @@
         <Button
             android:id="@+id/createItemDialogOkButton"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/twenty_four"

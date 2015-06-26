@@ -63,7 +63,7 @@
     <!-- CreateItemsActivity Dialog - add item -->
     <string name="activity_create_items_dialog_add_item">Add a task</string>
     <string name="activity_create_items_dialog_add_details">Details</string>
-    <string name="activity_create_items_dialog_item_info">Priority &amp; estimated time</string>
+    <string name="activity_create_items_dialog_item_info">Priority &amp; Estimated time</string>
     <string name="activity_create_items_dialog_item_next">NEXT</string>
     <string name="activity_create_items_dialog_item_previous">PREVIOUS</string>
     <string name="activity_create_items_dialog_item_hours">Hours</string>
