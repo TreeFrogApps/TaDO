@@ -45,14 +45,14 @@
                 android:layout_marginBottom="@dimen/twenty_four"
                 android:layout_marginLeft="@dimen/twenty_four"
                 android:layout_marginRight="@dimen/twenty_four"
-                android:layout_marginTop="@dimen/twenty_four"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:inputType="textAutoCorrect|textCapSentences"
                 android:textColor="@color/primaryText" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/twenty_four"
+                android:layout_marginBottom="@dimen/eight_dp"
                 android:layout_marginLeft="@dimen/twenty_four"
                 android:layout_marginRight="@dimen/twenty_four"
                 android:text="@string/activity_create_items_dialog_add_details"
@@ -63,7 +63,7 @@
                 android:id="@+id/createItemDialogDetailsEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/twenty_four"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginLeft="@dimen/twenty_four"
                 android:layout_marginRight="@dimen/twenty_four"
                 android:gravity="top|start"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/twenty_four"
                 android:layout_marginRight="@dimen/twenty_four"
-                android:layout_marginTop="@dimen/twenty_four"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:gravity="start"
                 android:orientation="horizontal">
 
@@ -129,8 +129,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/twenty_four"
-                android:layout_marginTop="@dimen/twenty_four"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -153,7 +153,7 @@
                     <NumberPicker
                         android:id="@+id/createListAddItemHourPicker"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         android:layout_gravity="center" />
 
                 </LinearLayout>
@@ -177,7 +177,7 @@
                     <NumberPicker
                         android:id="@+id/createListAddItemMinutePicker"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         android:layout_gravity="center" />
 
                 </LinearLayout>
@@ -196,7 +196,7 @@
         <Button
             android:id="@+id/createItemDialogCancelButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/four_dp"
@@ -207,7 +207,7 @@
         <Button
             android:id="@+id/createItemDialogPositiveButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/twenty_four"

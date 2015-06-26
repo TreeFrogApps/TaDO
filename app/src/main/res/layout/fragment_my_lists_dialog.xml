@@ -33,10 +33,10 @@
         
         <EditText
             android:id="@+id/dialogTitleEditText"
-            android:layout_marginTop="@dimen/twenty_four"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/twenty_four"
             android:layout_marginRight="@dimen/twenty_four"
-            android:layout_marginBottom="@dimen/twenty_four"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textAutoCorrect|textCapSentences"
@@ -55,7 +55,7 @@
         <Button
             android:id="@+id/dialogTitleCancelButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginRight="@dimen/four_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginBottom="@dimen/eight_dp"
@@ -66,7 +66,7 @@
         <Button
             android:id="@+id/dialogTitleDoneButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginRight="@dimen/twenty_four"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginBottom="@dimen/eight_dp"

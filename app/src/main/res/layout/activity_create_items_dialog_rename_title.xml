@@ -34,8 +34,8 @@
             android:id="@+id/createItemDialogRenameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/twenty_four"
-            android:layout_marginBottom="@dimen/twenty_four"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/twenty_four"
             android:layout_marginRight="@dimen/twenty_four"
             android:inputType="textAutoCorrect|textCapSentences"
@@ -54,7 +54,7 @@
         <Button
             android:id="@+id/createItemDialogCancelButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/four_dp"
@@ -65,7 +65,7 @@
         <Button
             android:id="@+id/createItemDialogOkButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
             android:layout_marginRight="@dimen/twenty_four"
