@@ -44,10 +44,10 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         private TextView recyclerViewItemID; // visibility - gone - use for accessing unique item Id - with this duplicates aren't a problem
         private TextView recyclerViewItemDone; // visibility - gone - used just check for tagging 'Done' or 'Not Done'
         private LinearLayout recyclerViewLinearLayout;
-        private LinearLayout recyclerViewItemDoneView;
-        private ImageView recyclerViewImageView;
 
         private TextView recyclerViewItemTextView;
+        private TextView recyclerItemDetailTextView;
+        private TextView recyclerViewPriorityTextView;
         private TextView recyclerViewHoursTextView;
         private TextView recyclerViewMinsTextView;
 
@@ -57,10 +57,10 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             recyclerViewItemID = (TextView) itemView.findViewById(R.id.recyclerItemID);
             recyclerViewItemDone = (TextView) itemView.findViewById(R.id.recyclerItemDone);
             recyclerViewLinearLayout = (LinearLayout) itemView.findViewById(R.id.recyclerViewLinearLayout);
-            recyclerViewItemDoneView = (LinearLayout) itemView.findViewById(R.id.recyclerViewItemDoneView);
-            recyclerViewImageView = (ImageView) itemView.findViewById(R.id.recyclerViewImageView);
 
             recyclerViewItemTextView = (TextView) itemView.findViewById(R.id.recyclerItemTextView);
+            recyclerItemDetailTextView = (TextView) itemView.findViewById(R.id.recyclerItemDetailTextView);
+            recyclerViewPriorityTextView = (TextView) itemView.findViewById(R.id.recyclerViewPriorityTextView);
             recyclerViewHoursTextView = (TextView) itemView.findViewById(R.id.recyclerHoursTextView);
             recyclerViewMinsTextView = (TextView) itemView.findViewById(R.id.recyclerMinsTextView);
 
@@ -87,23 +87,35 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
         myViewHolder.recyclerViewItemID.setText(listItemsDataArrayList.get(i).getItemId());
         myViewHolder.recyclerViewItemDone.setText(listItemsDataArrayList.get(i).getItemDone());
-        myViewHolder.recyclerViewItemDone.setText(listItemsDataArrayList.get(i).getItemDone());
+
+        String itemState = listItemsDataArrayList.get(i).getItemPriority();
+
+        switch (itemState){
+            case "L" : myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_low_40dp);
+                break;
+            case "M" : myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_med_40dp);
+                break;
+            case "H" : myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_high_40dp);
+                break;
+        }
+
+        myViewHolder.recyclerViewPriorityTextView.setText("!");
+
 
         myViewHolder.recyclerViewItemTextView.setText(listItemsDataArrayList.get(i).getItem());
+        myViewHolder.recyclerItemDetailTextView.setText(listItemsDataArrayList.get(i).getItemDetail());
 
         String duration = listItemsDataArrayList.get(i).getDuration();
         String[] timeArray = duration.split(":");
-
-        myViewHolder.recyclerViewHoursTextView.setText(timeArray[0]);
+                                                        // done to drop first zero
+        myViewHolder.recyclerViewHoursTextView.setText(String.valueOf(Integer.parseInt(timeArray[0])));
         myViewHolder.recyclerViewMinsTextView.setText(timeArray[1]);
 
         //set background color based on item done - 'Y'
         if (myViewHolder.recyclerViewItemDone.getText().toString().equals(Constants.ITEM_DONE)) {
-            myViewHolder.recyclerViewImageView.setBackgroundResource(R.mipmap.ic_item_done);
             myViewHolder.recyclerViewLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_very_light));
 
         } else {
-            myViewHolder.recyclerViewImageView.setBackgroundResource(R.mipmap.ic_item_tado);
             myViewHolder.recyclerViewLinearLayout.setBackgroundColor(Color.TRANSPARENT);
         }
 

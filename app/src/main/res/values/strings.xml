@@ -20,8 +20,8 @@
     <string name="fragment_home_remove_list">REMOVE LIST</string>
     <string name="fragment_home_items">Items</string>
     <string name="recycler_item_duration">DURATION</string>
-    <string name="recycler_view_hours">hrs</string>
-    <string name="recycler_view_mins">mins</string>
+    <string name="recycler_view_hours">h</string>
+    <string name="recycler_view_mins">m</string>
 
     <!-- dialog strings -->
     <string name="dialog_remove_list">Confirm List Deletion</string>

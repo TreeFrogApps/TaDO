@@ -112,9 +112,16 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
             } else if (createListAddItemFirstLayout.getVisibility() == View.GONE) {
 
                 createListAddItemSecondLayout.startAnimation(Animations.moveOutAnimRight(getActivity()));
-                myHandler(createListAddItemSecondLayout, View.GONE);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        createListAddItemSecondLayout.setVisibility(View.GONE);
+                        createListAddItemFirstLayout.setVisibility(View.VISIBLE);
+                        createListAddItemFirstLayout.startAnimation(Animations.moveInAnimRight(getActivity()));
+                    }
+                }, 200);
 
-                createListAddItemFirstLayout.setVisibility(View.VISIBLE);
                 createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_add_item));
                 createItemDialogCancelButton.setText(getResources().getString(R.string.fragment_my_lists_dialog_cancel));
                 createItemDialogPositiveButton.setText(getResources().getString(R.string.activity_create_items_dialog_item_next));
@@ -127,8 +134,24 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
                 if (!createItemDialogTaskEditText.getText().toString().trim().equals("")) {
 
                     hideKeyboard();
-                    createListAddItemFirstLayout.setVisibility(View.GONE);
-                    createListAddItemSecondLayout.setVisibility(View.VISIBLE);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            createListAddItemFirstLayout.startAnimation(Animations.moveOutAnimLeft(getActivity()));
+
+                        }
+                    }, 300);
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            createListAddItemFirstLayout.setVisibility(View.GONE);
+                            createListAddItemSecondLayout.startAnimation(Animations.moveInAnimLeft(getActivity()));
+                            createListAddItemSecondLayout.setVisibility(View.VISIBLE);
+                        }
+                    }, 500);
+
                     createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_item_info));
                     createItemDialogCancelButton.setText(getResources().getString(R.string.activity_create_items_dialog_item_previous));
                     createItemDialogPositiveButton.setText(getResources().getString(R.string.fragment_my_lists_dialog_done));
@@ -212,11 +235,12 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
 
         createListAddItemHourPicker.setMinValue(0);
         createListAddItemHourPicker.setMaxValue(23);
-        createListAddItemHourPicker.setWrapSelectorWheel(false);
+        createListAddItemHourPicker.setWrapSelectorWheel(true);
 
         createListAddItemMinutePicker.setMinValue(0);
         createListAddItemMinutePicker.setMaxValue(3);
         createListAddItemMinutePicker.setDisplayedValues(numberPickerMinsDisplay);
+        createListAddItemMinutePicker.setWrapSelectorWheel(true);
     }
 
 
@@ -269,16 +293,5 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         itemsListData.setItemPriority(itemPriority);
 
         dbHelper.insertIntoItemsTable(itemsListData);
-    }
-
-    public void myHandler(final LinearLayout linearLayout, final int visibility){
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                linearLayout.setVisibility(visibility);
-            }
-        }, 100);
     }
 }
