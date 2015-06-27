@@ -111,12 +111,10 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         myViewHolder.recyclerViewHoursTextView.setText(String.valueOf(Integer.parseInt(timeArray[0])));
         myViewHolder.recyclerViewMinsTextView.setText(timeArray[1]);
 
-        //set background color based on item done - 'Y'
+        // TODO - set layout item done - 'Y'
         if (myViewHolder.recyclerViewItemDone.getText().toString().equals(Constants.ITEM_DONE)) {
-            myViewHolder.recyclerViewLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_very_light));
 
         } else {
-            myViewHolder.recyclerViewLinearLayout.setBackgroundColor(Color.TRANSPARENT);
         }
 
     }
