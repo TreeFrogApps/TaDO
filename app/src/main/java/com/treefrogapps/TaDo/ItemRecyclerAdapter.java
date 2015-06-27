@@ -2,13 +2,10 @@ package com.treefrogapps.TaDo;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +24,35 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         this.listItemsDataArrayList = listItemsDataArrayList;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+
+        if (listItemsDataArrayList.get(position).getItemDone().equals("N")) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
 
     @Override
-    public ItemRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public int getItemCount() {
+        return listItemsDataArrayList.size();
+    }
 
-        Log.e("Recycler adapter size", String.valueOf(getItemCount()));
+
+    @Override
+    public ItemRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
+        switch (viewType) {
+
+            case 0:
+                View itemView0 = LayoutInflater.from(viewGroup.getContext().getApplicationContext()).inflate(R.layout.recycler_item_view, viewGroup, false);
+                return new MyViewHolder(itemView0);
+            case 1:
+                View itemView1 = LayoutInflater.from(viewGroup.getContext().getApplicationContext()).inflate(R.layout.recycler_item_view_completed, viewGroup, false);
+                return new MyViewHolder(itemView1);
+        }
+
 
         View itemView = LayoutInflater.from(viewGroup.getContext().getApplicationContext()).inflate(R.layout.recycler_item_view, viewGroup, false);
 
@@ -88,16 +109,26 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         myViewHolder.recyclerViewItemID.setText(listItemsDataArrayList.get(i).getItemId());
         myViewHolder.recyclerViewItemDone.setText(listItemsDataArrayList.get(i).getItemDone());
 
-        String itemState = listItemsDataArrayList.get(i).getItemPriority();
+        // check the itemDoneStatus - color accordingly
+        if (listItemsDataArrayList.get(i).getItemDone().equals("N")) {
 
-        switch (itemState){
-            case "L" : myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_low_40dp);
-                break;
-            case "M" : myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_med_40dp);
-                break;
-            case "H" : myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_high_40dp);
-                break;
+            String itemPriorityState = listItemsDataArrayList.get(i).getItemPriority();
+
+            switch (itemPriorityState) {
+                case "L":
+                    myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_low_40dp);
+                    break;
+                case "M":
+                    myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_med_40dp);
+                    break;
+                case "H":
+                    myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_high_40dp);
+                    break;
+            }
+        } else {
+            myViewHolder.recyclerViewPriorityTextView.setBackgroundResource(R.drawable.priority_circle_zero_40dp);
         }
+
 
         myViewHolder.recyclerViewPriorityTextView.setText("!");
 
@@ -107,20 +138,9 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
         String duration = listItemsDataArrayList.get(i).getDuration();
         String[] timeArray = duration.split(":");
-                                                        // done to drop first zero
+        // done to drop first zero
         myViewHolder.recyclerViewHoursTextView.setText(String.valueOf(Integer.parseInt(timeArray[0])));
         myViewHolder.recyclerViewMinsTextView.setText(timeArray[1]);
 
-        // TODO - set layout item done - 'Y'
-        if (myViewHolder.recyclerViewItemDone.getText().toString().equals(Constants.ITEM_DONE)) {
-
-        } else {
-        }
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return listItemsDataArrayList.size();
     }
 }

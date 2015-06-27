@@ -230,7 +230,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         dbHelper.updateItemDone(itemsListData);
         mItemRecyclerAdapter.notifyItemChanged(layoutPosition);
-
     }
 
     public void setTitlePopulateRecyclerView(String titleId) {

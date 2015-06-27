@@ -70,7 +70,6 @@
                 android:gravity="top|start"
                 android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
                 android:lines="2"
-                android:background="@color/grey_very_light"
                 android:textColor="@color/primaryText" />
 
         </LinearLayout>
