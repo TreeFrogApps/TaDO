@@ -169,12 +169,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return titleId;
     }
 
-    public ArrayList<ItemsListData> getItemsForTitleDone(String titleName) {
+    public ArrayList<ItemsListData> getItemsForTitleDone(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         ArrayList<ItemsListData> itemsListDataArrayList = new ArrayList<>();
 
-        Cursor cursor = database.rawQuery(Constants.ITEMS_DONE_GET_QUERY, new String[]{titleName});
+        Cursor cursor = database.rawQuery(Constants.ITEMS_DONE_GET_QUERY, new String[]{titleId});
 
         int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
@@ -216,12 +216,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return itemsListDataArrayList;
     }
 
-    public ArrayList<ItemsListData> getItemsForTitleNotDone(String titleName) {
+    public ArrayList<ItemsListData> getItemsForTitleNotDone(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         ArrayList<ItemsListData> itemsListDataArrayList = new ArrayList<>();
 
-        Cursor cursor = database.rawQuery(Constants.ITEMS_NOT_DONE_GET_QUERY, new String[]{titleName});
+        Cursor cursor = database.rawQuery(Constants.ITEMS_NOT_DONE_GET_QUERY, new String[]{titleId});
 
         int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
         int title_id = cursor.getColumnIndex(Constants.TITLE_ID);

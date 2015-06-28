@@ -123,8 +123,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
         DBHelper dbHelper = new DBHelper(context);
         // query database for counts of items - complete total and not done total
-        ArrayList<ItemsListData> itemsListDataDone = dbHelper.getItemsForTitleDone(titlesListDataArrayList.get(position).getTitle());
-        ArrayList<ItemsListData> itemsListDataNotDone = dbHelper.getItemsForTitleNotDone(titlesListDataArrayList.get(position).getTitle());
+        ArrayList<ItemsListData> itemsListDataDone = dbHelper.getItemsForTitleDone(titlesListDataArrayList.get(position).getTitle_id());
+        ArrayList<ItemsListData> itemsListDataNotDone = dbHelper.getItemsForTitleNotDone(titlesListDataArrayList.get(position).getTitle_id());
         itemsListDataDone.addAll(itemsListDataNotDone);
 
         holder.recyclerTitleItemsTextView.setText(String.valueOf(itemsListDataDone.size()));

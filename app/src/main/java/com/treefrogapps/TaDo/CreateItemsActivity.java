@@ -37,6 +37,8 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     private CreateItemsRenameTitleDialog createItemsRenameTitleDialog;
     private CreateItemsAddEditItemDialog createItemsAddEditItemDialog;
 
+    private int newPosition = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,7 +231,21 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         }
 
         dbHelper.updateItemDone(itemsListData);
+
+        mItemsArrayList = dbHelper.getItemsForTitleNotDone(mTitleId);
+        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(mTitleId));
+
+
+        for (int i = 0; i < mItemsArrayList.size(); i++){
+
+            if (mItemsArrayList.get(i).getItemId().equals(itemIdToUpdate)){
+                newPosition = i;
+                break;
+            }
+        }
+
         mItemRecyclerAdapter.notifyItemChanged(layoutPosition);
+
     }
 
     public void setTitlePopulateRecyclerView(String titleId) {
@@ -237,13 +253,13 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(dbHelper.getTitle(titleId));
         }
-        populateRecyclerView(dbHelper.getTitle(titleId));
+        populateRecyclerView(titleId);
     }
 
-    public void populateRecyclerView(String titleName) {
+    public void populateRecyclerView(String titleId) {
 
-        mItemsArrayList = dbHelper.getItemsForTitleNotDone(titleName);
-        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(titleName));
+        mItemsArrayList = dbHelper.getItemsForTitleNotDone(titleId);
+        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(titleId));
 
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
