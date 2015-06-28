@@ -37,8 +37,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     private CreateItemsRenameTitleDialog createItemsRenameTitleDialog;
     private CreateItemsAddEditItemDialog createItemsAddEditItemDialog;
 
-    private int newPosition = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,20 +230,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         dbHelper.updateItemDone(itemsListData);
 
-        mItemsArrayList = dbHelper.getItemsForTitleNotDone(mTitleId);
-        mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(mTitleId));
-
-
-        for (int i = 0; i < mItemsArrayList.size(); i++){
-
-            if (mItemsArrayList.get(i).getItemId().equals(itemIdToUpdate)){
-                newPosition = i;
-                break;
-            }
-        }
-
         mItemRecyclerAdapter.notifyItemChanged(layoutPosition);
-
     }
 
     public void setTitlePopulateRecyclerView(String titleId) {
