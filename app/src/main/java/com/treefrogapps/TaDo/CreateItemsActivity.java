@@ -3,6 +3,10 @@ package com.treefrogapps.TaDo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -99,7 +103,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         return super.onOptionsItemSelected(item);
     }
 
-    public void openRenameDialog(String titleId){
+    public void openRenameDialog(String titleId) {
 
         createItemsRenameTitleDialog = new CreateItemsRenameTitleDialog();
         createItemsRenameTitleDialog.mOnRenameDialogCallBack = CreateItemsActivity.this;
@@ -115,12 +119,12 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         // required for reestablishing the callback from the dialog(s) after rotation
         createItemsRenameTitleDialog = (CreateItemsRenameTitleDialog) getSupportFragmentManager().findFragmentByTag("Dialog02");
-        if (createItemsRenameTitleDialog != null){
+        if (createItemsRenameTitleDialog != null) {
             createItemsRenameTitleDialog.setCallBack(CreateItemsActivity.this);
         }
 
         createItemsAddEditItemDialog = (CreateItemsAddEditItemDialog) getSupportFragmentManager().findFragmentByTag("Dialog03");
-        if (createItemsAddEditItemDialog != null){
+        if (createItemsAddEditItemDialog != null) {
             createItemsAddEditItemDialog.setCallBack(CreateItemsActivity.this);
         }
     }
@@ -171,6 +175,39 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
                 }
 
             }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+                    View itemView = viewHolder.itemView;
+
+                    Paint paint = new Paint();
+                    Bitmap bitmap;
+
+                    if (dX > 0) { // swiping right
+                        paint.setColor(getResources().getColor(R.color.child_view_complete));
+                        bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_circle_complete);
+                        float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+                        float hPlacement = scale * 16;
+                        float vPlacement = scale * 20;
+
+                        c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom(), paint);
+                        c.drawBitmap(bitmap, hPlacement, (float) itemView.getTop() + vPlacement, null);
+
+                    } else { // swiping left
+                        paint.setColor(getResources().getColor(R.color.primaryColorAccent));
+                        bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_circle_bin);
+                        float height = (itemView.getHeight() / 2) - (bitmap.getHeight() / 2);
+                        float bitmapWidth = bitmap.getWidth();
+
+                        c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom(), paint);
+                        c.drawBitmap(bitmap, ((float) itemView.getRight() - bitmapWidth) - 96f, (float) itemView.getTop() + height, null);
+                    }
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+            }
         };
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -210,6 +247,8 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         mItemRecyclerAdapter.notifyItemRemoved(layoutPosition);
         mItemsArrayList.remove(layoutPosition);
+
+
     }
 
     public void markItemAsDoneToggle(final int layoutPosition) {
@@ -230,7 +269,9 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         dbHelper.updateItemDone(itemsListData);
 
-        mItemRecyclerAdapter.notifyItemChanged(layoutPosition);
+        mItemRecyclerAdapter.notifyItemRemoved(layoutPosition);
+        mItemRecyclerAdapter.notifyItemInserted(layoutPosition);
+
     }
 
     public void setTitlePopulateRecyclerView(String titleId) {
@@ -249,7 +290,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }
-    
+
     @Override
     public void onBackPressed() {
 

@@ -48,5 +48,8 @@
     <color name="circle_z">#6d4c41</color>
     <color name="circle_other">#546e7a</color>
 
+    <!-- recycler child colors -->
+    <color name="child_view_complete">#8DC74A</color>
+
 
 </resources>

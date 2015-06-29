@@ -41,6 +41,8 @@
     <string name="create_list_swipe_left">SWIPE LEFT = DELETE</string>
     <string name="create_list_swipe_right">SWIPE RIGHT = TOGGLE COMPLETE ITEMS</string>
     <string name="create_list_splah_button">GOT IT</string>
+    <string name="create_list_tasks_to_complete">Tasks to complete</string>
+    <string name="create_item_recycler_view_completed_tasks">Completed tasks</string>
 
     <!-- create items menu -->
     <string name="create_menu_edit_title">Edit Title Name</string>

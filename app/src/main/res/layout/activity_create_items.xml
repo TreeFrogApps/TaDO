@@ -1,8 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.treefrogapps.TaDo.CreateItemsActivity">
 
@@ -10,13 +11,20 @@
         android:id="@+id/myToolBar"
         layout="@layout/tool_bar" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/create_list_tasks_to_complete"
+        android:textColor="@color/primaryColorAccent"
+        android:textSize="@dimen/text_16sp" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/createItemRecyclerView"
-            android:layout_margin="@dimen/four_dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
@@ -36,10 +44,7 @@
             app:pressedTranslationZ="12dp" />
 
     </FrameLayout>
-
-
-
-    </LinearLayout>
+</LinearLayout>
 
 
 
