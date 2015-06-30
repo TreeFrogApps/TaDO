@@ -32,8 +32,10 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     private Toolbar mToolbar;
     private DBHelper dbHelper;
     private SharedPreferences sharedPreferences;
+    private RestoreRecyclerPosition mRestoreRecyclerPosition;
 
     private RecyclerView mCreateListRecyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
     private ItemRecyclerAdapter mItemRecyclerAdapter;
     private ArrayList<ItemsListData> mItemsArrayList;
     private FloatingActionButton mCreateItemFAB;
@@ -153,7 +155,8 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     public void initialiseRecyclerView() {
 
         mCreateListRecyclerView = (RecyclerView) findViewById(R.id.createItemRecyclerView);
-        mCreateListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mCreateListRecyclerView.setLayoutManager(mLinearLayoutManager);
         mItemsArrayList = new ArrayList<>();
         mItemRecyclerAdapter = new ItemRecyclerAdapter(this, mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
@@ -235,7 +238,17 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void addEditItemDialogCallBack() {
         Log.e("CALLED", "CALLBACK");
-        setTitlePopulateRecyclerView(mTitleId);
+
+        if (mItemsArrayList.size() > 1){
+            // use helper class to get current position of recyclerView
+            mRestoreRecyclerPosition = new RestoreRecyclerPosition(mCreateListRecyclerView, mLinearLayoutManager);
+            RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
+            setTitlePopulateRecyclerView(mTitleId);
+            mRestoreRecyclerPosition.setCurrentPosition(recyclerPositionValues);
+        } else {
+            setTitlePopulateRecyclerView(mTitleId);
+        }
+
     }
 
     private void removeItemFromRViewAndDB(int layoutPosition) {

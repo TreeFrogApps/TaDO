@@ -60,7 +60,8 @@
             android:layout_marginRight="@dimen/four_dp"
             android:background="@drawable/button_selector"
             android:text="@string/fragment_my_lists_dialog_cancel"
-            android:textColor="@color/primaryColor" />
+            android:textColor="@color/primaryColor"
+            style="?android:attr/borderlessButtonStyle"/>
 
         <Button
             android:id="@+id/createItemDialogOkButton"
@@ -71,7 +72,9 @@
             android:layout_marginRight="@dimen/twenty_four"
             android:background="@drawable/button_selector"
             android:text="@string/fragment_my_lists_dialog_done"
-            android:textColor="@color/primaryColor" />
+            android:textColor="@color/primaryColor"
+            style="?android:attr/borderlessButtonStyle"/>
+
     </LinearLayout>
 
 </LinearLayout>
