@@ -263,6 +263,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return itemsListDataArrayList;
     }
 
+
+
     public void deleteTitle(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -313,14 +315,62 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    public void updateItemName(ItemsListData oldItem, ItemsListData newItem) {
+    public ItemsListData getSingleItem(String itemId){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ItemsListData itemsListData = new ItemsListData();
+
+        Cursor cursor = database.rawQuery(Constants.ITEM_GET_SINGLE, new String[]{itemId});
+
+        int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
+        int title_id = cursor.getColumnIndex(Constants.TITLE_ID);
+        int item = cursor.getColumnIndex(Constants.ITEM);
+        int itemDetail = cursor.getColumnIndex(Constants.ITEM_DETAIL);
+        int duration = cursor.getColumnIndex(Constants.ITEM_DURATION);
+        int dateTime = cursor.getColumnIndex(Constants.ITEM_DATETIME);
+        int itemDone = cursor.getColumnIndex(Constants.ITEM_DONE_COLUMN);
+        int itemPriority = cursor.getColumnIndex(Constants.ITEM_PRIORITY);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                itemsListData.setItemId(cursor.getString(item_id));
+                Log.e("ITEM ID", itemsListData.getItemId());
+                itemsListData.setTitleId(cursor.getString(title_id));
+                Log.e("ITEM TITLE ID", itemsListData.getTitleId());
+                itemsListData.setItem(cursor.getString(item));
+                Log.e("ITEM", itemsListData.getItem());
+                itemsListData.setItemDetail(cursor.getString(itemDetail));
+                Log.e("ITEM DETAIL", itemsListData.getItemDetail());
+                itemsListData.setDuration(cursor.getString(duration));
+                Log.e("ITEM DURATION", itemsListData.getDuration());
+                itemsListData.setDateTime(cursor.getString(dateTime));
+                Log.e("ITEM DATE", itemsListData.getDateTime());
+                itemsListData.setItemDone(cursor.getString(itemDone));
+                Log.e("ITEM DONE", itemsListData.getItemDone());
+                itemsListData.setItemPriority(cursor.getString(itemPriority));
+                Log.e("ITEM PRIORITY", itemsListData.getItemPriority());
+
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+
+        return itemsListData;
+
+    }
+
+    public void updateItem(ItemsListData newItemDetails, ItemsListData currentItemId){
 
         SQLiteDatabase database = this.getWritableDatabase();
         database.beginTransactionNonExclusive();
 
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE);
         executePreparedStatement(2, database, statement,
-                new String[]{newItem.getItem(), newItem.getItemDetail(), newItem.getDuration(), newItem.getItemPriority(), oldItem.getItemId()});
+                new String[]{newItemDetails.getItem(), newItemDetails.getItemDetail(),
+                        newItemDetails.getDuration(), newItemDetails.getItemPriority(), currentItemId.getItemId()});
     }
 
     public void updateItemDone(ItemsListData itemsListData) {

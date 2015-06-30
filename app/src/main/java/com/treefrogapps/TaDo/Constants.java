@@ -84,6 +84,8 @@ public class Constants {
 
     protected final static String ITEM_DELETE_SINGLE = "DELETE FROM items_list WHERE items_list.item_id = ?;";
 
+    protected final static String ITEM_GET_SINGLE = "SELECT * FROM items_list WHERE items_list.item_id = ?";
+
     protected final static String ITEM_UPDATE = "UPDATE items_list SET item = ?, item_detail = ?, duration = ?, priority = ? WHERE item_id = ?;";
 
     protected final static String ITEM_UPDATE_ITEM_DONE = "UPDATE items_list SET item_done = ? WHERE item_id = ?;";

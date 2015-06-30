@@ -243,56 +243,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
     }
 
 
-    /*
-    public void getTotalItemsAndTime() {
-
-        String[] totals = new String[3];
-
-        // get total items from array list size
-        totals[0] = String.valueOf(mItemsArrayList.size());
-
-        ArrayList<ItemsListData> itemsNotDoneArrayList =
-                dbHelper.getItemsForTitleNotDone(mTitlesSpinner.getSelectedItem().toString());
-
-        // get total items from array list size of NOT DONE items
-        totals[1] = String.valueOf(itemsNotDoneArrayList.size());
-
-
-        int hours = 0;
-        int mins = 0;
-
-        // get total hours mins - iterate through array list durations
-        // adding total hours and total mins
-        for (int i = 0; i < itemsNotDoneArrayList.size(); i++) {
-
-            String itemDuration = itemsNotDoneArrayList.get(i).getDuration().substring(0,
-                    (itemsNotDoneArrayList.get(i).getDuration().length() - 3));
-
-            String[] durationArray = itemDuration.split(":");
-            hours += Integer.valueOf(durationArray[0]);
-            mins += Integer.valueOf(durationArray[1]);
-        }
-
-        int totalMins = (hours * 60) + mins;
-        int finalHours = totalMins / 60;
-        // modulus to get remainder minutes
-        int finalMins = totalMins % 60;
-
-        totals[2] = String.valueOf(finalHours) + "hrs " + String.valueOf(finalMins) + "mins";
-
-        mHomeFragmentTotalItemsTextView.setText(totals[0]);
-        mHomeFragmentTotalItemsTadoTextView.setText(totals[1]);
-        mHomeFragmentTotalTimeLeftTextView.setText(totals[2]);
-        mHomeFragmentListSpecCardView.setVisibility(View.VISIBLE);
-        mHomeFragmentListSpecCardView.startAnimation(Animations.alphaMoveInAnim(getActivity()));
-        mHomeFragmentItemsTextView.startAnimation(Animations.alphaFadeOutAndIn(getActivity()));
-    }
-
-    */
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 }

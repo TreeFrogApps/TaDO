@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -154,7 +155,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         mCreateListRecyclerView = (RecyclerView) findViewById(R.id.createItemRecyclerView);
         mCreateListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mItemsArrayList = new ArrayList<>();
-        mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
+        mItemRecyclerAdapter = new ItemRecyclerAdapter(this, mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
         mCreateListRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -173,7 +174,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
                 } else if (direction == ItemTouchHelper.RIGHT) {
                     markItemAsDoneToggle(viewHolder.getLayoutPosition());
                 }
-
             }
 
             @Override
@@ -210,7 +210,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
             }
         };
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mCreateListRecyclerView);
     }
 
@@ -234,6 +234,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void addEditItemDialogCallBack() {
+        Log.e("CALLED", "CALLBACK");
         setTitlePopulateRecyclerView(mTitleId);
     }
 
@@ -247,8 +248,6 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
 
         mItemRecyclerAdapter.notifyItemRemoved(layoutPosition);
         mItemsArrayList.remove(layoutPosition);
-
-
     }
 
     public void markItemAsDoneToggle(final int layoutPosition) {
@@ -287,7 +286,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         mItemsArrayList = dbHelper.getItemsForTitleNotDone(titleId);
         mItemsArrayList.addAll(dbHelper.getItemsForTitleDone(titleId));
 
-        mItemRecyclerAdapter = new ItemRecyclerAdapter(getApplicationContext(), mItemsArrayList);
+        mItemRecyclerAdapter = new ItemRecyclerAdapter(this, mItemsArrayList);
         mCreateListRecyclerView.setAdapter(mItemRecyclerAdapter);
     }
 
@@ -299,5 +298,36 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         super.onBackPressed();
         finish();
     }
+
+
+    public void getTotalItemsAndTime() {
+
+        ArrayList<ItemsListData> itemsNotDoneArrayList =
+                dbHelper.getItemsForTitleNotDone(mTitleId);
+
+        int hours = 0;
+        int mins = 0;
+
+        // get total hours mins - iterate through array list durations
+        // adding total hours and total mins
+        for (int i = 0; i < itemsNotDoneArrayList.size(); i++) {
+
+            String itemDuration = itemsNotDoneArrayList.get(i).getDuration().substring(0,
+                    (itemsNotDoneArrayList.get(i).getDuration().length() - 3));
+
+            String[] durationArray = itemDuration.split(":");
+            hours += Integer.valueOf(durationArray[0]);
+            mins += Integer.valueOf(durationArray[1]);
+        }
+
+        int totalMins = (hours * 60) + mins;
+        int finalHours = totalMins / 60;
+        // modulus to get remainder minutes
+        int finalMins = totalMins % 60;
+
+        String time = String.valueOf(finalHours) + "hr" + String.valueOf(finalMins) + "mins";
+    }
+
+
 
 }

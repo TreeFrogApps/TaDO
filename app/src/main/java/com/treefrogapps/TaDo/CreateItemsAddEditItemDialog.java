@@ -41,8 +41,7 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
     private String titleId;
     private String itemId;
     private String itemDone;
-    private ItemsListData itemListData;
-
+    private Bundle bundle;
     private TextView createListAddItemTitleTextView;
     private LinearLayout createListAddItemFirstLayout;
     private EditText createItemDialogTaskEditText;
@@ -78,8 +77,10 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         dialogBuilder.setCancelable(true);
 
         initialiseInputs();
+        radioGroupListener();
+        numberPickerListener();
 
-        Bundle bundle = getArguments();
+        bundle = getArguments();
         if (bundle.getString(Constants.TITLE_ID) != null) {
             titleId = bundle.getString(Constants.TITLE_ID);
         }
@@ -87,20 +88,18 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         // get bundle for editing item
         if (bundle.getString(Constants.ITEMS_ID) != null) {
             itemId = bundle.getString(Constants.ITEMS_ID);
+            populateInputs(itemId);
 
-            // TODO - use dbhelper to get create a itemslistdata from ITEMS_ID - then use to populate all fields
         } else {
             itemDone = "N";
         }
-
-        radioGroupListener();
-        numberPickerListener();
 
         createItemDialogCancelButton.setOnClickListener(this);
         createItemDialogPositiveButton.setOnClickListener(this);
 
         return dialogBuilder;
     }
+
 
     @Override
     public void onClick(View v) {
@@ -122,7 +121,11 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
                     }
                 }, 200);
 
-                createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_add_item));
+                if (bundle.getString(Constants.ITEMS_ID) == null){
+                    createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_add_item));
+                } else {
+                    createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_edit_item));
+                }
                 createItemDialogCancelButton.setText(getResources().getString(R.string.fragment_my_lists_dialog_cancel));
                 createItemDialogPositiveButton.setText(getResources().getString(R.string.activity_create_items_dialog_item_next));
             }
@@ -170,14 +173,20 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
                     itemDetail = "-";
                 }
 
-                addItemToTitleTable(titleId, itemName, itemDetail, getNumberPickerValues(),
-                        itemDone, radioGroupSelection);
+                if (bundle.getString(Constants.ITEMS_ID) == null){
 
-                mOnAddItemCallBack.addEditItemDialogCallBack();
-                dialogBuilder.dismiss();
+                    addItemToTitleTable(titleId, itemName, itemDetail, getNumberPickerValues(),
+                            itemDone, radioGroupSelection);
+
+                    mOnAddItemCallBack.addEditItemDialogCallBack();
+                    dialogBuilder.dismiss();
+                } else {
+                    updateItemFromListTable(itemName, itemDetail, getNumberPickerValues(), radioGroupSelection);
+                    mOnAddItemCallBack.addEditItemDialogCallBack();
+                    dialogBuilder.dismiss();
+                }
             }
         }
-
     }
 
     private void hideKeyboard() {
@@ -186,7 +195,6 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         inputManager.hideSoftInputFromWindow(createItemDialogTaskEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         inputManager.hideSoftInputFromWindow(createItemDialogDetailsEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
 
     private void initialiseInputs() {
 
@@ -228,7 +236,6 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
                 }
             }
         });
-
     }
 
     private void numberPickerListener() {
@@ -275,6 +282,22 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         }
     }
 
+    private void populateInputs(String itemId) {
+
+        ItemsListData itemsListData = dbHelper.getSingleItem(itemId);
+
+        createListAddItemTitleTextView.setText(getResources().getString(R.string.activity_create_items_dialog_edit_item));
+        createItemDialogTaskEditText.setText(itemsListData.getItem());
+        createItemDialogDetailsEditText.setText(itemsListData.getItemDetail());
+
+        radioGroupSelection = itemsListData.getItemPriority();
+        if (itemsListData.getItemPriority().equals("L")) createItemRadioGroup.check(R.id.createItemRadioButtonLow);
+        if (itemsListData.getItemPriority().equals("M")) createItemRadioGroup.check(R.id.createItemRadioButtonMed);
+        if (itemsListData.getItemPriority().equals("H")) createItemRadioGroup.check(R.id.createItemRadioButtonHigh);
+
+        setNumberPickerValues(itemsListData.getDuration());
+    }
+
     public void addItemToTitleTable(String titleId, String itemName, String itemDetail,
                                     String duration, String itemDone, String itemPriority) {
 
@@ -293,5 +316,20 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         itemsListData.setItemPriority(itemPriority);
 
         dbHelper.insertIntoItemsTable(itemsListData);
+    }
+
+    public void updateItemFromListTable(String itemName, String itemDetail,
+                                        String duration, String itemPriority) {
+
+        ItemsListData currentItemId = new ItemsListData();
+        currentItemId.setItemId(itemId);
+
+        ItemsListData newItemDetails = new ItemsListData();
+        newItemDetails.setItem(itemName);
+        newItemDetails.setItemDetail(itemDetail);
+        newItemDetails.setDuration(duration);
+        newItemDetails.setItemPriority(itemPriority);
+
+        dbHelper.updateItem(newItemDetails, currentItemId);
     }
 }

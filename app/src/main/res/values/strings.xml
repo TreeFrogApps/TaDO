@@ -41,7 +41,7 @@
     <string name="create_list_swipe_left">SWIPE LEFT = DELETE</string>
     <string name="create_list_swipe_right">SWIPE RIGHT = TOGGLE COMPLETE ITEMS</string>
     <string name="create_list_splah_button">GOT IT</string>
-    <string name="create_list_tasks_to_complete">Tasks to complete</string>
+    <string name="create_list_tasks_to_complete">Tasks</string>
     <string name="create_item_recycler_view_completed_tasks">Completed tasks</string>
 
     <!-- create items menu -->
@@ -64,6 +64,7 @@
 
     <!-- CreateItemsActivity Dialog - add item -->
     <string name="activity_create_items_dialog_add_item">Add a task</string>
+    <string name="activity_create_items_dialog_edit_item">Edit task</string>
     <string name="activity_create_items_dialog_add_details">Details</string>
     <string name="activity_create_items_dialog_item_info">Priority &amp; Estimated time</string>
     <string name="activity_create_items_dialog_item_next">NEXT</string>
