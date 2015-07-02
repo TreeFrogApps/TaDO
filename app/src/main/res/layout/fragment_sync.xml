@@ -1,13 +1,35 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.treefrogapps.TaDo.SyncFragment">
+    tools:context="com.treefrogapps.TaDo.SyncFragment"
+    android:orientation="vertical"
+    android:gravity="center">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/mButtonUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryColor"
+        android:text="Upload database to Drive App Folder"
+        android:layout_margin="@dimen/twenty_four"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/mButtonDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryColor"
+
+        android:text="Download database from Drive - if exists"
+        android:layout_margin="@dimen/twenty_four"/>
+
+    <Button
+        android:id="@+id/mButtonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryColor"
+
+        android:text="Delete File from Drive - if exists"
+        android:layout_margin="@dimen/twenty_four"/>
+
+</LinearLayout>
