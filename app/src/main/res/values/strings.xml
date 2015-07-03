@@ -75,6 +75,11 @@
     <string name="activity_create_items_dialog_item_medium">Med</string>
     <string name="activity_create_items_dialog_item_high">High</string>
 
+    <!-- Sync Fragment -->
+    <string name="sync_fragment_radio_button_upload">Upload to Drive</string>
+    <string name="sync_fragment_radio_button_download">Download from Drive</string>
+    <string name="sync_fragment_radio_button_delete">Delete Drive file</string>
+    <string name="sync_fragment_sync_button">SYNC</string>
 
 
     <!-- MyListsFragment menu -->

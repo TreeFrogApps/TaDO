@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,6 +26,9 @@ import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveResource;
+import com.google.android.gms.drive.Metadata;
+import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
@@ -48,22 +52,20 @@ public class SyncFragment extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     private DriveId driveId;
     private String driveFileId;
-    private Button mButtonUpload;
-    private Button mButtonDownload;
-    private Button mButtonDelete;
 
-    private static int connectionType = 0;
+    private RadioGroup mSyncFragmentRadioGroup;
+
+    private Button mSyncFragmentSyncButton;
+    private Button mSyncFramentCancelButton;
+
+
+    private static int connectionType = 1;
     // 1 = upload / amend file / overwrite file
     // 2 = download
     // 3 = delete
 
     public SyncFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -78,47 +80,12 @@ public class SyncFragment extends Fragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        buildConnection();
+
         sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         dbHelper = new DBHelper(getActivity());
 
-        mButtonUpload = (Button) rootView.findViewById(R.id.mButtonUpload);
-        mButtonUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                connectionType = 1;
-
-                // TODO ONE - 2 - attempt to connect
-                buildConnection();
-                mGoogleApiClient.connect();
-            }
-        });
-
-        mButtonDownload = (Button) rootView.findViewById(R.id.mButtonDownload);
-        mButtonDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                connectionType = 2;
-
-                // TODO TWO - 2 - attempt to connect
-                buildConnection();
-                mGoogleApiClient.connect();
-            }
-        });
-
-        mButtonDelete = (Button) rootView.findViewById(R.id.mButtonDelete);
-        mButtonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                connectionType = 3;
-
-                // TODO ONE THREE - 2 - attempt to connect
-                buildConnection();
-                mGoogleApiClient.connect();
-            }
-        });
+        initialiseInputs();
 
     } // End of onActivityCreated
 
@@ -134,20 +101,145 @@ public class SyncFragment extends Fragment implements
                 .build();
     }
 
+    public void initialiseInputs(){
+
+        mSyncFragmentRadioGroup = (RadioGroup) rootView.findViewById(R.id.syncFragmentRadioGroup);
+        mSyncFragmentRadioGroup.check(R.id.syncFragmentUploadRadioButton);
+
+        mSyncFragmentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (checkedId == R.id.syncFragmentUploadRadioButton) {
+                    connectionType = 1; // upload - edit
+                } else if (checkedId == R.id.syncFragmentDownloadRadioButton) {
+                    connectionType = 2; // download
+                } else {
+                    connectionType = 3; // delete
+                }
+            }
+        });
+
+        mSyncFragmentSyncButton = (Button) rootView.findViewById(R.id.syncFragmentSyncButton);
+        mSyncFragmentSyncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // TODO ONE TWO THREE - 2 - attempt to connect
+                connectToDrive();
+                mSyncFragmentSyncButton.setClickable(false);
+                mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.grey_light));
+            }
+        });
+    }
+
+    public void connectToDrive(){
+        if (mGoogleApiClient.isConnected()){
+            syncDrive();
+        } else {
+            buildConnection();
+            mGoogleApiClient.connect();
+        }
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
-        // TODO ONE 3 - connected, now methods executed based on int value
-        if (connectionType == 1) {
-            uploadFile();
-        } else if (connectionType == 2) {
-            downloadFile();
-        } else if (connectionType == 3) {
-            deleteTheFile();
+        // TODO ONE TWO THREE 3 - connected, execute listing file, then do task after
+        syncDrive();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // TODO ONE 2b
+        if (connectionResult.hasResolution()) {
+
+            try {
+                connectionResult.startResolutionForResult(getActivity(), Constants.REQUEST_CODE_RESOLUTION);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+
+                Toast.makeText(getActivity(), "Unable to complete connection to GDrive", Toast.LENGTH_SHORT).show();
+                mSyncFragmentSyncButton.setClickable(true);
+                mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+            }
         }
+    }
+    
+    // TODO ONE TWO THREE = 4
+    public void syncDrive(){
+        // try to sync
+        Drive.DriveApi.requestSync(mGoogleApiClient).setResultCallback(new ResultCallback<com.google.android.gms.common.api.Status>() {
+            @Override
+            public void onResult(com.google.android.gms.common.api.Status status) {
+                if (!status.getStatus().isSuccess()) {
+                    Log.e("SYNCING", "ERROR " + status.getStatusMessage() + " " + status.getStatusCode());
+                    Toast.makeText(getActivity(), "SYNCING ERROR : " + status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("SYNCING", "SUCCESS");
+                    new AppFolderContentsAsyncTask(getActivity()).execute();
+                }
+            }
+        });
 
     }
 
-    // TODO ONE - 4
+    // TODO ONE TWO THREE 4a - get appfolder contents - could be temp class just for seeing what files it find
+    public class AppFolderContentsAsyncTask extends AsyncTask<Void, Void, String> {
+
+        public AppFolderContentsAsyncTask(Context context){
+
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            String fileCount;
+
+            MetadataBuffer buffer = Drive.DriveApi.getAppFolder(mGoogleApiClient)
+                    .listChildren(mGoogleApiClient).await().getMetadataBuffer();
+
+            fileCount = "found " + buffer.getCount() + " file(s)";
+
+            for (Metadata m: buffer){
+
+                DriveId id = m.getDriveId();
+                DriveFile file = Drive.DriveApi.getFile(mGoogleApiClient, id);
+
+                file.open( mGoogleApiClient, DriveFile.MODE_READ_ONLY, null).await().getDriveContents();
+
+                DriveResource.MetadataResult result = file.getMetadata(mGoogleApiClient).await();
+                Metadata metadata = result.getMetadata();
+
+                // Get the modified date
+                metadata.getModifiedDate();
+            }
+
+            buffer.release();
+            return fileCount;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.e("DRIVE FILE COUNT ", s);
+
+            // after contents listed - continue with sync task based on radio group selection
+            switch (connectionType){
+                case 1 : uploadFile(); break;
+                case 2 : downloadFile(); break;
+                case 3 : deleteTheFile(); break;
+                default: break;
+            }
+        }
+    }
+
+
+    // TODO ONE - 4b
     private void uploadFile() {
 
         // search for existing file
@@ -161,7 +253,7 @@ public class SyncFragment extends Fragment implements
 
     }
 
-    // TODO TWO - 4
+    // TODO TWO - 4c
     private void downloadFile() {
         // search for existing file
         Query query = new Query.Builder()
@@ -173,7 +265,7 @@ public class SyncFragment extends Fragment implements
         Drive.DriveApi.query(mGoogleApiClient, query).setResultCallback(searchFileCallBack);
     }
 
-    // TODO THREE - 4
+    // TODO THREE - 4d
     private void deleteTheFile() {
         // search for existing file
         Query query = new Query.Builder()
@@ -185,7 +277,7 @@ public class SyncFragment extends Fragment implements
         Drive.DriveApi.query(mGoogleApiClient, query).setResultCallback(searchFileCallBack);
     }
 
-    // TODO ONE THREE - 4a - check if file exists and either overwrite using its unique DriveId (file id) or create new file if it doesn't exist
+    // TODO ONE THREE - 4b/c/d - check if file exists and either overwrite using its unique DriveId (file id) or create new file if it doesn't exist
     private ResultCallback<DriveApi.MetadataBufferResult> searchFileCallBack = new ResultCallback<DriveApi.MetadataBufferResult>() {
         @Override
         public void onResult(DriveApi.MetadataBufferResult metadataBufferResult) {
@@ -196,7 +288,7 @@ public class SyncFragment extends Fragment implements
 
                 if (metadataBufferResult.getMetadataBuffer().get(0).getMimeType().equals("application/x-sqlite3")) {
 
-                    // TODO ONE THREE = 4b - a result is returned meaning the file exists and we get its unique ID
+                    // TODO ONE THREE = 4e - a result is returned meaning the file exists and we get its unique ID
                     driveId = metadataBufferResult.getMetadataBuffer().get(0).getDriveId();
                     Log.e("DRIVE ID FOUND", driveId.encodeToString());
                     // start async task to edit / overwrite contents of file
@@ -217,26 +309,29 @@ public class SyncFragment extends Fragment implements
             } else if (connectionType == 1) {
 
                 metadataBufferResult.release();
-                // TODO ONE 4b
+                // TODO ONE 5
                 // new drive contents - file doesn't exist yet
                 Drive.DriveApi.newDriveContents(mGoogleApiClient).setResultCallback(driveContentsCallback);
             } else {
                 metadataBufferResult.release();
                 Toast.makeText(getActivity(), "NO MATCHING ENTRIES TO main_database.db", Toast.LENGTH_SHORT).show();
-                mGoogleApiClient.disconnect();
+
+                mSyncFragmentSyncButton.setClickable(true);
+                mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+
             }
         }
     };
 
 
-    // TODO ONE 4b - get drive contents callback
+    // TODO ONE 5 - get drive contents callback
     private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback = new ResultCallback<DriveApi.DriveContentsResult>() {
         @Override
         public void onResult(DriveApi.DriveContentsResult driveContentsResult) {
 
             if (!driveContentsResult.getStatus().isSuccess()) {
                 Toast.makeText(getActivity(), "Error getting drive contents", Toast.LENGTH_SHORT).show();
-                mGoogleApiClient.disconnect();
+
 
             } else {
                 // Get an outputStream for the contents
@@ -262,7 +357,7 @@ public class SyncFragment extends Fragment implements
                 MetadataChangeSet metaDataChangeSet = new MetadataChangeSet.Builder()
                         .setMimeType("application/x-sqlite3").setTitle("main_database.db").build();
 
-                // TODO ONE - 4c
+                // TODO ONE - 4h
                 Drive.DriveApi.getAppFolder(mGoogleApiClient)
                         .createFile(mGoogleApiClient, metaDataChangeSet, driveContentsResult.getDriveContents())
                         .setResultCallback(fileUploadCallBack);
@@ -271,7 +366,7 @@ public class SyncFragment extends Fragment implements
     };
 
 
-    // TODO ONE - 4c - check uploaded ok
+    // TODO ONE - 5 - check uploaded ok
     private ResultCallback<DriveFolder.DriveFileResult> fileUploadCallBack = new ResultCallback<DriveFolder.DriveFileResult>() {
         @Override
         public void onResult(DriveFolder.DriveFileResult driveFileResult) {
@@ -283,48 +378,15 @@ public class SyncFragment extends Fragment implements
                 driveFileId = driveFileResult.getDriveFile().getDriveId().encodeToString();
                 Log.e("DRIVE FILE ID ", driveFileId);
                 Toast.makeText(getActivity(), "File uploaded successfully", Toast.LENGTH_SHORT).show();
-            }
 
-            mGoogleApiClient.disconnect();
+                mSyncFragmentSyncButton.setClickable(true);
+                mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+            }
         }
     };
 
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO ONE 2b
-        if (connectionResult.hasResolution()) {
-
-            try {
-                connectionResult.startResolutionForResult(getActivity(), Constants.REQUEST_CODE_RESOLUTION);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-
-                Toast.makeText(getActivity(), "Unable to complete connection to GDrive", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.e("CALLED", "OnActivity Result");
-
-        switch (requestCode) {
-            // TODO ONE - 2c
-            case Constants.REQUEST_CODE_RESOLUTION:
-                if (resultCode == Activity.RESULT_OK) {
-                    mGoogleApiClient.connect();
-                }
-                break;
-        }
-    }
-
-    //Todo ONE - 4b - edit contents using async task
+    //Todo ONE - 5 - edit contents using async task
     public class EditContentsAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public EditContentsAsyncTask(Context context) {
@@ -378,11 +440,12 @@ public class SyncFragment extends Fragment implements
                 Toast.makeText(getActivity(), "Successfully edited contents", Toast.LENGTH_SHORT).show();
             }
 
-            mGoogleApiClient.disconnect();
+            mSyncFragmentSyncButton.setClickable(true);
+            mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
         }
     }
 
-    // TODO TWO - 4b - asynctask to retrieve file and write into database file
+    // TODO TWO - 5 - asynctask to retrieve file and write into database file
     public class RetrieveFileAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public RetrieveFileAsyncTask(Context context) {
@@ -440,12 +503,14 @@ public class SyncFragment extends Fragment implements
             } else {
                 Toast.makeText(getActivity(), "Successfully downloaded database", Toast.LENGTH_SHORT).show();
             }
-            mGoogleApiClient.disconnect();
+
+            mSyncFragmentSyncButton.setClickable(true);
+            mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
         }
     }
 
 
-    // TODO THREE - 4b  - asynctask to delete the file from g drive
+    // TODO THREE - 5  - asynctask to delete the file from g drive
     public class DeleteFileAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public DeleteFileAsyncTask(Context context) {
@@ -469,7 +534,25 @@ public class SyncFragment extends Fragment implements
             } else {
                 Toast.makeText(getActivity(), "Successfully deleted File", Toast.LENGTH_SHORT).show();
             }
-            mGoogleApiClient.disconnect();
+
+            mSyncFragmentSyncButton.setClickable(true);
+            mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.e("CALLED", "OnActivity Result");
+
+        switch (requestCode) {
+            // TODO ONE - 2c
+            case Constants.REQUEST_CODE_RESOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    mGoogleApiClient.connect();
+                }
+                break;
         }
     }
 

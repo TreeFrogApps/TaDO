@@ -4,32 +4,106 @@
     android:layout_height="match_parent"
     tools:context="com.treefrogapps.TaDo.SyncFragment"
     android:orientation="vertical"
-    android:gravity="center">
+    android:background="@color/white">
 
-    <Button
-        android:id="@+id/mButtonUpload"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/twenty_four">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher_big"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_drive_logo_big"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"/>
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/syncFragmentRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/primaryColor"
-        android:text="Upload database to Drive App Folder"
-        android:layout_margin="@dimen/twenty_four"/>
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/twenty_four">
 
-    <Button
-        android:id="@+id/mButtonDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryColor"
+        <RadioButton
+            android:id="@+id/syncFragmentUploadRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sync_fragment_radio_button_upload"
+            android:textSize="@dimen/text_20sp"
+            android:textColor="@color/grey_dark"
+            android:layout_margin="@dimen/activity_horizontal_margin"/>
 
-        android:text="Download database from Drive - if exists"
-        android:layout_margin="@dimen/twenty_four"/>
+        <RadioButton
+            android:id="@+id/syncFragmentDownloadRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sync_fragment_radio_button_download"
+            android:textSize="@dimen/text_20sp"
+            android:textColor="@color/grey_dark"
+            android:layout_margin="@dimen/activity_horizontal_margin"/>
 
-    <Button
-        android:id="@+id/mButtonDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryColor"
+        <RadioButton
+            android:id="@+id/syncFragmentDeleteRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sync_fragment_radio_button_delete"
+            android:textSize="@dimen/text_20sp"
+            android:textColor="@color/grey_dark"
+            android:layout_margin="@dimen/activity_horizontal_margin"/>
 
-        android:text="Delete File from Drive - if exists"
-        android:layout_margin="@dimen/twenty_four"/>
+    </RadioGroup>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|bottom"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/syncFragmentCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:layout_marginLeft="@dimen/twenty_four"
+            android:textColor="@color/primaryColor"
+            android:textSize="@dimen/text_24sp"
+            android:background="@drawable/button_selector"
+            android:text="@string/fragment_my_lists_dialog_cancel"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_marginBottom="@dimen/twenty_four"/>
+
+        <Button
+            android:id="@+id/syncFragmentSyncButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:layout_marginLeft="@dimen/twenty_four"
+            android:textColor="@color/primaryColor"
+            android:textSize="@dimen/text_24sp"
+            android:background="@drawable/button_selector"
+            android:text="@string/sync_fragment_sync_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_marginBottom="@dimen/twenty_four"/>
+    </LinearLayout>
+
+
+
+
 
 </LinearLayout>
