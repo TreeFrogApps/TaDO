@@ -59,7 +59,7 @@ public class SyncFragment extends Fragment implements
     private Button mSyncFramentCancelButton;
 
 
-    private static int connectionType = 1;
+    private static int connectionType;
     // 1 = upload / amend file / overwrite file
     // 2 = download
     // 3 = delete
@@ -105,6 +105,7 @@ public class SyncFragment extends Fragment implements
 
         mSyncFragmentRadioGroup = (RadioGroup) rootView.findViewById(R.id.syncFragmentRadioGroup);
         mSyncFragmentRadioGroup.check(R.id.syncFragmentUploadRadioButton);
+        connectionType = 1;
 
         mSyncFragmentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

@@ -17,23 +17,28 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBHelper dbHelper;
-    Toolbar mToolbar;
-    NavigationView mNavView;
-    DrawerLayout mDrawLayout;
-    ActionBarDrawerToggle mToggle;
+    private DBHelper dbHelper;
+    private Toolbar mToolbar;
+    private NavigationView mNavView;
+    private DrawerLayout mDrawLayout;
+    private ActionBarDrawerToggle mToggle;
+
+    private int menuPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initialiseMenu();
-        dbHelper = new DBHelper(this);
-
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null){
+            menuPosition = savedInstanceState.getInt("menuPosition");
+        } else {
+            menuPosition = 0;
             updateDisplayFragment("My Lists");
         }
+
+        initialiseMenu();
+        dbHelper = new DBHelper(this);
     }
 
     public void initialiseMenu() {
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mToggle = new ActionBarDrawerToggle(this, mDrawLayout, mToolbar, R.string.app_name, R.string.app_name);
 
         mNavView = (NavigationView) findViewById(R.id.navView);
-        mNavView.getMenu().getItem(0).setChecked(true);
+        mNavView.getMenu().getItem(menuPosition).setChecked(true);
         mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem menuItem) {
@@ -78,15 +83,19 @@ public class MainActivity extends AppCompatActivity {
         switch (menuTitle) {
 
             case "My Lists":
+                menuPosition = 0;
                 fragment = new MyListsFragment();
                 break;
             case "TaDO Chooser":
+                menuPosition = 1;
                 fragment = new TaDOChooserFragment();
                 break;
             case "Sync with Google Drive":
+                menuPosition = 2;
                 fragment = new SyncFragment();
                 break;
             case "Scheduler":
+                menuPosition = 3;
                 fragment = new SchedulerFragment();
                 break;
             default:
@@ -142,5 +151,12 @@ public class MainActivity extends AppCompatActivity {
         // if starting startingActivityForResult not from initiating fragment i.e. from recyclerAdapter
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frameContainer);
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("menuPosition",  menuPosition);
     }
 }
