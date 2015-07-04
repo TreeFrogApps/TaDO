@@ -169,7 +169,7 @@ public class SyncFragment extends Fragment implements
             }
         }
     }
-    
+
     // TODO ONE TWO THREE = 4
     public void syncDrive(){
         // try to sync
