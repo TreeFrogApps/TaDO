@@ -54,10 +54,9 @@ public class SyncFragment extends Fragment implements
     private String driveFileId;
 
     private RadioGroup mSyncFragmentRadioGroup;
-
     private Button mSyncFragmentSyncButton;
-    private Button mSyncFramentCancelButton;
 
+    private boolean syncedState = false;
 
     private static int connectionType;
     // 1 = upload / amend file / overwrite file
@@ -80,10 +79,15 @@ public class SyncFragment extends Fragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        buildConnection();
+        if (savedInstanceState != null){
 
-        sharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
+            syncedState = savedInstanceState.getBoolean(Constants.SYNCED_STATE, false);
+        }
+
         dbHelper = new DBHelper(getActivity());
+
+        // build connection
+        buildConnection();
 
         initialiseInputs();
 
@@ -99,6 +103,31 @@ public class SyncFragment extends Fragment implements
                 .addConnectionCallbacks(SyncFragment.this)
                 .addOnConnectionFailedListener(SyncFragment.this)
                 .build();
+    }
+
+    public void syncDrive(){
+        // try to sync
+        if (mGoogleApiClient.isConnected()) {
+            Drive.DriveApi.requestSync(mGoogleApiClient).setResultCallback(new ResultCallback<com.google.android.gms.common.api.Status>() {
+                @Override
+                public void onResult(com.google.android.gms.common.api.Status status) {
+                    if (!status.getStatus().isSuccess()) {
+                        Log.e("SYNCING", "ERROR " + status.getStatusMessage() + " " + status.getStatusCode());
+                        Toast.makeText(getActivity(), "SYNCING ERROR : " + status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+                        syncedState = false;
+                        mGoogleApiClient.disconnect();
+                        mSyncFragmentSyncButton.setClickable(true);
+                        mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+                    } else {
+                        Log.e("SYNCING", "SUCCESS");
+                        syncedState = true;
+                        new AppFolderContentsAsyncTask(getActivity()).execute();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(getActivity(), "Unable to connect to Google Drive", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void initialiseInputs(){
@@ -135,8 +164,8 @@ public class SyncFragment extends Fragment implements
     }
 
     public void connectToDrive(){
-        if (mGoogleApiClient.isConnected()){
-            syncDrive();
+        if (mGoogleApiClient.isConnected() && syncedState){
+            new AppFolderContentsAsyncTask(getActivity()).execute();
         } else {
             buildConnection();
             mGoogleApiClient.connect();
@@ -146,7 +175,12 @@ public class SyncFragment extends Fragment implements
     @Override
     public void onConnected(Bundle bundle) {
         // TODO ONE TWO THREE 3 - connected, execute listing file, then do task after
-        syncDrive();
+        if (syncedState){
+            new AppFolderContentsAsyncTask(getActivity()).execute();
+        } else {
+            //sync files - only necessary once per visit to fragment
+            syncDrive();
+        }
     }
 
     @Override
@@ -168,24 +202,6 @@ public class SyncFragment extends Fragment implements
                 mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
             }
         }
-    }
-
-    // TODO ONE TWO THREE = 4
-    public void syncDrive(){
-        // try to sync
-        Drive.DriveApi.requestSync(mGoogleApiClient).setResultCallback(new ResultCallback<com.google.android.gms.common.api.Status>() {
-            @Override
-            public void onResult(com.google.android.gms.common.api.Status status) {
-                if (!status.getStatus().isSuccess()) {
-                    Log.e("SYNCING", "ERROR " + status.getStatusMessage() + " " + status.getStatusCode());
-                    Toast.makeText(getActivity(), "SYNCING ERROR : " + status.getStatusMessage(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("SYNCING", "SUCCESS");
-                    new AppFolderContentsAsyncTask(getActivity()).execute();
-                }
-            }
-        });
-
     }
 
     // TODO ONE TWO THREE 4a - get appfolder contents - could be temp class just for seeing what files it find
@@ -564,6 +580,7 @@ public class SyncFragment extends Fragment implements
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
+
         super.onPause();
     }
 
@@ -571,5 +588,12 @@ public class SyncFragment extends Fragment implements
     public void onResume() {
         super.onResume();
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(Constants.SYNCED_STATE, syncedState);
     }
 }

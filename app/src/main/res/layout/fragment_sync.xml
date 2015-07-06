@@ -66,21 +66,6 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/syncFragmentCancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/twenty_four"
-            android:layout_marginLeft="@dimen/twenty_four"
-            android:textColor="@color/primaryColor"
-            android:textSize="@dimen/text_24sp"
-            android:background="@drawable/button_selector"
-            android:text="@string/fragment_my_lists_dialog_cancel"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_marginBottom="@dimen/twenty_four"
-            android:paddingLeft="@dimen/activity_vertical_margin"
-            android:paddingRight="@dimen/activity_vertical_margin"/>
-
-        <Button
             android:id="@+id/syncFragmentSyncButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

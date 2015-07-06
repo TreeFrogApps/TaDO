@@ -8,6 +8,7 @@ public class Constants {
     
     // Sync Fragment
     protected static final int REQUEST_CODE_RESOLUTION = 10;
+    protected static final String SYNCED_STATE = "SYNCED_STATE";
 
     // splash screen visibility - place in shared prefs
     protected static final String SPLASH_SCREEN_VISIBILITY = "com.treefrogapps.TaDo.Visibility";
