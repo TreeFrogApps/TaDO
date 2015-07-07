@@ -75,6 +75,12 @@
     <string name="activity_create_items_dialog_item_medium">Med</string>
     <string name="activity_create_items_dialog_item_high">High</string>
 
+    <!-- Chooser Fragment -->
+    <string-array name="chooser_framgent_tab_title_array">
+        <item>SINGLE TASK</item>
+        <item>MULTIPLE TASKS</item>
+    </string-array>
+
     <!-- Sync Fragment -->
     <string name="sync_fragment_radio_button_upload">Upload to Drive</string>
     <string name="sync_fragment_radio_button_download">Download from Drive</string>
