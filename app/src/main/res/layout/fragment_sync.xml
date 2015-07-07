@@ -9,19 +9,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
         android:layout_marginTop="@dimen/twenty_four"
         android:layout_marginBottom="@dimen/twenty_four">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
+            android:id="@+id/syncFragmentDriveLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_drive_logo_big"
             android:layout_marginRight="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_vertical_margin"/>
-
-    </LinearLayout>
 
     <RadioGroup
         android:id="@+id/syncFragmentRadioGroup"
@@ -29,7 +28,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/twenty_four">
+        android:layout_marginTop="@dimen/twenty_four"
+        android:visibility="invisible">
 
         <RadioButton
             android:id="@+id/syncFragmentUploadRadioButton"
@@ -59,6 +59,8 @@
             android:layout_margin="@dimen/activity_horizontal_margin"/>
     </RadioGroup>
 
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -71,14 +73,15 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/twenty_four"
             android:layout_marginLeft="@dimen/twenty_four"
-            android:textColor="@color/primaryColor"
+            android:textColor="@color/grey_light"
             android:textSize="@dimen/text_24sp"
             android:background="@drawable/button_selector"
             android:text="@string/sync_fragment_sync_button"
             style="?android:attr/borderlessButtonStyle"
             android:layout_marginBottom="@dimen/twenty_four"
             android:paddingLeft="@dimen/activity_vertical_margin"
-            android:paddingRight="@dimen/activity_vertical_margin"/>
+            android:paddingRight="@dimen/activity_vertical_margin"
+            android:clickable="false"/>
     </LinearLayout>
 
 

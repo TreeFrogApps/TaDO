@@ -25,6 +25,14 @@ public class Animations {
         return animation = AnimationUtils.loadAnimation(context, R.anim.move_out_anim_right);
     }
 
+    public static Animation moveInAnimBottom(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.move_in_anim_bottom);
+    }
+
+    public static Animation alphaFadeIn(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.alpha_fade_in);
+    }
+
     public static Animation floatingActionButtonAnim(Context context) {
         return animation = AnimationUtils.loadAnimation(context, R.anim.fab_anim);
     }

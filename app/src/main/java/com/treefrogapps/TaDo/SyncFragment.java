@@ -8,12 +8,14 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ public class SyncFragment extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     private DriveId driveId;
     private String driveFileId;
+    private ImageView mSyncFragmentDriveLogo;
 
     private RadioGroup mSyncFragmentRadioGroup;
     private Button mSyncFragmentSyncButton;
@@ -85,16 +88,28 @@ public class SyncFragment extends Fragment implements
         }
 
         dbHelper = new DBHelper(getActivity());
-
         // build connection
         buildConnection();
-
         initialiseInputs();
+
+        mSyncFragmentDriveLogo.startAnimation(Animations.moveInAnimBottom(getActivity()));
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSyncFragmentRadioGroup.startAnimation(Animations.alphaFadeIn(getActivity()));
+                mSyncFragmentRadioGroup.setVisibility(View.VISIBLE);
+                mSyncFragmentSyncButton.setClickable(true);
+                mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+            }
+        }, 500);
+
+
 
     } // End of onActivityCreated
 
     public void buildConnection() {
-        // TODO ONE TWO THREE 1.
+        // ONE TWO THREE 1.
         // build the api client
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(Drive.API)
@@ -132,9 +147,11 @@ public class SyncFragment extends Fragment implements
 
     public void initialiseInputs(){
 
+        mSyncFragmentDriveLogo = (ImageView) rootView.findViewById(R.id.syncFragmentDriveLogo);
         mSyncFragmentRadioGroup = (RadioGroup) rootView.findViewById(R.id.syncFragmentRadioGroup);
         mSyncFragmentRadioGroup.check(R.id.syncFragmentUploadRadioButton);
         connectionType = 1;
+
 
         mSyncFragmentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -155,7 +172,7 @@ public class SyncFragment extends Fragment implements
             @Override
             public void onClick(View v) {
 
-                // TODO ONE TWO THREE - 2 - attempt to connect
+                // ONE TWO THREE - 2 - attempt to connect
                 connectToDrive();
                 mSyncFragmentSyncButton.setClickable(false);
                 mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.grey_light));
@@ -174,7 +191,7 @@ public class SyncFragment extends Fragment implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        // TODO ONE TWO THREE 3 - connected, execute listing file, then do task after
+        // ONE TWO THREE 3 - connected, execute listing file, then do task after
         if (syncedState){
             new AppFolderContentsAsyncTask(getActivity()).execute();
         } else {
@@ -189,7 +206,7 @@ public class SyncFragment extends Fragment implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO ONE 2b
+        // ONE 2b
         if (connectionResult.hasResolution()) {
 
             try {
@@ -204,7 +221,7 @@ public class SyncFragment extends Fragment implements
         }
     }
 
-    // TODO ONE TWO THREE 4a - get appfolder contents - could be temp class just for seeing what files it find
+    // ONE TWO THREE 4a - get appfolder contents - could be temp class just for seeing what files it find
     public class AppFolderContentsAsyncTask extends AsyncTask<Void, Void, String> {
 
         public AppFolderContentsAsyncTask(Context context){
@@ -256,7 +273,7 @@ public class SyncFragment extends Fragment implements
     }
 
 
-    // TODO ONE - 4b
+    // ONE - 4b
     private void uploadFile() {
 
         // search for existing file
@@ -270,7 +287,7 @@ public class SyncFragment extends Fragment implements
 
     }
 
-    // TODO TWO - 4c
+    // TWO - 4c
     private void downloadFile() {
         // search for existing file
         Query query = new Query.Builder()
@@ -282,7 +299,7 @@ public class SyncFragment extends Fragment implements
         Drive.DriveApi.query(mGoogleApiClient, query).setResultCallback(searchFileCallBack);
     }
 
-    // TODO THREE - 4d
+    // THREE - 4d
     private void deleteTheFile() {
         // search for existing file
         Query query = new Query.Builder()
@@ -294,7 +311,7 @@ public class SyncFragment extends Fragment implements
         Drive.DriveApi.query(mGoogleApiClient, query).setResultCallback(searchFileCallBack);
     }
 
-    // TODO ONE THREE - 4b/c/d - check if file exists and either overwrite using its unique DriveId (file id) or create new file if it doesn't exist
+    // ONE THREE - 4b/c/d - check if file exists and either overwrite using its unique DriveId (file id) or create new file if it doesn't exist
     private ResultCallback<DriveApi.MetadataBufferResult> searchFileCallBack = new ResultCallback<DriveApi.MetadataBufferResult>() {
         @Override
         public void onResult(DriveApi.MetadataBufferResult metadataBufferResult) {
@@ -305,7 +322,7 @@ public class SyncFragment extends Fragment implements
 
                 if (metadataBufferResult.getMetadataBuffer().get(0).getMimeType().equals("application/x-sqlite3")) {
 
-                    // TODO ONE THREE = 4e - a result is returned meaning the file exists and we get its unique ID
+                    // ONE THREE = 4e - a result is returned meaning the file exists and we get its unique ID
                     driveId = metadataBufferResult.getMetadataBuffer().get(0).getDriveId();
                     Log.e("DRIVE ID FOUND", driveId.encodeToString());
                     // start async task to edit / overwrite contents of file
@@ -326,7 +343,7 @@ public class SyncFragment extends Fragment implements
             } else if (connectionType == 1) {
 
                 metadataBufferResult.release();
-                // TODO ONE 5
+                // ONE 5
                 // new drive contents - file doesn't exist yet
                 Drive.DriveApi.newDriveContents(mGoogleApiClient).setResultCallback(driveContentsCallback);
             } else {
@@ -341,7 +358,7 @@ public class SyncFragment extends Fragment implements
     };
 
 
-    // TODO ONE 5 - get drive contents callback
+    // ONE 5 - get drive contents callback
     private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback = new ResultCallback<DriveApi.DriveContentsResult>() {
         @Override
         public void onResult(DriveApi.DriveContentsResult driveContentsResult) {
@@ -374,7 +391,7 @@ public class SyncFragment extends Fragment implements
                 MetadataChangeSet metaDataChangeSet = new MetadataChangeSet.Builder()
                         .setMimeType("application/x-sqlite3").setTitle("main_database.db").build();
 
-                // TODO ONE - 4h
+                // ONE - 4h
                 Drive.DriveApi.getAppFolder(mGoogleApiClient)
                         .createFile(mGoogleApiClient, metaDataChangeSet, driveContentsResult.getDriveContents())
                         .setResultCallback(fileUploadCallBack);
@@ -383,7 +400,7 @@ public class SyncFragment extends Fragment implements
     };
 
 
-    // TODO ONE - 5 - check uploaded ok
+    // ONE - 5 - check uploaded ok
     private ResultCallback<DriveFolder.DriveFileResult> fileUploadCallBack = new ResultCallback<DriveFolder.DriveFileResult>() {
         @Override
         public void onResult(DriveFolder.DriveFileResult driveFileResult) {
@@ -403,7 +420,7 @@ public class SyncFragment extends Fragment implements
     };
 
 
-    //Todo ONE - 5 - edit contents using async task
+    //ONE - 5 - edit contents using async task
     public class EditContentsAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public EditContentsAsyncTask(Context context) {
@@ -462,7 +479,7 @@ public class SyncFragment extends Fragment implements
         }
     }
 
-    // TODO TWO - 5 - asynctask to retrieve file and write into database file
+    // TWO - 5 - asynctask to retrieve file and write into database file
     public class RetrieveFileAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public RetrieveFileAsyncTask(Context context) {
@@ -527,7 +544,7 @@ public class SyncFragment extends Fragment implements
     }
 
 
-    // TODO THREE - 5  - asynctask to delete the file from g drive
+    // THREE - 5  - asynctask to delete the file from g drive
     public class DeleteFileAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public DeleteFileAsyncTask(Context context) {
@@ -564,7 +581,7 @@ public class SyncFragment extends Fragment implements
         Log.e("CALLED", "OnActivity Result");
 
         switch (requestCode) {
-            // TODO ONE - 2c
+            // ONE - 2c
             case Constants.REQUEST_CODE_RESOLUTION:
                 if (resultCode == Activity.RESULT_OK) {
                     mGoogleApiClient.connect();
