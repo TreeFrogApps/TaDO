@@ -19,7 +19,7 @@
             android:id="@+id/recyclerViewPriorityTextView"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/four_dp"
             android:background="@drawable/priority_circle_zero_40dp"
             android:gravity="center"
             android:textSize="@dimen/text_18sp" />
@@ -53,8 +53,8 @@
                     android:id="@+id/recyclerItemTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:lines="1"
+                    android:ellipsize="end"
                     android:text="some text"
                     android:textColor="@color/primaryText"
                     android:textSize="@dimen/text_20sp" />
@@ -63,8 +63,8 @@
                     android:id="@+id/recyclerItemDetailTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:lines="1"
+                    android:ellipsize="end"
                     android:text="some detail text"
                     android:textColor="@color/grey_dark"
                     android:textSize="@dimen/text_16sp" />

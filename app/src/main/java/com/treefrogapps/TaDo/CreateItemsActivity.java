@@ -189,10 +189,11 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
                     Paint paint = new Paint();
                     Bitmap bitmap;
 
+                    float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+
                     if (dX > 0) { // swiping right
                         paint.setColor(getResources().getColor(R.color.child_view_complete));
                         bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_circle_complete);
-                        float scale = getApplicationContext().getResources().getDisplayMetrics().density;
                         float hPlacement = scale * 16;
                         float vPlacement = scale * 20;
 
@@ -206,7 +207,7 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
                         float bitmapWidth = bitmap.getWidth();
 
                         c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom(), paint);
-                        c.drawBitmap(bitmap, ((float) itemView.getRight() - bitmapWidth) - 96f, (float) itemView.getTop() + height, null);
+                        c.drawBitmap(bitmap, ((float) itemView.getRight() - bitmapWidth) - (scale * 16), (float) itemView.getTop() + height, null);
                     }
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }

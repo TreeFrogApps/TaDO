@@ -44,7 +44,7 @@ public class TaDOChooserFragment extends Fragment {
     private void initialiseTabs() {
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.chooserFragmentViewPager);
-        mViewPager.setAdapter(new TaDOChooserPagerAdapter(getActivity(), getFragmentManager()));
+        mViewPager.setAdapter(new TaDOChooserPagerAdapter(getActivity(), getChildFragmentManager()));
         mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.chooserFragmentSlidingTabsLayout);
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {

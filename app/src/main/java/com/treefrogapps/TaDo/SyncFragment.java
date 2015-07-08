@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
@@ -82,31 +83,42 @@ public class SyncFragment extends Fragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
 
             syncedState = savedInstanceState.getBoolean(Constants.SYNCED_STATE, false);
         }
 
         dbHelper = new DBHelper(getActivity());
-        // build connection
-        buildConnection();
-        initialiseInputs();
 
-        mSyncFragmentDriveLogo.startAnimation(Animations.moveInAnimBottom(getActivity()));
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSyncFragmentRadioGroup.startAnimation(Animations.alphaFadeIn(getActivity()));
-                mSyncFragmentRadioGroup.setVisibility(View.VISIBLE);
-                mSyncFragmentSyncButton.setClickable(true);
-                mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
-            }
-        }, 500);
+        if (checkPlayServicesInstalled()) {
+            // build connection
+            buildConnection();
+            initialiseInputs();
 
-
+            mSyncFragmentDriveLogo.startAnimation(Animations.moveInAnimBottom(getActivity()));
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSyncFragmentRadioGroup.startAnimation(Animations.alphaFadeIn(getActivity()));
+                    mSyncFragmentRadioGroup.setVisibility(View.VISIBLE);
+                    mSyncFragmentSyncButton.setClickable(true);
+                    mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
+                }
+            }, 500);
+        }
 
     } // End of onActivityCreated
+
+    public boolean checkPlayServicesInstalled() {
+
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            Toast.makeText(getActivity(), "This device is not supported", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
 
     public void buildConnection() {
         // ONE TWO THREE 1.
@@ -120,7 +132,7 @@ public class SyncFragment extends Fragment implements
                 .build();
     }
 
-    public void syncDrive(){
+    public void syncDrive() {
         // try to sync
         if (mGoogleApiClient.isConnected()) {
             Drive.DriveApi.requestSync(mGoogleApiClient).setResultCallback(new ResultCallback<com.google.android.gms.common.api.Status>() {
@@ -145,7 +157,7 @@ public class SyncFragment extends Fragment implements
         }
     }
 
-    public void initialiseInputs(){
+    public void initialiseInputs() {
 
         mSyncFragmentDriveLogo = (ImageView) rootView.findViewById(R.id.syncFragmentDriveLogo);
         mSyncFragmentRadioGroup = (RadioGroup) rootView.findViewById(R.id.syncFragmentRadioGroup);
@@ -180,8 +192,8 @@ public class SyncFragment extends Fragment implements
         });
     }
 
-    public void connectToDrive(){
-        if (mGoogleApiClient.isConnected() && syncedState){
+    public void connectToDrive() {
+        if (mGoogleApiClient.isConnected() && syncedState) {
             new AppFolderContentsAsyncTask(getActivity()).execute();
         } else {
             buildConnection();
@@ -192,7 +204,7 @@ public class SyncFragment extends Fragment implements
     @Override
     public void onConnected(Bundle bundle) {
         // ONE TWO THREE 3 - connected, execute listing file, then do task after
-        if (syncedState){
+        if (syncedState) {
             new AppFolderContentsAsyncTask(getActivity()).execute();
         } else {
             //sync files - only necessary once per visit to fragment
@@ -224,7 +236,7 @@ public class SyncFragment extends Fragment implements
     // ONE TWO THREE 4a - get appfolder contents - could be temp class just for seeing what files it find
     public class AppFolderContentsAsyncTask extends AsyncTask<Void, Void, String> {
 
-        public AppFolderContentsAsyncTask(Context context){
+        public AppFolderContentsAsyncTask(Context context) {
 
         }
 
@@ -238,12 +250,12 @@ public class SyncFragment extends Fragment implements
 
             fileCount = "found " + buffer.getCount() + " file(s)";
 
-            for (Metadata m: buffer){
+            for (Metadata m : buffer) {
 
                 DriveId id = m.getDriveId();
                 DriveFile file = Drive.DriveApi.getFile(mGoogleApiClient, id);
 
-                file.open( mGoogleApiClient, DriveFile.MODE_READ_ONLY, null).await().getDriveContents();
+                file.open(mGoogleApiClient, DriveFile.MODE_READ_ONLY, null).await().getDriveContents();
 
                 DriveResource.MetadataResult result = file.getMetadata(mGoogleApiClient).await();
                 Metadata metadata = result.getMetadata();
@@ -263,11 +275,18 @@ public class SyncFragment extends Fragment implements
             Log.e("DRIVE FILE COUNT ", s);
 
             // after contents listed - continue with sync task based on radio group selection
-            switch (connectionType){
-                case 1 : uploadFile(); break;
-                case 2 : downloadFile(); break;
-                case 3 : deleteTheFile(); break;
-                default: break;
+            switch (connectionType) {
+                case 1:
+                    uploadFile();
+                    break;
+                case 2:
+                    downloadFile();
+                    break;
+                case 3:
+                    deleteTheFile();
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -284,7 +303,6 @@ public class SyncFragment extends Fragment implements
 
         // execute query to look if file already exists
         Drive.DriveApi.query(mGoogleApiClient, query).setResultCallback(searchFileCallBack);
-
     }
 
     // TWO - 4c
@@ -339,7 +357,6 @@ public class SyncFragment extends Fragment implements
                     }
                 }
 
-
             } else if (connectionType == 1) {
 
                 metadataBufferResult.release();
@@ -352,7 +369,6 @@ public class SyncFragment extends Fragment implements
 
                 mSyncFragmentSyncButton.setClickable(true);
                 mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
-
             }
         }
     };
@@ -365,8 +381,6 @@ public class SyncFragment extends Fragment implements
 
             if (!driveContentsResult.getStatus().isSuccess()) {
                 Toast.makeText(getActivity(), "Error getting drive contents", Toast.LENGTH_SHORT).show();
-
-
             } else {
                 // Get an outputStream for the contents
                 OutputStream outputStream = driveContentsResult.getDriveContents().getOutputStream();
@@ -473,13 +487,12 @@ public class SyncFragment extends Fragment implements
             } else {
                 Toast.makeText(getActivity(), "Successfully edited contents", Toast.LENGTH_SHORT).show();
             }
-
             mSyncFragmentSyncButton.setClickable(true);
             mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
         }
     }
 
-    // TWO - 5 - asynctask to retrieve file and write into database file
+    // TWO - 5 - async task to retrieve file and write into database file
     public class RetrieveFileAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public RetrieveFileAsyncTask(Context context) {
@@ -543,8 +556,7 @@ public class SyncFragment extends Fragment implements
         }
     }
 
-
-    // THREE - 5  - asynctask to delete the file from g drive
+    // THREE - 5  - async task to delete the file from g drive
     public class DeleteFileAsyncTask extends AsyncTask<DriveFile, Void, Boolean> {
 
         public DeleteFileAsyncTask(Context context) {

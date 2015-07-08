@@ -4,9 +4,9 @@ package com.treefrogapps.TaDo;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
-public class TaDOChooserPagerAdapter extends FragmentStatePagerAdapter {
+public class TaDOChooserPagerAdapter extends FragmentPagerAdapter {
 
     String[] tabTitlesArray;
     Context context;
