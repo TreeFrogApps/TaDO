@@ -4,8 +4,11 @@
     android:id="@+id/recyclerTitleCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/four_dp"
-    card_view:cardCornerRadius="4dp">
+    android:layout_marginLeft="@dimen/eight_dp"
+    android:layout_marginRight="@dimen/eight_dp"
+    android:layout_marginTop="@dimen/four_dp"
+    android:layout_marginBottom="@dimen/four_dp"
+    card_view:cardCornerRadius="@dimen/four_dp">
 
     <LinearLayout
         android:id="@+id/recyclerTitleLinearLayout"
@@ -44,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:maxLines="3"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/primaryText"
                 android:textSize="@dimen/text_22sp" />

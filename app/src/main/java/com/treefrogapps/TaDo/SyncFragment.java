@@ -84,7 +84,6 @@ public class SyncFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-
             syncedState = savedInstanceState.getBoolean(Constants.SYNCED_STATE, false);
         }
 
@@ -164,7 +163,6 @@ public class SyncFragment extends Fragment implements
         mSyncFragmentRadioGroup.check(R.id.syncFragmentUploadRadioButton);
         connectionType = 1;
 
-
         mSyncFragmentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -220,12 +218,10 @@ public class SyncFragment extends Fragment implements
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // ONE 2b
         if (connectionResult.hasResolution()) {
-
             try {
                 connectionResult.startResolutionForResult(getActivity(), Constants.REQUEST_CODE_RESOLUTION);
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
-
                 Toast.makeText(getActivity(), "Unable to complete connection to GDrive", Toast.LENGTH_SHORT).show();
                 mSyncFragmentSyncButton.setClickable(true);
                 mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
@@ -237,7 +233,6 @@ public class SyncFragment extends Fragment implements
     public class AppFolderContentsAsyncTask extends AsyncTask<Void, Void, String> {
 
         public AppFolderContentsAsyncTask(Context context) {
-
         }
 
         @Override
@@ -294,13 +289,11 @@ public class SyncFragment extends Fragment implements
 
     // ONE - 4b
     private void uploadFile() {
-
         // search for existing file
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, "main_database.db"))
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, "application/x-sqlite3"))
                 .build();
-
         // execute query to look if file already exists
         Drive.DriveApi.query(mGoogleApiClient, query).setResultCallback(searchFileCallBack);
     }
@@ -400,11 +393,9 @@ public class SyncFragment extends Fragment implements
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 // set its title and mime type
                 MetadataChangeSet metaDataChangeSet = new MetadataChangeSet.Builder()
                         .setMimeType("application/x-sqlite3").setTitle("main_database.db").build();
-
                 // ONE - 4h
                 Drive.DriveApi.getAppFolder(mGoogleApiClient)
                         .createFile(mGoogleApiClient, metaDataChangeSet, driveContentsResult.getDriveContents())
@@ -550,7 +541,6 @@ public class SyncFragment extends Fragment implements
             } else {
                 Toast.makeText(getActivity(), "Successfully downloaded database", Toast.LENGTH_SHORT).show();
             }
-
             mSyncFragmentSyncButton.setClickable(true);
             mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
         }
@@ -580,7 +570,6 @@ public class SyncFragment extends Fragment implements
             } else {
                 Toast.makeText(getActivity(), "Successfully deleted File", Toast.LENGTH_SHORT).show();
             }
-
             mSyncFragmentSyncButton.setClickable(true);
             mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
         }
@@ -609,7 +598,6 @@ public class SyncFragment extends Fragment implements
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
-
         super.onPause();
     }
 

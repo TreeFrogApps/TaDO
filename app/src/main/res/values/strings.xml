@@ -75,12 +75,6 @@
     <string name="activity_create_items_dialog_item_medium">Med</string>
     <string name="activity_create_items_dialog_item_high">High</string>
 
-    <!-- Chooser Fragment -->
-    <string-array name="chooser_framgent_tab_title_array">
-        <item>SINGLE TASK</item>
-        <item>MULTIPLE TASKS</item>
-    </string-array>
-
     <!-- Sync Fragment -->
     <string name="sync_fragment_radio_button_upload">Upload to Drive</string>
     <string name="sync_fragment_radio_button_download">Download from Drive</string>
@@ -90,6 +84,26 @@
 
     <!-- MyListsFragment menu -->
     <string name="fragment_my_list_menu_search">Search</string>
+
+
+    <!-- Chooser Fragment -->
+    <string-array name="chooser_framgent_tab_title_array">
+        <item>CURRENT TASK</item>
+        <item>QUEUED TASKS</item>
+    </string-array>
+    <string name="tado_chooser_fragment_1_list">List</string>
+    <string name="tado_chooser_framgent_1_list_text_view">List Holder Text</string>
+    <string name="tado_chooser_fragment_1_task">Task</string>
+    <string name="tado_chooser_framgent_1_item_text_view">Item Holder Text</string>
+    <string name="tado_chooser_fragment_1_options">Options</string>
+    <string name="tado_chooser_fragment_1_checkbox">NOTIFY ME WHEN TIME IS UP</string>
+    <string name="tado_chooser_fragment_1_done_radio_button">MARK AS DONE WHEN TIME IS UP</string>
+    <string name="tado_chooser_fragment_1_delete_radio_button">DELETE AUTOMATICALLY WHEN TIME IS UP</string>
+    <string name="tado_chooser_fragment_1_do_not_alter_radio_button">DO NOT ALTER WHEN TIME IS UP</string>
+    <string name="tado_chooser_fragment_1_start_button">START</string>
+    <string name="tado_chooser_fragment_1_stop_button">STOP</string>
+    <string name="tado_chooser_fragment_1_remove_button">REMOVE</string>
+
 
 
 

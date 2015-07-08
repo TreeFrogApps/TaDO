@@ -1,14 +1,267 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.treefrogapps.TaDo.TaDOChooserTabFragment1">
 
-    <TextView android:layout_width="match_parent"
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/eight_dp"
+        card_view:cardCornerRadius="@dimen/four_dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+            <TextView
+                android:id="@+id/taDOChooserFragment1ListTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:text="@string/tado_chooser_framgent_1_list_text_view"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/text_22sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:layout_weight="1"
+                    android:text="@string/tado_chooser_fragment_1_task"
+                    android:textColor="@color/primaryColorAccent"
+                    android:textSize="@dimen/text_16sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end">
+
+                    <TextView
+                        android:id="@+id/taDOChooserFragment1PriorityTextView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="@dimen/activity_vertical_margin"
+                        android:layout_marginLeft="@dimen/activity_vertical_margin"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/priority_circle_zero_40dp"
+                        android:textSize="@dimen/text_18sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/taDOChooserFragment1ItemTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:text="@string/tado_chooser_framgent_1_item_text_view"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/text_20sp" />
+
+            <TextView
+                android:id="@+id/taDOChooserFragment1ItemDetailTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/four_dp"
+                android:maxLines="3"
+                android:text="@string/tado_chooser_framgent_1_item_text_view"
+                android:textColor="@color/grey_dark"
+                android:textSize="@dimen/text_16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/four_dp"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/taDOChooserFragment1HoursTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:text="@string/recycler_view_hours"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_12sp" />
+
+                <TextView
+                    android:id="@+id/taDOChooserFragment1MinsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recycler_view_mins"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:text="@string/tado_chooser_fragment_1_options"
+            android:textColor="@color/primaryColorAccent"
+            android:textSize="@dimen/text_16sp" />
+
+        <CheckBox
+            android:id="@+id/taDOChooserFragment1CheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:text="@string/tado_chooser_fragment_1_checkbox" />
+
+        <RadioGroup
+            android:id="@+id/taDOChooserFragment1RadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin">
+
+            <RadioButton
+                android:id="@+id/taDOChooserFragment1RadioButtonDone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tado_chooser_fragment_1_done_radio_button" />
+
+            <RadioButton
+                android:id="@+id/taDOChooserFragment1RadioButtonDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tado_chooser_fragment_1_delete_radio_button" />
+
+            <RadioButton
+                android:id="@+id/taDOChooserFragment1RadioButtonKeep"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tado_chooser_fragment_1_do_not_alter_radio_button" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="TAB FRAGMENT 1"
-        android:textSize="@dimen/text_24sp"
-        android:gravity="center"/>
+        android:orientation="vertical"
+        android:gravity="center_horizontal|bottom">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal|bottom"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/taDOChooserFragment1RemoveButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_22sp"
+                    android:background="@drawable/button_selector"
+                    android:text="@string/tado_chooser_fragment_1_remove_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:paddingLeft="@dimen/activity_vertical_margin"
+                    android:paddingRight="@dimen/activity_vertical_margin"
+                    android:clickable="true"/>
+
+                <Button
+                    android:id="@+id/taDOChooserFragment1StartButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_22sp"
+                    android:background="@drawable/button_selector"
+                    android:text="@string/tado_chooser_fragment_1_start_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:paddingLeft="@dimen/activity_vertical_margin"
+                    android:paddingRight="@dimen/activity_vertical_margin"
+                    android:clickable="true"/>
+
+            </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/createItemsFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:src="@mipmap/ic_fab_plus_item"
+                android:visibility="invisible"
+                app:borderWidth="0dp"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp" />
+
+        </FrameLayout>
+
+
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
+
+
+
+
+
+
