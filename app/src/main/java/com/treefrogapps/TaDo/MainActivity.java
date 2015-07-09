@@ -30,15 +30,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initialiseMenu();
+        dbHelper = new DBHelper(this);
+
         if (savedInstanceState != null){
             menuPosition = savedInstanceState.getInt("menuPosition");
         } else {
             menuPosition = 0;
-            updateDisplayFragment("My Lists");
+            updateDisplayFragment(getResources().getString(R.string.nav_home));
         }
-
-        initialiseMenu();
-        dbHelper = new DBHelper(this);
     }
 
     public void initialiseMenu() {
