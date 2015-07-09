@@ -27,4 +27,11 @@
         <item name="android:textColor">@color/primaryText</item>
     </style>
 
+    <style name="PopUpMenu" parent="MyTheme">
+        <item name="android:popupBackground">@color/white</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/text_16sp</item>
+        <item name="colorAccent">@color/primaryColor</item>
+    </style>
+
 </resources>

@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/popmenu_tado_chooser_notify"
+        android:title="@string/tado_chooser_fragment_1_checkbox"
+        android:checkable="true"
+        android:checked="true"
+        android:orderInCategory="1"/>
+
+    <group
+        android:id="@+id/popmenu_tado_chooser_group"
+        android:orderInCategory="2"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/popmenu_tado_chooser_done"
+            android:title="@string/tado_chooser_fragment_1_done_radio_button"
+            android:checkable="true"/>
+
+        <item
+            android:id="@+id/popmenu_tado_chooser_delete"
+            android:title="@string/tado_chooser_fragment_1_delete_radio_button"
+            android:checkable="true"/>
+
+        <item
+            android:id="@+id/popmenu_tado_chooser_do_not_alter"
+            android:title="@string/tado_chooser_fragment_1_do_not_alter_radio_button"
+            android:checked="true"
+            android:checkable="true"/>
+
+    </group>
+
+</menu>

@@ -23,6 +23,8 @@ public class DBHelper extends SQLiteOpenHelper {
         try {
             db.execSQL(Constants.TITLES_TABLE);
             db.execSQL(Constants.ITEMS_TABLE);
+            db.execSQL(Constants.QUEUED_ITEMS_TABLE);
+            db.execSQL(Constants.CURRENT_ITEM_TABLE);
             db.execSQL(Constants.FOREIGN_KEY_CASCADE);
             Log.d("INFO", "DATABASE CREATED");
 
@@ -38,6 +40,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL(Constants.DROP_TITLES_TABLE);
         db.execSQL(Constants.DROP_ITEMS_TABLE);
+        db.execSQL(Constants.DROP_QUEUED_ITEMS_TABLE);
+        db.execSQL(Constants.DROP_CURRENT_ITEM_TABLE);
         onCreate(db);
     }
 
@@ -50,6 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // TITLE TABLE
     public void insertIntoTitlesTable(TitlesListData titlesListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -65,6 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    // ITEMS TABLE
     public void insertIntoItemsTable(ItemsListData itemsListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -80,6 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone(), itemsListData.getItemPriority()});
     }
 
+    // TITLES TABLE
     public ArrayList<TitlesListData> getTitles() {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -109,6 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return titlesListDataArrayList;
     }
 
+    // TITLE TABLE
     public String getTitleId(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -129,6 +137,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return titleId;
     }
 
+    // TITLE TABLE
     public String getTitle(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -149,6 +158,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return titleName;
     }
 
+    // TITLE TABLE
     public String checkTitleNameExists(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -169,6 +179,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return titleId;
     }
 
+    // ITEMS TABLE
     public ArrayList<ItemsListData> getItemsForTitleDone(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -216,6 +227,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return itemsListDataArrayList;
     }
 
+    // ITEMS TABLE
     public ArrayList<ItemsListData> getItemsForTitleNotDone(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -263,8 +275,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return itemsListDataArrayList;
     }
 
-
-
+    // TITLES TABLE
     public void deleteTitle(String titleId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -275,6 +286,7 @@ public class DBHelper extends SQLiteOpenHelper {
         executePreparedStatement(2, database, statement, new String[]{titleId});
     }
 
+    // ITEMS TABLE
     public void deleteItem(ItemsListData itemsListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -284,6 +296,7 @@ public class DBHelper extends SQLiteOpenHelper {
         executePreparedStatement(2, database, statement, new String[]{itemsListData.getItemId()});
     }
 
+    // ITEMS TABLE
     public void deleteAllItemsForTitle(String titleName) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -293,15 +306,19 @@ public class DBHelper extends SQLiteOpenHelper {
         executePreparedStatement(2, database, statement, new String[]{titleName});
     }
 
+    // ALL TABLES
     public void deleteAllTitlesAndItems() {
 
         SQLiteDatabase database = this.getWritableDatabase();
         // delete all titles & items
         database.delete(Constants.ITEMS_LIST, null, null);
         database.delete(Constants.TITLES_LIST, null, null);
+        database.delete(Constants.QUEUED_ITEMS_LIST, null, null);
+        database.delete(Constants.CURRENT_ITEM_LIST, null, null);
         database.close();
     }
 
+    // TITLES TABLE
     public void updateTitle(TitlesListData oldTitle, TitlesListData newTitle) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -315,7 +332,8 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    public ItemsListData getSingleItem(String itemId){
+    // ITEMS TABLE
+    public ItemsListData getSingleItem(String itemId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -362,7 +380,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void updateItem(ItemsListData newItemDetails, ItemsListData currentItemId){
+    // ITEMS TABLE
+    public void updateItem(ItemsListData newItemDetails, ItemsListData currentItemId) {
 
         SQLiteDatabase database = this.getWritableDatabase();
         database.beginTransactionNonExclusive();
@@ -373,6 +392,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         newItemDetails.getDuration(), newItemDetails.getItemPriority(), currentItemId.getItemId()});
     }
 
+    // ITEMS TABLE
     public void updateItemDone(ItemsListData itemsListData) {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -381,6 +401,101 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteStatement statement = database.compileStatement(Constants.ITEM_UPDATE_ITEM_DONE);
         executePreparedStatement(2, database, statement,
                 new String[]{itemsListData.getItemDone(), itemsListData.getItemId()});
+    }
+
+    // QUEUED ITEMS TABLE
+    public void insertIntoQueuedItemsTable(QueuedItemListData queuedItemListData) {
+
+        SQLiteDatabase database = getWritableDatabase();
+        database.beginTransactionNonExclusive();
+
+        SQLiteStatement statement = database.compileStatement(Constants.QUEUED_ITEM_INSERT_QUERY);
+        executePreparedStatement(3, database, statement, new String[]{queuedItemListData.getItemId()});
+    }
+
+    // QUEUED ITEMS TABLE
+    public void deleteQueuedItem(QueuedItemListData queuedItemListData) {
+
+        SQLiteDatabase database = getWritableDatabase();
+        database.beginTransactionNonExclusive();
+
+        SQLiteStatement statement = database.compileStatement(Constants.QUEUED_ITEM_DELETE_QUERY);
+        executePreparedStatement(2, database, statement, new String[]{queuedItemListData.getItemId()});
+    }
+
+    // QUEUED ITEMS TABLE
+    public ArrayList<QueuedItemListData> getQueuedItems() {
+
+        SQLiteDatabase database = getWritableDatabase();
+        ArrayList<QueuedItemListData> queuedItemListDataArrayList = new ArrayList<>();
+        Cursor cursor = database.rawQuery(Constants.QUEUED_ITEM_GET_ITEMS_QUERY, null);
+
+        int queue_id = cursor.getColumnIndex(Constants.QUEUED_ITEMS_ID);
+        int item_id = cursor.getColumnIndex(Constants.ITEMS_ID);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                QueuedItemListData queuedItemListData = new QueuedItemListData();
+
+                queuedItemListData.setQueuedItemId(cursor.getString(queue_id));
+                queuedItemListData.setItemId(cursor.getString(item_id));
+
+                queuedItemListDataArrayList.add(queuedItemListData);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+
+        return queuedItemListDataArrayList;
+    }
+
+    // CURRENT ITEM TABLE
+    public void insertIntoCurrentItemTable(CurrentItemListData currentItemListData){
+
+        SQLiteDatabase database = getWritableDatabase();
+        database.beginTransactionNonExclusive();
+
+        SQLiteStatement statement = database.compileStatement(Constants.CURRENT_ITEM_INSERT_QUERY);
+        executePreparedStatement(3, database, statement, new String[]{currentItemListData.getItemId()});
+    }
+
+    // CURRENT ITEM TABLE
+    public void deleteCurrentItem(CurrentItemListData currentItemListData){
+
+        SQLiteDatabase database = getWritableDatabase();
+        database.beginTransactionNonExclusive();
+
+        SQLiteStatement statement = database.compileStatement(Constants.CURRENT_ITEM_DELETE_QUERY);
+        executePreparedStatement(2, database, statement,new String[]{currentItemListData.getItemId()});
+    }
+
+    // CURRENT ITEM TABLE
+    public ArrayList<CurrentItemListData> getCurrentItem(){
+
+        SQLiteDatabase database = getWritableDatabase();
+        ArrayList<CurrentItemListData> currentItemListDataArrayList = new ArrayList<>();
+        Cursor cursor = database.rawQuery(Constants.CURRENT_ITEM_GET_ITEM_QUERY, null);
+
+        int currentId = cursor.getColumnIndex(Constants.CURRENT_ITEM_ID);
+        int itemId = cursor.getColumnIndex(Constants.ITEMS_ID);
+
+        if (cursor.moveToFirst()){
+
+            do {
+                CurrentItemListData currentItemListData = new CurrentItemListData();
+
+                currentItemListData.setCurrentItemId(cursor.getString(currentId));
+                currentItemListData.setItemId(cursor.getString(itemId));
+                currentItemListDataArrayList.add(currentItemListData);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+
+        return currentItemListDataArrayList;
     }
 
 
