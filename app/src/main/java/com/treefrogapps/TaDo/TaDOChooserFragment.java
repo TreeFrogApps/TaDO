@@ -2,19 +2,19 @@ package com.treefrogapps.TaDo;
 
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.treefrogapps.TaDo.slidingtabs.SlidingTabLayout;
 
 
 public class TaDOChooserFragment extends Fragment {
 
     private View rootView;
     private ViewPager mViewPager;
-    private SlidingTabLayout mSlidingTabLayout;
+    private TabLayout mTabLayout;
 
     public TaDOChooserFragment() {
         // Required empty public constructor
@@ -45,15 +45,10 @@ public class TaDOChooserFragment extends Fragment {
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.chooserFragmentViewPager);
         mViewPager.setAdapter(new TaDOChooserPagerAdapter(getActivity(), getChildFragmentManager()));
-        mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.chooserFragmentSlidingTabsLayout);
-        mSlidingTabLayout.setDistributeEvenly(true);
-        mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.grey_light);
-            }
-        });
-
-        mSlidingTabLayout.setViewPager(mViewPager);
+        // new design library tab layout
+        mTabLayout = (TabLayout) rootView.findViewById(R.id.chooserFragmentSlidingTabsLayout);
+        mTabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        mTabLayout.setTabTextColors(getResources().getColor(R.color.grey_light), getResources().getColor(R.color.white));
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 }
