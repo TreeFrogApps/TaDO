@@ -51,4 +51,6 @@ public class TaDOChooserFragment extends Fragment {
         mTabLayout.setTabTextColors(getResources().getColor(R.color.grey_light), getResources().getColor(R.color.white));
         mTabLayout.setupWithViewPager(mViewPager);
     }
+
+
 }
