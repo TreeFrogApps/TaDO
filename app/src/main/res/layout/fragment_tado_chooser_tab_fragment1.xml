@@ -218,7 +218,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textColor="@color/primaryColor"
-                android:text="00:25:15"
+                android:text="00:02:15"
                 android:fontFamily="sans-serif-light"
                 android:textSize="@dimen/text_36sp"
                 android:layout_gravity="center"/>
@@ -246,7 +246,7 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:gravity="center_horizontal|bottom"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <Button
                     android:id="@+id/taDOChooserFragment1ResetButton"
@@ -257,6 +257,20 @@
                     android:textSize="@dimen/text_22sp"
                     android:background="@drawable/button_selector"
                     android:text="@string/tado_chooser_fragment_1_remove_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:paddingLeft="@dimen/activity_vertical_margin"
+                    android:paddingRight="@dimen/activity_vertical_margin"
+                    android:clickable="true"/>
+
+                <Button
+                    android:id="@+id/taDOChooserFragment1PauseButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/text_22sp"
+                    android:background="@drawable/button_selector"
+                    android:text="@string/tado_chooser_fragment_1_pause_button"
                     style="?android:attr/borderlessButtonStyle"
                     android:paddingLeft="@dimen/activity_vertical_margin"
                     android:paddingRight="@dimen/activity_vertical_margin"

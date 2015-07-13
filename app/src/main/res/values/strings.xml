@@ -101,8 +101,8 @@
     <string name="tado_chooser_fragment_1_delete_radio_button">Delete on time up</string>
     <string name="tado_chooser_fragment_1_do_not_alter_radio_button">Do not alter</string>
     <string name="tado_chooser_fragment_1_start_button">START</string>
-    <string name="tado_chooser_fragment_1_stop_button">STOP</string>
-    <string name="tado_chooser_fragment_1_remove_button">REMOVE</string>
+    <string name="tado_chooser_fragment_1_pause_button">PAUSE</string>
+    <string name="tado_chooser_fragment_1_remove_button">RESET</string>
 
 
 

@@ -4,6 +4,9 @@ package com.treefrogapps.TaDo;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -35,6 +38,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     private ImageButton taDOChooserFragmentMenuButton;
     private TextView taDOChooserFragmentTimerTextView;
     private Button taDOChooserFragment1ResetButton;
+    private Button taDOChooserFragment1PauseButton;
     private Button taDOChooserFragment1StartButton;
 
     // CountDown Clock
@@ -96,6 +100,8 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         taDOChooserFragmentMenuButton.setOnClickListener(this);
         taDOChooserFragment1ResetButton = (Button) rootView.findViewById(R.id.taDOChooserFragment1ResetButton);
         taDOChooserFragment1ResetButton.setOnClickListener(this);
+        taDOChooserFragment1PauseButton = (Button) rootView.findViewById(R.id.taDOChooserFragment1PauseButton);
+        taDOChooserFragment1PauseButton.setOnClickListener(this);
         taDOChooserFragment1StartButton = (Button) rootView.findViewById(R.id.taDOChooserFragment1StartButton);
         taDOChooserFragment1StartButton.setOnClickListener(this);
         taDOChooserFragment1Timer = (ProgressBar) rootView.findViewById(R.id.taDOChooserFragment1Timer);
@@ -109,65 +115,51 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         if (v == taDOChooserFragmentMenuButton) {
             inflatePopMenu(v);
         } else if (v == taDOChooserFragment1ResetButton) {
-            countDownTimer.cancel();
-            taDOChooserFragmentTimerTextView.setText(sharedPreferences.getString("counterTime", "00:00:00"));
-            animation.cancel();
-            taDOChooserFragment1Timer.clearAnimation();
-            taDOChooserFragment1Timer.setProgress(0);
-            taDOChooserFragment1StartButton.setClickable(true);
-            taDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            counterStarted = false;
+            resetTimer();
+        } else if (v == taDOChooserFragment1PauseButton) {
 
+            pauseTimer();
         } else if (v == taDOChooserFragment1StartButton) {
-            // put original time into shared prefs in case navigated from
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("counterTime", taDOChooserFragmentTimerTextView.getText().toString()).apply();
-            counterStarted = true;
-            // get initial time and milliseconds for progress animator
-            totalMilliSeconds = taskTimeInMilliseconds(taDOChooserFragmentTimerTextView.getText().toString());
-            startCountDown();
+
+            startTimer();
+
         }
     }
 
-    private void inflatePopMenu(View v) {
-        //create popUpMenu (context menu)
-        Context style = new ContextThemeWrapper(getActivity(), R.style.PopUpMenu);
-        PopupMenu popUpMenu = new PopupMenu(style, v);
-        // inflate my context menu xml layout
-        MenuInflater inflater = popUpMenu.getMenuInflater();
-        inflater.inflate(R.menu.fragment_tado_chooser_popmenu, popUpMenu.getMenu());
+    private void resetTimer() {
 
-        popUpMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                switch (item.getItemId()) {
-
-                    case R.id.popmenu_tado_chooser_notify:
-
-                        return true;
-
-                    case R.id.popmenu_tado_chooser_done:
-                        item.setChecked(true);
-                        return true;
-
-                    case R.id.popmenu_tado_chooser_delete:
-                        item.setChecked(true);
-                        return true;
-
-                    case R.id.popmenu_tado_chooser_do_not_alter:
-                        item.setChecked(true);
-                        return true;
-
-                    default:
-                        return false;
-                }
-            }
-        });
-
-        popUpMenu.show();
+        countDownTimer.cancel();
+        taDOChooserFragmentTimerTextView.setText(sharedPreferences.getString("counterTime", "00:00:00"));
+        animation.cancel();
+        taDOChooserFragment1Timer.clearAnimation();
+        taDOChooserFragment1Timer.setProgress(0);
+        taDOChooserFragment1StartButton.setClickable(true);
+        taDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        timerProgress = 1;
+        counterStarted = false;
     }
+
+    private void pauseTimer() {
+        countDownTimer.cancel();
+        timerProgress = taDOChooserFragment1Timer.getProgress();
+        animation.cancel();
+        taDOChooserFragment1Timer.setProgress(timerProgress);
+        taDOChooserFragment1StartButton.setClickable(true);
+        taDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
+
+    }
+
+    private void startTimer() {
+        // put original time into shared prefs in case navigated from
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("counterTime", taDOChooserFragmentTimerTextView.getText().toString()).apply();
+        counterStarted = true;
+        // get initial time and milliseconds for progress animator
+        totalMilliSeconds = taskTimeInMilliseconds(taDOChooserFragmentTimerTextView.getText().toString());
+        startCountDown();
+    }
+
 
 
     public void startCountDown() {
@@ -185,7 +177,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         animation.start();
         taDOChooserFragment1Timer.clearAnimation();
 
-        countDownTimer = new CountDownTimer((long) taskTimeInMilliseconds(taDOChooserFragmentTimerTextView.getText().toString()), 1000) {
+        countDownTimer = new CountDownTimer((long) totalMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -208,11 +200,14 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                     taDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
                     getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                    vibrator.vibrate(1000);
+                    vibrator.vibrate(500);
+                    Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone notification = RingtoneManager.getRingtone(getActivity(), sound);
+                    notification.play();
                 }
-
             }
         }.start();
+
 
 
     }
@@ -294,5 +289,44 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 }
             }
         }
+    }
+
+    private void inflatePopMenu(View v) {
+        //create popUpMenu (context menu)
+        Context style = new ContextThemeWrapper(getActivity(), R.style.PopUpMenu);
+        PopupMenu popUpMenu = new PopupMenu(style, v);
+        // inflate my context menu xml layout
+        MenuInflater inflater = popUpMenu.getMenuInflater();
+        inflater.inflate(R.menu.fragment_tado_chooser_popmenu, popUpMenu.getMenu());
+
+        popUpMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.popmenu_tado_chooser_notify:
+
+                        return true;
+
+                    case R.id.popmenu_tado_chooser_done:
+                        item.setChecked(true);
+                        return true;
+
+                    case R.id.popmenu_tado_chooser_delete:
+                        item.setChecked(true);
+                        return true;
+
+                    case R.id.popmenu_tado_chooser_do_not_alter:
+                        item.setChecked(true);
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        popUpMenu.show();
     }
 }
