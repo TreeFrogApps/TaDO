@@ -97,12 +97,18 @@
     <string name="tado_chooser_framgent_1_item_text_view">Item Holder Text</string>
     <string name="tado_chooser_fragment_1_options">Options</string>
     <string name="tado_chooser_fragment_1_checkbox">Notify on time up</string>
+    <string name="tado_chooser_fragment_1_remove">Remove item</string>
     <string name="tado_chooser_fragment_1_done_radio_button">Mark as done</string>
     <string name="tado_chooser_fragment_1_delete_radio_button">Delete on time up</string>
     <string name="tado_chooser_fragment_1_do_not_alter_radio_button">Do not alter</string>
     <string name="tado_chooser_fragment_1_start_button">START</string>
     <string name="tado_chooser_fragment_1_pause_button">PAUSE</string>
     <string name="tado_chooser_fragment_1_remove_button">RESET</string>
+
+
+    <!-- Chooser Fragment 1 Dialog -->
+    <string name="tado_chooser_fragment_1_dialog_choose_task">Choose a task</string>
+    <string name="tado_chooser_fragment_1_dialog_queue">QUEUE</string>
 
 
 

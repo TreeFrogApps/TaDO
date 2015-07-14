@@ -257,7 +257,7 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
         // get mins by getting the position in the string array
         String mins = numberPickerMinsDisplay[createListAddItemMinutePicker.getValue()];
 
-        return String.valueOf(hours < 10 ? "0" + hours : hours) + ":" + mins;
+        return String.valueOf(hours < 10 ? "0" + hours : hours) + ":" + mins + ":00";
     }
 
     public void setNumberPickerValues(String duration) {
@@ -310,6 +310,9 @@ public class CreateItemsAddEditItemDialog extends DialogFragment implements View
 
         itemsListData.setItem(itemName);
         itemsListData.setItemDetail(itemDetail);
+        if (duration.equals("00:00:00")){
+            duration = "00:15:00";
+        }
         itemsListData.setDuration(duration);
         itemsListData.setDateTime(date);
         itemsListData.setItemDone(itemDone);

@@ -28,6 +28,7 @@ public class CreateItemsRenameTitleDialog extends DialogFragment{
 
     public String titleId;
     public onRenameDialogCallBack mOnRenameDialogCallBack;
+    private Dialog dialogBuilder;
 
 
     public CreateItemsRenameTitleDialog() {
@@ -48,7 +49,7 @@ public class CreateItemsRenameTitleDialog extends DialogFragment{
         Bundle bundle = getArguments();
         titleId = bundle.getString(Constants.TITLE_ID);
 
-        final Dialog dialogBuilder = new Dialog(getActivity());
+        dialogBuilder = new Dialog(getActivity());
         dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBuilder.setContentView(R.layout.activity_create_items_dialog_rename_title);
         dialogBuilder.setCancelable(false);

@@ -31,4 +31,9 @@
 
     </group>
 
+    <item
+        android:id="@+id/popmenu_tado_chooser_remove"
+        android:title="@string/tado_chooser_fragment_1_remove"
+        android:orderInCategory="3"/>
+
 </menu>

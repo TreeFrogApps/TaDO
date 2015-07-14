@@ -33,6 +33,10 @@ public class Animations {
         return animation = AnimationUtils.loadAnimation(context, R.anim.alpha_fade_in);
     }
 
+    public static Animation alphaFadeOut(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.alpha_fade_out);
+    }
+
     public static Animation floatingActionButtonAnim(Context context) {
         return animation = AnimationUtils.loadAnimation(context, R.anim.fab_anim);
     }
