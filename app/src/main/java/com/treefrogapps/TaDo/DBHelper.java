@@ -468,7 +468,7 @@ public class DBHelper extends SQLiteOpenHelper {
         database.beginTransactionNonExclusive();
 
         SQLiteStatement statement = database.compileStatement(Constants.CURRENT_ITEM_DELETE_QUERY);
-        executePreparedStatement(2, database, statement,new String[]{currentItemListData.getItemId()});
+        executePreparedStatement(2, database, statement,new String[]{currentItemListData.getCurrentItemId()});
     }
 
     // CURRENT ITEM TABLE
@@ -484,7 +484,6 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()){
 
             do {
-
                 currentItemListData.setCurrentItemId(cursor.getString(currentId));
                 currentItemListData.setItemId(cursor.getString(itemId));
 

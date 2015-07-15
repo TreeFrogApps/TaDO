@@ -110,6 +110,10 @@
     <string name="tado_chooser_fragment_1_dialog_choose_task">Choose a task</string>
     <string name="tado_chooser_fragment_1_dialog_queue">QUEUE</string>
 
+    <!-- Chooser Fragment 1 Dialog -->
+    <string name="tado_chooser_fragment_2_queued_tasks">Queued tasks</string>
+
+
 
 
 

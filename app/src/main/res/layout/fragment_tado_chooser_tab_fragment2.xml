@@ -5,10 +5,19 @@
     android:orientation="vertical"
     tools:context="com.treefrogapps.TaDo.TaDOChooserTabFragment2">
 
-    <TextView android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="TAB FRAGMENT 2"
-        android:textSize="@dimen/text_24sp"
-        android:gravity="center"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/tado_chooser_fragment_2_queued_tasks"
+        android:textColor="@color/primaryColorAccent"
+        android:textSize="@dimen/text_16sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/taDOChooserFragment2RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        tools:context="com.treefrogapps.TaDo.TaDOChooserTabFragment2" />
 
 </LinearLayout>

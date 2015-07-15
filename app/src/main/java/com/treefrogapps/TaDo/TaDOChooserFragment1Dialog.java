@@ -80,24 +80,26 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
         mListSpinnerArray = new String[titlesListDataArrayList.size() + 1];
         mListSpinnerArray[0] = mSpinnerListTitle;
 
-        for (int i = 0; i < titlesListDataArrayList.size(); i++ ) {
+        for (int i = 0; i < titlesListDataArrayList.size(); i++) {
             mListSpinnerArray[i + 1] = titlesListDataArrayList.get(i).getTitle();
         }
-        mListSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_view, R.id.spinner_list_item, mListSpinnerArray);
+        mListSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_view, R.id.spinner_list_item, mListSpinnerArray);
         mTaDOChooserDialogListSpinner.setAdapter(mListSpinnerArrayAdapter);
 
-        mItemSpinnerArray = new String[] {mSpinnerItemTitle};
-        mItemSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_view, R.id.spinner_list_item, mItemSpinnerArray);
+        mItemSpinnerArray = new String[]{mSpinnerItemTitle};
+        mItemSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_view, R.id.spinner_list_item, mItemSpinnerArray);
         mTaDOChooserDialogItemSpinner.setAdapter(mItemSpinnerArrayAdapter);
     }
 
-    public void spinnerListeners(){
+    public void spinnerListeners() {
 
         mTaDOChooserDialogListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position != 0){
+                if (position != 0) {
 
                     String titleName = mTaDOChooserDialogListSpinner.getSelectedItem().toString();
                     String titleId = dbHelper.getTitleId(titleName);
@@ -107,16 +109,18 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                     mItemSpinnerArray = new String[itemsListDataNotDoneArrayList.size() + 1];
                     mItemSpinnerArray[0] = mSpinnerItemTitle;
 
-                    for (int i = 0; i < itemsListDataNotDoneArrayList.size(); i++){
+                    for (int i = 0; i < itemsListDataNotDoneArrayList.size(); i++) {
                         mItemSpinnerArray[i + 1] = itemsListDataNotDoneArrayList.get(i).getItem();
                     }
 
-                    mItemSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_view, R.id.spinner_list_item, mItemSpinnerArray);
+                    mItemSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(),
+                            R.layout.spinner_view, R.id.spinner_list_item, mItemSpinnerArray);
                     mTaDOChooserDialogItemSpinner.setAdapter(mItemSpinnerArrayAdapter);
                 } else {
 
-                    mItemSpinnerArray = new String[] {mSpinnerItemTitle};
-                    mItemSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_view, R.id.spinner_list_item, mItemSpinnerArray);
+                    mItemSpinnerArray = new String[]{mSpinnerItemTitle};
+                    mItemSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(),
+                            R.layout.spinner_view, R.id.spinner_list_item, mItemSpinnerArray);
                     mTaDOChooserDialogItemSpinner.setAdapter(mItemSpinnerArrayAdapter);
                 }
             }
@@ -131,19 +135,55 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
-            case R.id.taDOChooserDialogCancelButton :
+            case R.id.taDOChooserDialogCancelButton:
                 dialogBuilder.dismiss();
                 break;
-            case R.id.taDOChooserDialogQueueButton :
+            case R.id.taDOChooserDialogQueueButton:
 
-                break;
-            case R.id.taDOChooserDialogPositiveButton :
                 if (mTaDOChooserDialogListSpinner.getSelectedItemPosition() != 0 &&
-                        mTaDOChooserDialogItemSpinner.getSelectedItemPosition() != 0){
+                        mTaDOChooserDialogItemSpinner.getSelectedItemPosition() != 0) {
 
-                    String itemId= itemsListDataNotDoneArrayList.get(mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
+                    String itemId = itemsListDataNotDoneArrayList.get
+                            (mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
+
+                    // Check if already queued
+                    ArrayList<QueuedItemListData> queuedItemListDataArrayList = dbHelper.getQueuedItems();
+
+                    boolean itemQueued = false;
+
+                    for (int i = 0; i < queuedItemListDataArrayList.size(); i++){
+
+                        if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId)){
+                            itemQueued = true;
+                            break;
+                        }
+                    }
+
+                    if (!itemQueued){
+                        QueuedItemListData queuedItemListData = new QueuedItemListData();
+                        queuedItemListData.setItemId(itemId);
+                        dbHelper.insertIntoQueuedItemsTable(queuedItemListData);
+                    } else {
+                        CustomToasts.Toast(getActivity(), "Task already in queue");
+                    }
+
+
+                }
+                break;
+            case R.id.taDOChooserDialogPositiveButton:
+                if (mTaDOChooserDialogListSpinner.getSelectedItemPosition() != 0 &&
+                        mTaDOChooserDialogItemSpinner.getSelectedItemPosition() != 0) {
+
+                    String itemId = itemsListDataNotDoneArrayList.get
+                            (mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
+
+                    if (checkIfItemQueued(itemId)){
+                        QueuedItemListData queuedItemListData = new QueuedItemListData();
+                        queuedItemListData.setItemId(itemId);
+                        dbHelper.deleteQueuedItem(queuedItemListData);
+                    }
 
                     // Insert into CURRENT ITEM table (will only hold one item - current item)
                     CurrentItemListData currentItemListData = new CurrentItemListData();
@@ -158,5 +198,22 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                 break;
         }
 
+    }
+
+    public boolean checkIfItemQueued(String itemId){
+
+        // Check if is already in queued items table if so - remove from queued items
+        ArrayList<QueuedItemListData> queuedItemListDataArrayList = new ArrayList<>();
+        queuedItemListDataArrayList = dbHelper.getQueuedItems();
+
+        boolean isQueued = false;
+
+        for (int i = 0; i < queuedItemListDataArrayList.size(); i++){
+            if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId)){
+                isQueued = true;
+                break;
+            }
+        }
+        return isQueued;
     }
 }

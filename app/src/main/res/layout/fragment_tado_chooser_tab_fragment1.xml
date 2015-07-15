@@ -6,6 +6,7 @@
     android:orientation="vertical"
     tools:context="com.treefrogapps.TaDo.TaDOChooserTabFragment1">
 
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -55,7 +56,6 @@
 
                         </LinearLayout>
 
-
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -73,9 +73,7 @@
                                 android:background="@drawable/selector_dots_menu" />
                         </LinearLayout>
 
-
                     </LinearLayout>
-
 
                     <View
                         android:layout_width="match_parent"
@@ -111,10 +109,10 @@
                                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                                 android:layout_marginRight="@dimen/activity_vertical_margin"
                                 android:layout_marginTop="@dimen/activity_horizontal_margin"
+                                android:background="@drawable/priority_circle_zero_40dp"
+                                android:gravity="center"
                                 android:text="!"
                                 android:textColor="@color/white"
-                                android:gravity="center"
-                                android:background="@drawable/priority_circle_zero_40dp"
                                 android:textSize="@dimen/text_22sp" />
 
                         </LinearLayout>
@@ -190,24 +188,18 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="180dp"
-                        android:layout_height="180dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/timer_bg_180dp" />
-
                     <ProgressBar
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
                         android:layout_gravity="center"
                         android:max="500"
                         android:progress="500"
@@ -216,92 +208,31 @@
                     <ProgressBar
                         android:id="@+id/taDOChooserFragment1Timer"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
                         android:layout_gravity="center"
                         android:max="5000"
                         android:progress="0"
                         android:progressDrawable="@drawable/timer_circle_grey"
                         android:rotation="270" />
 
+                    <Button
+                        android:id="@+id/taDOChooserFragment1TimerButton"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/timer_bg_200dp_selector" />
+
                     <TextView
                         android:id="@+id/taDOChooserFragmentTimerTextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="sans-serif-light"
                         android:text="00:02:15"
                         android:textColor="@color/primaryColor"
                         android:textSize="@dimen/text_36sp" />
                 </FrameLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|bottom"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:gravity="center_horizontal|bottom"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <Button
-                            android:id="@+id/taDOChooserFragment1ResetButton"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/button_selector"
-                            android:clickable="true"
-                            android:paddingLeft="@dimen/activity_vertical_margin"
-                            android:paddingRight="@dimen/activity_vertical_margin"
-                            android:text="@string/tado_chooser_fragment_1_remove_button"
-                            android:textColor="@color/primaryColor"
-                            android:textSize="@dimen/text_22sp" />
-
-                        <Button
-                            android:id="@+id/taDOChooserFragment1PauseButton"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/button_selector"
-                            android:clickable="true"
-                            android:paddingLeft="@dimen/activity_vertical_margin"
-                            android:paddingRight="@dimen/activity_vertical_margin"
-                            android:text="@string/tado_chooser_fragment_1_pause_button"
-                            android:textColor="@color/primaryColor"
-                            android:textSize="@dimen/text_22sp" />
-
-                        <Button
-                            android:id="@+id/taDOChooserFragment1StartButton"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/button_selector"
-                            android:clickable="true"
-                            android:paddingLeft="@dimen/activity_vertical_margin"
-                            android:paddingRight="@dimen/activity_vertical_margin"
-                            android:text="@string/tado_chooser_fragment_1_start_button"
-                            android:textColor="@color/primaryColor"
-                            android:textSize="@dimen/text_22sp" />
-
-                    </LinearLayout>
-
-
-                </FrameLayout>
-
             </LinearLayout>
 
         </LinearLayout>

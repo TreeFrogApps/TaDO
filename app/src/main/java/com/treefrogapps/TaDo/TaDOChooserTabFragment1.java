@@ -32,7 +32,8 @@ import android.widget.TextView;
 import java.util.concurrent.TimeUnit;
 
 
-public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickListener, TaDOChooserFragment1Dialog.OnItemChosenCallback {
+public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickListener,
+        View.OnLongClickListener, TaDOChooserFragment1Dialog.OnItemChosenCallback {
 
     private FloatingActionButton mTaDOChooserFragment1FAB;
     private LinearLayout mLinearLayout;
@@ -54,9 +55,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
     private ImageButton mTaDOChooserFragmentMenuButton;
     private TextView mTaDOChooserFragmentTimerTextView;
-    private Button mTaDOChooserFragment1ResetButton;
-    private Button mTaDOChooserFragment1PauseButton;
-    private Button mTaDOChooserFragment1StartButton;
+    private Button mTaDOChooserFragment1TimerButton;
 
     // CountDown Clock
     private ProgressBar mTaDOChooserFragment1Timer;
@@ -124,14 +123,13 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
         mTaDOChooserFragment1FAB = (FloatingActionButton) mRootView.findViewById(R.id.taDoChooserFragment1FAB);
         mTaDOChooserFragment1FAB.setOnClickListener(this);
+        mTaDOChooserFragment1TimerButton = (Button) mRootView.findViewById(R.id.taDOChooserFragment1TimerButton);
+        mTaDOChooserFragment1TimerButton.setOnClickListener(this);
+        mTaDOChooserFragment1TimerButton.setOnLongClickListener(this);
+
+
         mTaDOChooserFragmentMenuButton = (ImageButton) mRootView.findViewById(R.id.taDOChooserFragment1MenuButton);
         mTaDOChooserFragmentMenuButton.setOnClickListener(this);
-        mTaDOChooserFragment1ResetButton = (Button) mRootView.findViewById(R.id.taDOChooserFragment1ResetButton);
-        mTaDOChooserFragment1ResetButton.setOnClickListener(this);
-        mTaDOChooserFragment1PauseButton = (Button) mRootView.findViewById(R.id.taDOChooserFragment1PauseButton);
-        mTaDOChooserFragment1PauseButton.setOnClickListener(this);
-        mTaDOChooserFragment1StartButton = (Button) mRootView.findViewById(R.id.taDOChooserFragment1StartButton);
-        mTaDOChooserFragment1StartButton.setOnClickListener(this);
         mTaDOChooserFragment1Timer = (ProgressBar) mRootView.findViewById(R.id.taDOChooserFragment1Timer);
         mTaDOChooserFragmentTimerTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragmentTimerTextView);
     }
@@ -148,18 +146,28 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
             case R.id.taDOChooserFragment1MenuButton :
                 inflatePopMenu(v);
                 break;
-            case R.id.taDOChooserFragment1ResetButton :
-                resetTimer();
+            case R.id.taDOChooserFragment1TimerButton :
+                if (!mCounterStarted){
+                    startTimer();
+                } else {
+                    pauseTimer();
+                    mCounterStarted = false;
+                }
                 break;
-            case R.id.taDOChooserFragment1PauseButton :
-                pauseTimer();
-                break;
-            case R.id.taDOChooserFragment1StartButton :
-                startTimer();
-                break;
-
+            default: break;
         }
+    }
 
+    @Override
+    public boolean onLongClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.taDOChooserFragment1TimerButton :
+                resetTimer();
+                return true;
+            default: return false;
+        }
     }
 
     private void chooserItem() {
@@ -236,15 +244,16 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         mTaDOChooserFragmentTimerTextView.setText(mItemsListData.getDuration());
         mTaDOChooserFragment1Timer.clearAnimation();
         mTaDOChooserFragment1Timer.setProgress(0);
-        mTaDOChooserFragment1StartButton.setClickable(true);
-        mTaDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mTimerProgress = 1;
         mCounterStarted = false;
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.remove("PAUSED");
+        editor.remove("mCounterStarted");
+        editor.remove("mTimerProgress");
+        editor.remove("mTimerText");
+        editor.remove("elapsedTimeOnExit");
         editor.apply();
-
     }
 
     private void pauseTimer() {
@@ -256,8 +265,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         mTimerProgress = mTaDOChooserFragment1Timer.getProgress();
         mAnimation.cancel();
         mTaDOChooserFragment1Timer.setProgress(mTimerProgress);
-        mTaDOChooserFragment1StartButton.setClickable(true);
-        mTaDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
     }
 
     private void startTimer() {
@@ -275,9 +282,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
         // stop screen from going to sleep manually
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        mTaDOChooserFragment1StartButton.setClickable(false);
-        mTaDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.grey_light));
 
         // start progressBar
         mAnimation = ObjectAnimator.ofInt(mTaDOChooserFragment1Timer, "progress", mTimerProgress, 5000);
@@ -305,8 +309,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 if (TaDOChooserTabFragment1.this.getView() != null){
                     mCounterStarted = false;
                     mTaDOChooserFragmentTimerTextView.setText("TIME UP");
-                    mTaDOChooserFragment1StartButton.setClickable(true);
-                    mTaDOChooserFragment1StartButton.setTextColor(getResources().getColor(R.color.primaryColor));
+
                     getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(500);
@@ -345,6 +348,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         if (mCountDownTimer !=null) mCountDownTimer.cancel();
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putBoolean("mCounterStarted", mCounterStarted);
+        editor.putInt("mTimerProgress", mTimerProgress);
         editor.putString("mTimerText", mTaDOChooserFragmentTimerTextView.getText().toString());
         editor.putLong("elapsedTimeOnExit", SystemClock.elapsedRealtime());
         editor.apply();
@@ -400,6 +404,8 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
                 }
             }
+        } else if (mSharedPreferences.getBoolean("PAUSED", false)) {
+            mTaDOChooserFragment1Timer.setProgress(mSharedPreferences.getInt("mTimerProgress", 0));
         }
     }
 

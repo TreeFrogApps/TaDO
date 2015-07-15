@@ -79,7 +79,7 @@ public class Constants {
     protected static final String QUEUED_ITEMS_LIST = "queued_items";
     protected static final String QUEUED_ITEMS_ID = "queued_item_id";
 
-    protected static final String QUEUED_ITEM_INSERT_QUERY = "INSERT INTO queued_items VALUES (null,?);";
+    protected static final String QUEUED_ITEM_INSERT_QUERY = "INSERT INTO queued_items VALUES (NULL, ?);";
     protected static final String QUEUED_ITEM_DELETE_QUERY = "DELETE FROM queued_items WHERE queued_items.item_id = ?;";
     protected static final String QUEUED_ITEM_GET_ITEMS_QUERY = "SELECT * FROM queued_items";
 
