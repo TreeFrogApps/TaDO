@@ -19,7 +19,7 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
     public OnItemChosenCallback mOnItemChosenCallback;
 
     interface OnItemChosenCallback {
-        void itemChosenCallBack(String itemId);
+        void itemChosenCallBack();
     }
 
     public void setCallBack(OnItemChosenCallback onItemChosenCallback) {
@@ -28,7 +28,7 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
 
     private DBHelper dbHelper;
     private Dialog dialogBuilder;
-    private String mItemId;
+    private String mCurrentItemId;
     private Spinner mTaDOChooserDialogListSpinner;
     private ArrayAdapter<String> mListSpinnerArrayAdapter;
     private String[] mListSpinnerArray;
@@ -143,8 +143,14 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                 if (mTaDOChooserDialogListSpinner.getSelectedItemPosition() != 0 &&
                         mTaDOChooserDialogItemSpinner.getSelectedItemPosition() != 0){
 
-                    mItemId = itemsListDataNotDoneArrayList.get(mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
-                    mOnItemChosenCallback.itemChosenCallBack(mItemId);
+                    String itemId= itemsListDataNotDoneArrayList.get(mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
+
+                    // Insert into CURRENT ITEM table (will only hold one item - current item)
+                    CurrentItemListData currentItemListData = new CurrentItemListData();
+                    currentItemListData.setItemId(itemId);
+                    dbHelper.insertIntoCurrentItemTable(currentItemListData);
+
+                    mOnItemChosenCallback.itemChosenCallBack();
                     dialogBuilder.dismiss();
                 } else {
                     CustomToasts.Toast(getActivity(), "Please choose a task");

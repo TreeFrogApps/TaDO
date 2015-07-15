@@ -93,7 +93,7 @@ public class Constants {
     protected static final String CURRENT_ITEM_ID = "current_item_id";
 
     protected static final String CURRENT_ITEM_INSERT_QUERY = "INSERT INTO current_item VALUES (null,?);";
-    protected static final String CURRENT_ITEM_DELETE_QUERY = "DELETE FROM current_item WHERE current.item_id = ?;";
+    protected static final String CURRENT_ITEM_DELETE_QUERY = "DELETE FROM current_item WHERE current_item.current_item_id = ?;";
     protected static final String CURRENT_ITEM_GET_ITEM_QUERY = "SELECT * FROM current_item";
 
 

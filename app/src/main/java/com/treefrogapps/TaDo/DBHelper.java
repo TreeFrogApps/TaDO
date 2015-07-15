@@ -472,10 +472,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // CURRENT ITEM TABLE
-    public ArrayList<CurrentItemListData> getCurrentItem(){
+    public CurrentItemListData getCurrentItem(){
 
         SQLiteDatabase database = getWritableDatabase();
-        ArrayList<CurrentItemListData> currentItemListDataArrayList = new ArrayList<>();
+        CurrentItemListData currentItemListData = new CurrentItemListData();
         Cursor cursor = database.rawQuery(Constants.CURRENT_ITEM_GET_ITEM_QUERY, null);
 
         int currentId = cursor.getColumnIndex(Constants.CURRENT_ITEM_ID);
@@ -484,18 +484,16 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()){
 
             do {
-                CurrentItemListData currentItemListData = new CurrentItemListData();
 
                 currentItemListData.setCurrentItemId(cursor.getString(currentId));
                 currentItemListData.setItemId(cursor.getString(itemId));
-                currentItemListDataArrayList.add(currentItemListData);
 
             } while (cursor.moveToNext());
         }
         cursor.close();
         database.close();
 
-        return currentItemListDataArrayList;
+        return currentItemListData;
     }
 
 

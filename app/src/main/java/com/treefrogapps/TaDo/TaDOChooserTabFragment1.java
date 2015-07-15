@@ -45,6 +45,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     private TextView mTaDOChooserFragment1HoursTextView;
     private TextView mTaDOChooserFragment1MinsTextView;
     private TextView mTaDOChooserFragment1PriorityTextView;
+    private CurrentItemListData mCurrentItemListData;
     private ItemsListData mItemsListData;
     
     private View mRootView;
@@ -97,6 +98,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         dbHelper = new DBHelper(getActivity());
         mSharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         initialiseInputs();
+        checkCurrentItemExists();
 
         if (savedInstanceState != null) {
             mCounterStarted = savedInstanceState.getBoolean("mCounterStarted");
@@ -168,7 +170,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     }
 
     @Override
-    public void itemChosenCallBack(String itemId) {
+    public void itemChosenCallBack() {
 
         mTaDOChooserFragment1FAB.setVisibility(View.GONE);
         mLinearLayout.startAnimation(Animations.alphaFadeIn(getActivity()));
@@ -179,7 +181,15 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 mLinearLayout.setVisibility(View.VISIBLE);
             }
         }, 10);
-        mItemsListData = dbHelper.getSingleItem(itemId);
+
+        populateTimerLayout();
+    }
+
+    public void populateTimerLayout(){
+
+        mCurrentItemListData = dbHelper.getCurrentItem();
+
+        mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
 
         mTaDOChooserFragment1ListTextView.setText(dbHelper.getTitle(mItemsListData.getTitleId()));
         mTaDOChooserFragment1ItemTextView.setText(mItemsListData.getItem());
@@ -203,8 +213,18 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 break;
         }
         mTaDOChooserFragmentTimerTextView.setText(mItemsListData.getDuration());
+    }
 
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
+    public void checkCurrentItemExists(){
+
+        mCurrentItemListData = dbHelper.getCurrentItem();
+
+        if (mCurrentItemListData.getCurrentItemId() != null){
+            mTaDOChooserFragment1FAB.setVisibility(View.GONE);
+            mLinearLayout.setVisibility(View.VISIBLE);
+            populateTimerLayout();
+
+        }
     }
 
     private void resetTimer() {
@@ -424,6 +444,8 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                             }
                         }, 200);
                         resetTimer();
+                        mCurrentItemListData = dbHelper.getCurrentItem();
+                        dbHelper.deleteCurrentItem(mCurrentItemListData);
 
                     default:
                         return false;
