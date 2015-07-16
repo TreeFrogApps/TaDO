@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
+        private LinearLayout taDOChooserRecyclerCardView;
         private TextView taDOChooserRecyclerItemListTextView;
         private TextView taDOChooserRecyclerItemItemTextView;
         private TextView taDOChooserRecyclerItemItemDetailTextView;
@@ -50,6 +52,7 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
         public MyViewHolder(View itemView) {
             super(itemView);
 
+            taDOChooserRecyclerCardView = (LinearLayout) itemView.findViewById(R.id.taDOChooserRecyclerCardView);
             taDOChooserRecyclerItemListTextView = (TextView) itemView.findViewById(R.id.taDOChooserRecyclerItemListTextView);
             taDOChooserRecyclerItemItemTextView = (TextView) itemView.findViewById(R.id.taDOChooserRecyclerItemItemTextView);
             taDOChooserRecyclerItemItemDetailTextView = (TextView) itemView.findViewById(R.id.taDOChooserRecyclerItemItemDetailTextView);
@@ -67,14 +70,14 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
         String itemId = queuedItemListDataArrayList.get(position).getItemId();
         ItemsListData itemsListData = dbHelper.getSingleItem(itemId);
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.taDOChooserRecyclerCardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 return false;
             }
         });
 
-        holder.taDOChooserRecyclerItemListTextView.setText(itemsListData.getTitle());
+        holder.taDOChooserRecyclerItemListTextView.setText(dbHelper.getTitle(itemsListData.getTitleId()));
         holder.taDOChooserRecyclerItemItemTextView.setText(itemsListData.getItem());
         holder.taDOChooserRecyclerItemItemDetailTextView.setText(itemsListData.getItemDetail());
 

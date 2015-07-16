@@ -168,8 +168,8 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                     } else {
                         CustomToasts.Toast(getActivity(), "Task already in queue");
                     }
-
-
+                } else {
+                    CustomToasts.Toast(getActivity(), "Please choose a task");
                 }
                 break;
             case R.id.taDOChooserDialogPositiveButton:
@@ -191,7 +191,6 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                     dbHelper.insertIntoCurrentItemTable(currentItemListData);
 
                     mOnItemChosenCallback.itemChosenCallBack();
-                    dialogBuilder.dismiss();
                 } else {
                     CustomToasts.Toast(getActivity(), "Please choose a task");
                 }

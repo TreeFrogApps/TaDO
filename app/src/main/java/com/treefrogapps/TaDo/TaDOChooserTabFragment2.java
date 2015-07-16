@@ -21,7 +21,7 @@ public class TaDOChooserTabFragment2 extends Fragment {
     private DBHelper dbHelper;
     private SharedPreferences mSharedPreferences;
     private RecyclerView mTaDOChooserFragment2RecyclerView;
-    private TaDOChooserFragmentRecyclerAdapter mTaDOChooserFragmentRecyclerAdapter;
+    public static TaDOChooserFragmentRecyclerAdapter mTaDOChooserFragmentRecyclerAdapter;
     private ArrayList<QueuedItemListData> mQueuedItemListDataArrayList;
 
     public TaDOChooserTabFragment2() {
@@ -46,7 +46,13 @@ public class TaDOChooserTabFragment2 extends Fragment {
         mQueuedItemListDataArrayList = new ArrayList<>();
 
         initialiseRecyclerView();
-        populateRecyclerView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        populateRecyclerViewArrayList();
     }
 
     private void initialiseRecyclerView() {
@@ -54,14 +60,22 @@ public class TaDOChooserTabFragment2 extends Fragment {
         mTaDOChooserFragment2RecyclerView = (RecyclerView) mRootView.findViewById(R.id.taDOChooserFragment2RecyclerView);
         mTaDOChooserFragment2RecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTaDOChooserFragment2RecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mTaDOChooserFragmentRecyclerAdapter = new TaDOChooserFragmentRecyclerAdapter(getActivity(), mQueuedItemListDataArrayList);
-        mTaDOChooserFragment2RecyclerView.setAdapter(mTaDOChooserFragmentRecyclerAdapter);
-
-
     }
 
-    private void populateRecyclerView() {
+    private void populateRecyclerViewArrayList() {
+
+        mQueuedItemListDataArrayList = dbHelper.getQueuedItems();
+
+        // check if user has manually updated item to be done
+        for (int i = 0; i < mQueuedItemListDataArrayList.size(); i++){
+
+            ItemsListData itemsListData = dbHelper.getSingleItem(mQueuedItemListDataArrayList.get(i).getItemId());
+            if (itemsListData.getItemDone().equals("Y")){
+                mQueuedItemListDataArrayList.remove(i);
+            }
+        }
+        mTaDOChooserFragmentRecyclerAdapter = new TaDOChooserFragmentRecyclerAdapter(getActivity(), mQueuedItemListDataArrayList);
+        mTaDOChooserFragment2RecyclerView.setAdapter(mTaDOChooserFragmentRecyclerAdapter);
     }
 
 

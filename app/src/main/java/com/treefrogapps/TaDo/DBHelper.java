@@ -377,7 +377,6 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
 
         return itemsListData;
-
     }
 
     // ITEMS TABLE

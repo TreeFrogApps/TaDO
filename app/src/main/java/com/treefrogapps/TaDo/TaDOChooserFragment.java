@@ -50,6 +50,26 @@ public class TaDOChooserFragment extends Fragment {
         mTabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
         mTabLayout.setTabTextColors(getResources().getColor(R.color.grey_light), getResources().getColor(R.color.white));
         mTabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // cast pagerAdapter to the view pager to get access to created method to manually update fragment
+                // get fragment 1 (queued items) and use onResume()
+                Fragment fragment = ((TaDOChooserPagerAdapter) mViewPager.getAdapter()).getFragment(position);
+                if (fragment != null && position == 1){
+                    fragment.onResume();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 

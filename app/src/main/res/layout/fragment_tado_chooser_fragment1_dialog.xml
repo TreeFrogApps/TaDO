@@ -59,25 +59,12 @@
         android:weightSum="3">
 
         <Button
-            android:id="@+id/taDOChooserDialogCancelButton"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/eight_dp"
-            android:layout_marginLeft="@dimen/twenty_four"
-            android:layout_marginRight="@dimen/four_dp"
-            android:background="@drawable/button_selector"
-            android:text="@string/fragment_my_lists_dialog_cancel"
-            android:textColor="@color/primaryColor"
-            style="?android:attr/borderlessButtonStyle"/>
-
-        <Button
             android:id="@+id/taDOChooserDialogQueueButton"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/eight_dp"
-            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginLeft="@dimen/twenty_four"
             android:layout_marginRight="@dimen/four_dp"
             android:background="@drawable/button_selector"
             android:text="@string/tado_chooser_fragment_1_dialog_queue"
@@ -91,11 +78,28 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/eight_dp"
             android:layout_marginLeft="@dimen/four_dp"
-            android:layout_marginRight="@dimen/twenty_four"
+            android:layout_marginRight="@dimen/four_dp"
             android:background="@drawable/button_selector"
-            android:text="@string/fragment_my_lists_dialog_done"
+            android:text="@string/tado_chooser_fragment_1_dialog_choose"
             android:textColor="@color/primaryColor"
             style="?android:attr/borderlessButtonStyle"/>
+
+        <Button
+            android:id="@+id/taDOChooserDialogCancelButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/eight_dp"
+            android:layout_marginLeft="@dimen/four_dp"
+            android:layout_marginRight="@dimen/twenty_four"
+            android:background="@drawable/button_selector"
+            android:text="@string/tado_chooser_fragment_1_dialog_done"
+            android:textColor="@color/primaryColor"
+            style="?android:attr/borderlessButtonStyle"/>
+
+
+
+
 
     </LinearLayout>
 

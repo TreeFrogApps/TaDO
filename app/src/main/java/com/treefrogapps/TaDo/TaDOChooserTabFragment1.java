@@ -48,7 +48,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     private TextView mTaDOChooserFragment1PriorityTextView;
     private CurrentItemListData mCurrentItemListData;
     private ItemsListData mItemsListData;
-    
+
     private View mRootView;
     private DBHelper dbHelper;
     private SharedPreferences mSharedPreferences;
@@ -113,7 +113,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     }
 
     private void initialiseInputs() {
-        
+
         mTaDOChooserFragment1ListTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragment1ListTextView);
         mTaDOChooserFragment1ItemTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragment1ItemTextView);
         mTaDOChooserFragment1ItemDetailTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragment1ItemDetailTextView);
@@ -138,35 +138,37 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
-            case R.id.taDoChooserFragment1FAB :
+            case R.id.taDoChooserFragment1FAB:
                 chooserItem();
                 break;
-            case R.id.taDOChooserFragment1MenuButton :
+            case R.id.taDOChooserFragment1MenuButton:
                 inflatePopMenu(v);
                 break;
-            case R.id.taDOChooserFragment1TimerButton :
-                if (!mCounterStarted){
+            case R.id.taDOChooserFragment1TimerButton:
+                if (!mCounterStarted) {
                     startTimer();
                 } else {
                     pauseTimer();
                     mCounterStarted = false;
                 }
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 
     @Override
     public boolean onLongClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
-            case R.id.taDOChooserFragment1TimerButton :
+            case R.id.taDOChooserFragment1TimerButton:
                 resetTimer();
                 return true;
-            default: return false;
+            default:
+                return false;
         }
     }
 
@@ -193,7 +195,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         populateTimerLayout();
     }
 
-    public void populateTimerLayout(){
+    public void populateTimerLayout() {
 
         mCurrentItemListData = dbHelper.getCurrentItem();
 
@@ -221,23 +223,31 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 break;
         }
         mTaDOChooserFragmentTimerTextView.setText(mItemsListData.getDuration());
+
     }
 
-    public void checkCurrentItemExists(){
+    public void checkCurrentItemExists() {
 
         mCurrentItemListData = dbHelper.getCurrentItem();
 
-        if (mCurrentItemListData.getCurrentItemId() != null){
-            mTaDOChooserFragment1FAB.setVisibility(View.GONE);
-            mLinearLayout.setVisibility(View.VISIBLE);
-            populateTimerLayout();
+        if (mCurrentItemListData.getCurrentItemId() != null) {
+            // check if user has manually updated item to be done
+            mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
+            if (mItemsListData.getItemDone().equals("N")) {
 
+                mTaDOChooserFragment1FAB.setVisibility(View.GONE);
+                mLinearLayout.setVisibility(View.VISIBLE);
+                populateTimerLayout();
+            } else {
+                CustomToasts.Toast(getActivity(), "Current task marked as done");
+                dbHelper.deleteCurrentItem(mCurrentItemListData);
+            }
         }
     }
 
     private void resetTimer() {
 
-        if(mCountDownTimer != null && mAnimation != null){
+        if (mCountDownTimer != null && mAnimation != null) {
             mCountDownTimer.cancel();
             mAnimation.cancel();
         }
@@ -306,7 +316,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
             @Override
             public void onFinish() {
 
-                if (TaDOChooserTabFragment1.this.getView() != null){
+                if (TaDOChooserTabFragment1.this.getView() != null) {
                     mCounterStarted = false;
                     mTaDOChooserFragmentTimerTextView.setText("TIME UP");
 
@@ -345,7 +355,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         super.onPause();
 
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (mCountDownTimer !=null) mCountDownTimer.cancel();
+        if (mCountDownTimer != null) mCountDownTimer.cancel();
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putBoolean("mCounterStarted", mCounterStarted);
         editor.putInt("mTimerProgress", mTimerProgress);
@@ -366,7 +376,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         super.onResume();
 
         mTaDOChooserFragment1Dialog = (TaDOChooserFragment1Dialog) getFragmentManager().findFragmentByTag("Dialog04");
-        if (mTaDOChooserFragment1Dialog != null){
+        if (mTaDOChooserFragment1Dialog != null) {
             mTaDOChooserFragment1Dialog.setCallBack(TaDOChooserTabFragment1.this);
         }
 
@@ -439,7 +449,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                         item.setChecked(true);
                         return true;
 
-                    case R.id.popmenu_tado_chooser_remove :
+                    case R.id.popmenu_tado_chooser_remove:
                         mLinearLayout.startAnimation(Animations.alphaFadeOut(getActivity()));
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
@@ -461,7 +471,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
         popUpMenu.show();
     }
-
 
 
 }
