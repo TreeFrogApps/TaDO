@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 
-public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickListener{
+public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickListener, TaDOChooserFragment1Dialog.OnItemChosenCallback {
 
     private View mRootView;
     private DBHelper dbHelper;
@@ -26,6 +26,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     public static TaDOChooserFragmentRecyclerAdapter mTaDOChooserFragmentRecyclerAdapter;
     private FloatingActionButton mTaDoChooserFragment1FAB;
     private ArrayList<QueuedItemListData> mQueuedItemListDataArrayList;
+    private TaDOChooserFragment1Dialog mTaDOChooserFragment1Dialog;
 
     public TaDOChooserTabFragment1() {
         // Required empty public constructor
@@ -48,7 +49,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         mSharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         mQueuedItemListDataArrayList = new ArrayList<>();
 
-
         initialiseRecyclerView();
         initialiseFAB();
     }
@@ -58,6 +58,11 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         super.onResume();
         // always called in the lifecycle stack
         populateRecyclerViewArrayList();
+
+        mTaDOChooserFragment1Dialog = (TaDOChooserFragment1Dialog) getFragmentManager().findFragmentByTag("Dialog04");
+        if (mTaDOChooserFragment1Dialog != null) {
+            mTaDOChooserFragment1Dialog.setCallBack(TaDOChooserTabFragment1.this);
+        }
     }
 
     private void initialiseRecyclerView() {
@@ -93,11 +98,8 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 mTaDoChooserFragment1FAB.setAnimation(Animations.floatingActionButtonAnim(getActivity()));
                 mTaDoChooserFragment1FAB.setVisibility(View.VISIBLE);
                 mTaDoChooserFragment1FAB.setOnClickListener(TaDOChooserTabFragment1.this);
-
             }
         }, 200);
-
-
      }
 
 
@@ -105,9 +107,22 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     public void onClick(View v) {
 
         switch (v.getId()){
-
             case R.id.taDoChooserFragment1FAB :
+                chooseItem();
 
         }
+    }
+
+    private void chooseItem() {
+
+        mTaDOChooserFragment1Dialog = new TaDOChooserFragment1Dialog();
+        mTaDOChooserFragment1Dialog.mOnItemChosenCallback = TaDOChooserTabFragment1.this;
+        mTaDOChooserFragment1Dialog.show(getFragmentManager(), "Dialog04");
+    }
+
+
+    @Override
+    public void itemChosenCallBack() {
+        populateRecyclerViewArrayList();
     }
 }

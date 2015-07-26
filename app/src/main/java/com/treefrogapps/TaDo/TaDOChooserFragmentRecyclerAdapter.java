@@ -102,6 +102,8 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
         }
     }
 
+
+
 }
     
     

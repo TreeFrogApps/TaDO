@@ -28,7 +28,6 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
 
     private DBHelper dbHelper;
     private Dialog dialogBuilder;
-    private String mCurrentItemId;
     private Spinner mTaDOChooserDialogListSpinner;
     private ArrayAdapter<String> mListSpinnerArrayAdapter;
     private String[] mListSpinnerArray;
@@ -40,8 +39,6 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
     private ArrayList<ItemsListData> itemsListDataNotDoneArrayList;
     private Button mTaDOChooserDialogCancelButton;
     private Button mTaDOChooserDialogQueueButton;
-    private Button mTaDOChooserDialogPositiveButton;
-
 
     @NonNull
     @Override
@@ -57,7 +54,6 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
         setupSpinnerAdapters();
         spinnerListeners();
 
-
         return dialogBuilder;
     }
 
@@ -69,8 +65,6 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
         mTaDOChooserDialogCancelButton.setOnClickListener(this);
         mTaDOChooserDialogQueueButton = (Button) dialogBuilder.findViewById(R.id.taDOChooserDialogQueueButton);
         mTaDOChooserDialogQueueButton.setOnClickListener(this);
-        mTaDOChooserDialogPositiveButton = (Button) dialogBuilder.findViewById(R.id.taDOChooserDialogPositiveButton);
-        mTaDOChooserDialogPositiveButton.setOnClickListener(this);
     }
 
     private void setupSpinnerAdapters() {
@@ -154,21 +148,19 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
 
                     boolean itemQueued = false;
 
-                    for (int i = 0; i < queuedItemListDataArrayList.size(); i++){
+                    for (int i = 0; i < queuedItemListDataArrayList.size(); i++) {
 
                         try {
-                            if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId) || currentItemListData.getItemId().equals(itemId)){
+                            if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId) || currentItemListData.getItemId().equals(itemId)) {
                                 itemQueued = true;
                                 break;
                             }
-                        } catch (NullPointerException e){
+                        } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
-
-
                     }
 
-                    if (!itemQueued){
+                    if (!itemQueued) {
                         QueuedItemListData queuedItemListData = new QueuedItemListData();
                         queuedItemListData.setItemId(itemId);
                         dbHelper.insertIntoQueuedItemsTable(queuedItemListData);
@@ -179,46 +171,6 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                     CustomToasts.Toast(getActivity(), "Please choose a task");
                 }
                 break;
-            case R.id.taDOChooserDialogPositiveButton:
-                if (mTaDOChooserDialogListSpinner.getSelectedItemPosition() != 0 &&
-                        mTaDOChooserDialogItemSpinner.getSelectedItemPosition() != 0) {
-
-                    String itemId = itemsListDataNotDoneArrayList.get
-                            (mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
-
-                    if (checkIfItemQueued(itemId)){
-                        QueuedItemListData queuedItemListData = new QueuedItemListData();
-                        queuedItemListData.setItemId(itemId);
-                        dbHelper.deleteQueuedItem(queuedItemListData);
-                    }
-
-                    // Insert into CURRENT ITEM table (will only hold one item - current item)
-                    CurrentItemListData currentItemListData = new CurrentItemListData();
-                    currentItemListData.setItemId(itemId);
-                    dbHelper.insertIntoCurrentItemTable(currentItemListData);
-
-                    mOnItemChosenCallback.itemChosenCallBack();
-                } else {
-                    CustomToasts.Toast(getActivity(), "Please choose a task");
-                }
-                break;
         }
-
-    }
-
-    public boolean checkIfItemQueued(String itemId){
-
-        // Check if is already in queued items table if so - remove from queued items
-        ArrayList<QueuedItemListData> queuedItemListDataArrayList = dbHelper.getQueuedItems();
-
-        boolean isQueued = false;
-
-        for (int i = 0; i < queuedItemListDataArrayList.size(); i++){
-            if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId)){
-                isQueued = true;
-                break;
-            }
-        }
-        return isQueued;
     }
 }
