@@ -47,7 +47,7 @@ public class TaDOChooserPagerAdapter extends FragmentPagerAdapter {
         return tabTitlesArray.length;
     }
 
-    // used for refreshing tabs afetr they have been loaded - uses onResume method
+    // used for refreshing tabs after they have been loaded - uses onResume method
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object object = super.instantiateItem(container, position);

@@ -88,8 +88,8 @@
 
     <!-- Chooser Fragment -->
     <string-array name="chooser_framgent_tab_title_array">
-        <item>CURRENT TASK</item>
         <item>QUEUED TASKS</item>
+        <item>CURRENT TASK</item>
     </string-array>
     <string name="tado_chooser_fragment_1_list">List</string>
     <string name="tado_chooser_framgent_1_list_text_view">List Holder Text</string>
