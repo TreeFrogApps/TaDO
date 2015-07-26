@@ -56,8 +56,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-
-
         // always called in the lifecycle stack
         populateRecyclerViewArrayList();
     }
