@@ -148,17 +148,24 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                     String itemId = itemsListDataNotDoneArrayList.get
                             (mTaDOChooserDialogItemSpinner.getSelectedItemPosition() - 1).getItemId();
 
-                    // Check if already queued
+                    // Check if already queued or current item
                     ArrayList<QueuedItemListData> queuedItemListDataArrayList = dbHelper.getQueuedItems();
+                    CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
 
                     boolean itemQueued = false;
 
                     for (int i = 0; i < queuedItemListDataArrayList.size(); i++){
 
-                        if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId)){
-                            itemQueued = true;
-                            break;
+                        try {
+                            if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId) || currentItemListData.getItemId().equals(itemId)){
+                                itemQueued = true;
+                                break;
+                            }
+                        } catch (NullPointerException e){
+                            e.printStackTrace();
                         }
+
+
                     }
 
                     if (!itemQueued){
@@ -166,7 +173,7 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                         queuedItemListData.setItemId(itemId);
                         dbHelper.insertIntoQueuedItemsTable(queuedItemListData);
                     } else {
-                        CustomToasts.Toast(getActivity(), "Task already in queue");
+                        CustomToasts.Toast(getActivity(), "Task already in chosen or in queue");
                     }
                 } else {
                     CustomToasts.Toast(getActivity(), "Please choose a task");
@@ -202,8 +209,7 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
     public boolean checkIfItemQueued(String itemId){
 
         // Check if is already in queued items table if so - remove from queued items
-        ArrayList<QueuedItemListData> queuedItemListDataArrayList = new ArrayList<>();
-        queuedItemListDataArrayList = dbHelper.getQueuedItems();
+        ArrayList<QueuedItemListData> queuedItemListDataArrayList = dbHelper.getQueuedItems();
 
         boolean isQueued = false;
 

@@ -66,7 +66,7 @@ public class TaDOChooserTabFragment2 extends Fragment {
 
         mQueuedItemListDataArrayList = dbHelper.getQueuedItems();
 
-        // check if user has manually updated item to be done
+        // check if user has manually updated item to be done.
         for (int i = 0; i < mQueuedItemListDataArrayList.size(); i++){
 
             ItemsListData itemsListData = dbHelper.getSingleItem(mQueuedItemListDataArrayList.get(i).getItemId());
