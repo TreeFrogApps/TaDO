@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import java.util.ArrayList;
 
@@ -78,6 +77,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         registerForContextMenu(mTaDOChooserFragment1RecyclerView);
     }
 
+    // recycler context menu - on long click listener and position setter and getter added to recycle adapter
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -86,17 +86,32 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
             case R.id.taDOChooserFragment1RecyclerView :
                 MenuInflater menuInflater = getActivity().getMenuInflater();
-                menuInflater.inflate(R.menu.menu_main, menu);
-
-                // TODO - create context menu ?
+                menuInflater.inflate(R.menu.fragment_tado_chooser_context_menu, menu);
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int itemIdPosition = menuInfo.position;
+        // get adapter position
+        int adapterPosition = mTaDOChooserFragmentRecyclerAdapter.getPosition();
+
+        switch (item.getItemId()){
+
+            case R.id.chooserFragmentContextMenuSetAsCurrent :
+
+                break;
+            case R.id.chooserFragmentContextMenuRemove :
+
+                String itemIdToRemove =  mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
+                QueuedItemListData queuedItemListData = new QueuedItemListData();
+                queuedItemListData.setItemId(itemIdToRemove);
+                dbHelper.deleteQueuedItem(queuedItemListData);
+
+                mQueuedItemListDataArrayList.remove(adapterPosition);
+                mTaDOChooserFragmentRecyclerAdapter.notifyItemRemoved(adapterPosition);
+                break;
+        }
         return super.onContextItemSelected(item);
     }
 

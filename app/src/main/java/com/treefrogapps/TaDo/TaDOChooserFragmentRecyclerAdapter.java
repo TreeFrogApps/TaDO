@@ -16,6 +16,7 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
     private Context context;
     private ArrayList<QueuedItemListData> queuedItemListDataArrayList;
     private DBHelper dbHelper;
+    private int position;
     
     public TaDOChooserFragmentRecyclerAdapter(Context context, ArrayList<QueuedItemListData> queuedItemListDataArrayList){
         
@@ -38,7 +39,7 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
         return new MyViewHolder(itemView);
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder  {
 
         private LinearLayout taDOChooserRecyclerCardView;
         private TextView taDOChooserRecyclerItemListTextView;
@@ -64,15 +65,17 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
 
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
 
         // Get listData for single Item
         String itemId = queuedItemListDataArrayList.get(position).getItemId();
         ItemsListData itemsListData = dbHelper.getSingleItem(itemId);
 
+        // get adapter position for context menu in fragment
         holder.taDOChooserRecyclerCardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                setPosition(holder.getAdapterPosition());
                 return false;
             }
         });
@@ -102,8 +105,20 @@ public class TaDOChooserFragmentRecyclerAdapter extends RecyclerView.Adapter<TaD
         }
     }
 
+    // setter and getter for getting adapter position for context menu in fragment
+    public void setPosition(int position){
+        this.position = position;
+    }
 
+    public int getPosition(){
+        return this.position;
+    }
 
+    @Override
+    public void onViewRecycled(MyViewHolder holder) {
+        holder.itemView.setOnLongClickListener(null);
+        super.onViewRecycled(holder);
+    }
 }
     
     
