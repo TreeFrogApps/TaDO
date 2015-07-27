@@ -107,10 +107,15 @@
 
 
     <!-- Chooser Fragment 1 Dialog -->
+    <string name="tado_chooser_fragment_1_dialog_choose_list">Lists</string>
+    <string name="tado_chooser_fragment_1_dialog_choose_task_2">Tasks</string>
     <string name="tado_chooser_fragment_1_dialog_choose_task">Choose a task</string>
     <string name="tado_chooser_fragment_1_dialog_queue">QUEUE</string>
     <string name="tado_chooser_fragment_1_dialog_done">DONE</string>
     <string name="tado_chooser_fragment_1_dialog_choose">CHOOSE</string>
+    <string name="tado_chooser_fragment_1_dialog_toast_1">Task already in chosen or in queue</string>
+    <string name="tado_chooser_fragment_1_dialog_toast_2">Please choose a task</string>
+
 
     <!-- Chooser Fragment 1 Dialog -->
     <string name="tado_chooser_fragment_2_queued_tasks">Queued tasks</string>

@@ -16,6 +16,10 @@ import java.util.ArrayList;
 
 public class TaDOChooserFragment1Dialog extends DialogFragment implements View.OnClickListener {
 
+    public TaDOChooserFragment1Dialog(){
+    }
+
+
     public OnItemChosenCallback mOnItemChosenCallback;
 
     interface OnItemChosenCallback {
@@ -31,11 +35,11 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
     private Spinner mTaDOChooserDialogListSpinner;
     private ArrayAdapter<String> mListSpinnerArrayAdapter;
     private String[] mListSpinnerArray;
-    private String mSpinnerListTitle = "Choose a list";
+    private String mSpinnerListTitle;
     private Spinner mTaDOChooserDialogItemSpinner;
     private ArrayAdapter<String> mItemSpinnerArrayAdapter;
     private String[] mItemSpinnerArray;
-    private String mSpinnerItemTitle = "Choose a task";
+    private String mSpinnerItemTitle;
     private ArrayList<ItemsListData> itemsListDataNotDoneArrayList;
     private Button mTaDOChooserDialogCancelButton;
     private Button mTaDOChooserDialogQueueButton;
@@ -45,6 +49,8 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         dbHelper = new DBHelper(getActivity());
+        mSpinnerListTitle = getActivity().getResources().getString(R.string.tado_chooser_fragment_1_dialog_choose_list);
+        mSpinnerItemTitle = getActivity().getResources().getString(R.string.tado_chooser_fragment_1_dialog_choose_task_2);
         dialogBuilder = new Dialog(getActivity());
         dialogBuilder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBuilder.setContentView(R.layout.fragment_tado_chooser_fragment1_dialog);
@@ -164,11 +170,12 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                         QueuedItemListData queuedItemListData = new QueuedItemListData();
                         queuedItemListData.setItemId(itemId);
                         dbHelper.insertIntoQueuedItemsTable(queuedItemListData);
+                        mOnItemChosenCallback.itemChosenCallBack();
                     } else {
-                        CustomToasts.Toast(getActivity(), "Task already in chosen or in queue");
+                        CustomToasts.Toast(getActivity(), getResources().getString(R.string.tado_chooser_fragment_1_dialog_toast_1));
                     }
                 } else {
-                    CustomToasts.Toast(getActivity(), "Please choose a task");
+                    CustomToasts.Toast(getActivity(), getResources().getString(R.string.tado_chooser_fragment_1_dialog_toast_2));
                 }
                 break;
         }

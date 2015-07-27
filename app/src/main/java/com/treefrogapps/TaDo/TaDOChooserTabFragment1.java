@@ -10,9 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 
@@ -59,6 +63,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         // always called in the lifecycle stack
         populateRecyclerViewArrayList();
 
+        // reset callback on screen rotation for dialog
         mTaDOChooserFragment1Dialog = (TaDOChooserFragment1Dialog) getFragmentManager().findFragmentByTag("Dialog04");
         if (mTaDOChooserFragment1Dialog != null) {
             mTaDOChooserFragment1Dialog.setCallBack(TaDOChooserTabFragment1.this);
@@ -70,20 +75,35 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         mTaDOChooserFragment1RecyclerView = (RecyclerView) mRootView.findViewById(R.id.taDOChooserFragment1RecyclerView);
         mTaDOChooserFragment1RecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTaDOChooserFragment1RecyclerView.setItemAnimator(new DefaultItemAnimator());
+        registerForContextMenu(mTaDOChooserFragment1RecyclerView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        switch (v.getId()){
+
+            case R.id.taDOChooserFragment1RecyclerView :
+                MenuInflater menuInflater = getActivity().getMenuInflater();
+                menuInflater.inflate(R.menu.menu_main, menu);
+
+                // TODO - create context menu ?
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int itemIdPosition = menuInfo.position;
+        return super.onContextItemSelected(item);
     }
 
     private void populateRecyclerViewArrayList() {
 
+        // any previously queued items that have bee marked as done will be removed from queued items (updated when swiped to mark as done)
         mQueuedItemListDataArrayList = dbHelper.getQueuedItems();
-
-        // check if user has manually updated item to be done.
-        for (int i = 0; i < mQueuedItemListDataArrayList.size(); i++){
-
-            ItemsListData itemsListData = dbHelper.getSingleItem(mQueuedItemListDataArrayList.get(i).getItemId());
-            if (itemsListData.getItemDone().equals("Y")){
-                mQueuedItemListDataArrayList.remove(i);
-            }
-        }
         mTaDOChooserFragmentRecyclerAdapter = new TaDOChooserFragmentRecyclerAdapter(getActivity(), mQueuedItemListDataArrayList);
         mTaDOChooserFragment1RecyclerView.setAdapter(mTaDOChooserFragmentRecyclerAdapter);
     }

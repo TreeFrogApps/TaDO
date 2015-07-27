@@ -273,9 +273,15 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
         itemsListData.setItemId(itemIdToUpdate);
 
         if (mItemsArrayList.get(layoutPosition).getItemDone().equals(Constants.ITEM_NOT_DONE)) {
+            // mark item as done
             itemsListData.setItemDone(Constants.ITEM_DONE);
             mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_DONE);
+            //  remove from queued items list (if queued)
+            QueuedItemListData queuedItemListData = new QueuedItemListData();
+            queuedItemListData.setItemId(itemIdToUpdate);
+            dbHelper.deleteQueuedItem(queuedItemListData);
         } else {
+            // mark item as NOT done
             itemsListData.setItemDone(Constants.ITEM_NOT_DONE);
             mItemsArrayList.get(layoutPosition).setItemDone(Constants.ITEM_NOT_DONE);
         }
