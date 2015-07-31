@@ -82,9 +82,9 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
-            case R.id.taDOChooserFragment1RecyclerView :
+            case R.id.taDOChooserFragment1RecyclerView:
                 MenuInflater menuInflater = getActivity().getMenuInflater();
                 menuInflater.inflate(R.menu.fragment_tado_chooser_context_menu, menu);
         }
@@ -95,24 +95,40 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
         // get adapter position
         int adapterPosition = mTaDOChooserFragmentRecyclerAdapter.getPosition();
+        String itemId = mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
 
-        switch (item.getItemId()){
-
-            case R.id.chooserFragmentContextMenuSetAsCurrent :
-
+        switch (item.getItemId()) {
+            case R.id.chooserFragmentContextMenuSetAsCurrent:
+                // get current item and delete
+                CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
+                if (currentItemListData.getItemId() != null) dbHelper.deleteCurrentItem(currentItemListData);
+                // add as current item
+                addAsCurrentItem(itemId);
+                deleteQueuedItem(adapterPosition, itemId);
                 break;
-            case R.id.chooserFragmentContextMenuRemove :
 
-                String itemIdToRemove =  mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
-                QueuedItemListData queuedItemListData = new QueuedItemListData();
-                queuedItemListData.setItemId(itemIdToRemove);
-                dbHelper.deleteQueuedItem(queuedItemListData);
-
-                mQueuedItemListDataArrayList.remove(adapterPosition);
-                mTaDOChooserFragmentRecyclerAdapter.notifyItemRemoved(adapterPosition);
+            case R.id.chooserFragmentContextMenuRemove:
+                deleteQueuedItem(adapterPosition, itemId);
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void addAsCurrentItem(String itemId) {
+
+        CurrentItemListData currentItemListData = new CurrentItemListData();
+        currentItemListData.setItemId(itemId);
+        dbHelper.insertIntoCurrentItemTable(currentItemListData);
+    }
+
+    public void deleteQueuedItem(int adapterPosition, String itemId) {
+
+        QueuedItemListData queuedItemListData = new QueuedItemListData();
+        queuedItemListData.setItemId(itemId);
+        dbHelper.deleteQueuedItem(queuedItemListData);
+
+        mQueuedItemListDataArrayList.remove(adapterPosition);
+        mTaDOChooserFragmentRecyclerAdapter.notifyItemRemoved(adapterPosition);
     }
 
     private void populateRecyclerViewArrayList() {
@@ -135,14 +151,14 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 mTaDoChooserFragment1FAB.setOnClickListener(TaDOChooserTabFragment1.this);
             }
         }, 200);
-     }
+    }
 
 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
-            case R.id.taDoChooserFragment1FAB :
+        switch (v.getId()) {
+            case R.id.taDoChooserFragment1FAB:
                 chooseItem();
 
         }

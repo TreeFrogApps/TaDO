@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,9 +6,7 @@
     tools:context="com.treefrogapps.TaDo.TaDOChooserTabFragment2">
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <LinearLayout
             android:id="@+id/taDOChooserFragmentMainLayout"
@@ -236,21 +233,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/taDoChooserFragment2FAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:src="@mipmap/ic_fab_plus_item"
-            android:visibility="visible"
-            app:borderWidth="0dp"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp" />
-
-    </FrameLayout>
 
 </LinearLayout>
 

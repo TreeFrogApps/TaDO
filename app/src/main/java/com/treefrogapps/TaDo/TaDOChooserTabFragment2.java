@@ -12,7 +12,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -33,11 +32,9 @@ import java.util.concurrent.TimeUnit;
 
 
 public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickListener,
-        View.OnLongClickListener, TaDOChooserFragment1Dialog.OnItemChosenCallback {
+        View.OnLongClickListener {
 
-    private FloatingActionButton mTaDOChooserFragment1FAB;
     private LinearLayout mLinearLayout;
-    private TaDOChooserFragment1Dialog mTaDOChooserFragment1Dialog;
 
     // Database Item Inputs
     private TextView mTaDOChooserFragment2ListTextView;
@@ -74,7 +71,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     private int mTimerProgress = 1;
     private String mTimerText;
 
-
     public TaDOChooserTabFragment2() {
         // Required empty public constructor
     }
@@ -91,6 +87,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
         mLinearLayout = (LinearLayout) mRootView.findViewById(R.id.taDOChooserFragmentMainLayout);
 
@@ -121,8 +118,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         mTaDOChooserFragment2MinsTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragment2MinsTextView);
         mTaDOChooserFragment2PriorityTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragment2PriorityTextView);
 
-        mTaDOChooserFragment1FAB = (FloatingActionButton) mRootView.findViewById(R.id.taDoChooserFragment2FAB);
-        mTaDOChooserFragment1FAB.setOnClickListener(this);
         mTaDOChooserFragment1TimerButton = (Button) mRootView.findViewById(R.id.taDOChooserFragment2TimerButton);
         mTaDOChooserFragment1TimerButton.setOnClickListener(this);
         mTaDOChooserFragment1TimerButton.setOnLongClickListener(this);
@@ -140,9 +135,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
         switch (v.getId()) {
 
-            case R.id.taDoChooserFragment2FAB:
-                chooserItem();
-                break;
             case R.id.taDOChooserFragment2MenuButton:
                 inflatePopMenu(v);
                 break;
@@ -170,29 +162,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             default:
                 return false;
         }
-    }
-
-    private void chooserItem() {
-
-        mTaDOChooserFragment1Dialog = new TaDOChooserFragment1Dialog();
-        mTaDOChooserFragment1Dialog.mOnItemChosenCallback = TaDOChooserTabFragment2.this;
-        mTaDOChooserFragment1Dialog.show(getFragmentManager(), "Dialog04");
-    }
-
-    @Override
-    public void itemChosenCallBack() {
-
-        mTaDOChooserFragment1FAB.setVisibility(View.GONE);
-        mLinearLayout.startAnimation(Animations.alphaFadeIn(getActivity()));
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mLinearLayout.setVisibility(View.VISIBLE);
-            }
-        }, 10);
-
-        populateTimerLayout();
     }
 
     public void populateTimerLayout() {
@@ -235,7 +204,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
             if (mItemsListData.getItemDone().equals("N")) {
 
-                mTaDOChooserFragment1FAB.setVisibility(View.GONE);
                 mLinearLayout.setVisibility(View.VISIBLE);
                 populateTimerLayout();
             } else {
@@ -375,9 +343,9 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     public void onResume() {
         super.onResume();
 
-        mTaDOChooserFragment1Dialog = (TaDOChooserFragment1Dialog) getFragmentManager().findFragmentByTag("Dialog04");
-        if (mTaDOChooserFragment1Dialog != null) {
-            mTaDOChooserFragment1Dialog.setCallBack(TaDOChooserTabFragment2.this);
+        if (dbHelper.getCurrentItem().getItemId() != null){
+            mLinearLayout.setVisibility(View.VISIBLE);
+            populateTimerLayout();
         }
 
         mCounterStarted = mSharedPreferences.getBoolean("mCounterStarted", false);
@@ -456,7 +424,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                             @Override
                             public void run() {
                                 mLinearLayout.setVisibility(View.GONE);
-                                mTaDOChooserFragment1FAB.setVisibility(View.VISIBLE);
                             }
                         }, 200);
                         resetTimer();
@@ -471,6 +438,4 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
         popUpMenu.show();
     }
-
-
 }

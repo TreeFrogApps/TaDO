@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class TaDOChooserFragment1Dialog extends DialogFragment implements View.OnClickListener {
 
-    public TaDOChooserFragment1Dialog(){
+    public TaDOChooserFragment1Dialog() {
     }
 
 
@@ -155,15 +155,18 @@ public class TaDOChooserFragment1Dialog extends DialogFragment implements View.O
                     boolean itemQueued = false;
 
                     for (int i = 0; i < queuedItemListDataArrayList.size(); i++) {
-
-                        try {
-                            if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId) || currentItemListData.getItemId().equals(itemId)) {
-                                itemQueued = true;
-                                break;
-                            }
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
+                        if (queuedItemListDataArrayList.get(i).getItemId().equals(itemId)) {
+                            itemQueued = true;
+                            break;
                         }
+                    }
+
+                    try {
+                        if (currentItemListData.getItemId().equals(itemId)){
+                            itemQueued = true;
+                        }
+                    } catch (NullPointerException e){
+                        e.printStackTrace();
                     }
 
                     if (!itemQueued) {
