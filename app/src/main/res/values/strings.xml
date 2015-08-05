@@ -121,6 +121,9 @@
     <string name="tado_chooser_fragment_context_menu_set_as_current">Set as current task</string>
     <string name="tado_chooser_fragment_context_menu_set_as_remove">Remove from queue</string>
 
+    <!-- Chooser Fragment Timer Menu -->
+    <string name="tado_chooser_fragment_timer_menu_reset">Reset timer</string>
+
 
 
 

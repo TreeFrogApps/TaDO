@@ -12,6 +12,6 @@
     <item
         android:id="@+id/chooserFragmentContextMenuRemove"
         android:title="@string/tado_chooser_fragment_context_menu_set_as_remove"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         app:showAsAction="never" />
 </menu>
