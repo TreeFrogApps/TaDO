@@ -122,6 +122,7 @@
     <string name="tado_chooser_fragment_context_menu_set_as_remove">Remove from queue</string>
 
     <!-- Chooser Fragment Timer Menu -->
+    <string name="tado_chooser_fragment_timer_menu_header">Timer Options</string>
     <string name="tado_chooser_fragment_timer_menu_reset">Reset timer</string>
 
 

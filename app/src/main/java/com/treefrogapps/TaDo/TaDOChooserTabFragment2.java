@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
     private TaDOChooserTimerObject mTaDOChooserTimerObject;
     private static final String TIMER_OBJECT = "com.treefrogapps.TaDo.TIMER_OBJECT";
-    private boolean hasStarted;
+    private boolean isActive;
     private boolean isPaused;
 
     // Database Item Inputs
@@ -74,12 +75,12 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         if (savedInstanceState != null) {
             // coming from screen rotation, or configuration change
             if (retrieveTimerObject()) {
-                hasStarted = mTaDOChooserTimerObject.isActive();
+                isActive = mTaDOChooserTimerObject.isActive();
                 isPaused = mTaDOChooserTimerObject.isPaused();
                 mCurrentItemListData = mTaDOChooserTimerObject.getCurrentItemListData();
                 mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
                 populateInputs();
-                startCountDown(hasStarted, isPaused);
+                startCountDown(isActive, isPaused);
             }
         } else {
             //
@@ -118,14 +119,14 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             if (mItemsListData.getItemDone().equals("N")) {
                 // check if new current item, or saved Current Item as TimerObject
                 if (retrieveTimerObject()) {
-                    hasStarted = mTaDOChooserTimerObject.isActive();
+                    isActive = mTaDOChooserTimerObject.isActive();
                     isPaused = mTaDOChooserTimerObject.isPaused();
                 } else {
-                    hasStarted = false;
+                    isActive = false;
                     isPaused = true;
                 }
                 populateInputs();
-                startCountDown(hasStarted, isPaused);
+                startCountDown(isActive, isPaused);
 
             } else {
                 CustomToasts.Toast(getActivity(), "Current task marked as done");
@@ -163,17 +164,19 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         mLinearLayout.setVisibility(View.VISIBLE);
     }
 
-    public void startCountDown(boolean hasStarted, boolean isPaused){
+    public void startCountDown(boolean isActive, boolean isPaused){
 
-        if (hasStarted && !isPaused){
+        if (isActive && !isPaused){
 
-            // todo - startcountdown - has started and not paused
+            // todo - startcountdown - has started and not paused (coming from outside app to inside)
+            // cancel service here if started (only start service if isActive and !isPaused) in onPause
+            // if service is called start notification and display time up and handle options from 3 dot popup menu
 
-        } else if (!hasStarted && isPaused) {
+        } else if (!isActive && isPaused) {
 
             // default starting value for a not started item
 
-        } else if (hasStarted && isPaused) {
+        } else if (isActive) {
 
             // todo  - must have been exited with it paused, because it was started
             // has started, but is paused
@@ -216,7 +219,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
     private void saveTimerObject() {
 
-        if (hasStarted && mLinearLayout.getVisibility() == View.VISIBLE) {
+        if (isActive && mLinearLayout.getVisibility() == View.VISIBLE) {
 
             CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
             ItemsListData itemsListData = dbHelper.getSingleItem(currentItemListData.getItemId());
@@ -225,7 +228,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                     new TaDOChooserTimerObject(currentItemListData,
                             (long) taskTimeInMilliseconds(itemsListData.getDuration()),
                             (long) taskTimeInMilliseconds(mTaDOChooserFragmentTimerTextView.getText().toString()),
-                            hasStarted, isPaused);
+                            isActive, isPaused);
 
             Gson gson = new Gson();
             String timerObjectToJson = gson.toJson(mTaDOChooserTimerObject);
@@ -260,10 +263,10 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             case R.id.taDOChooserFragment2TimerButton:
                 // handle pausing and has started
                 // changes has started to true (and stays true from now on)
-                hasStarted = true;
+                isActive = true;
                 // toggles paused state - handled in startCountDown
                 isPaused = !isPaused;
-                startCountDown(hasStarted, isPaused);
+                startCountDown(isActive, isPaused);
                 break;
 
             default:
@@ -278,6 +281,8 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         switch (v.getId()) {
 
             case R.id.taDOChooserFragment2TimerButton:
+                menu.setHeaderTitle(getActivity().getString(R.string.tado_chooser_fragment_timer_menu_header));
+                menu.setHeaderIcon(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_nav_sync, null));
                 MenuInflater menuInflater = getActivity().getMenuInflater();
                 menuInflater.inflate(R.menu.fragment_tado_chooser_timer_menu, menu);
         }
