@@ -210,6 +210,8 @@ public class CreateItemsActivity extends AppCompatActivity implements View.OnCli
                         c.drawBitmap(bitmap, ((float) itemView.getRight() - bitmapWidth) - (scale * 16), (float) itemView.getTop() + height, null);
                     }
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+                    bitmap.recycle();
                 }
             }
         };

@@ -6,20 +6,26 @@ public class TaDOChooserTimerObject {
     private CurrentItemListData currentItemListData;
     private long startTimeInMillis;
     private long timeOnExitInMillis;
+    private long systemTimeOnExit;
     private boolean isActive;
     private boolean isPaused;
+    public boolean isTimerObject;
 
     public TaDOChooserTimerObject(){
 
     }
 
     public TaDOChooserTimerObject(CurrentItemListData currentItemListData, long startTimeInMillis,
-                                  long timeOnExitInMillis, boolean isActive, boolean isPaused){
+                                  long timeOnExitInMillis, long systemTimeOnExit, boolean isActive, boolean isPaused){
+
         this.currentItemListData = currentItemListData;
         this.startTimeInMillis = startTimeInMillis;
         this.timeOnExitInMillis = timeOnExitInMillis;
+        this.systemTimeOnExit = systemTimeOnExit;
         this.isActive = isActive;
         this.isPaused = isPaused;
+
+        isTimerObject = true;
     }
 
 
@@ -47,6 +53,14 @@ public class TaDOChooserTimerObject {
         this.timeOnExitInMillis = timeOnExitInMillis;
     }
 
+    public long getSystemTimeonExit() {
+        return systemTimeOnExit;
+    }
+
+    public void setSystemTimeOnExit(long systemTimeOnExit) {
+        this.systemTimeOnExit = systemTimeOnExit;
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -62,4 +76,6 @@ public class TaDOChooserTimerObject {
     public void setIsPaused(boolean isPaused) {
         this.isPaused = isPaused;
     }
+
+
 }

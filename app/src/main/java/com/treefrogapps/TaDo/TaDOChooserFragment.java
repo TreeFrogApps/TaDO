@@ -1,6 +1,8 @@
 package com.treefrogapps.TaDo;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,8 @@ public class TaDOChooserFragment extends Fragment {
     private View rootView;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+    private DBHelper dbHelper;
+    private SharedPreferences mSharedPerferences;
 
     public TaDOChooserFragment() {
         // Required empty public constructor
@@ -38,6 +42,8 @@ public class TaDOChooserFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        dbHelper = new DBHelper(getActivity());
+        mSharedPerferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
         initialiseTabs();
     }
 
@@ -50,6 +56,13 @@ public class TaDOChooserFragment extends Fragment {
         mTabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
         mTabLayout.setTabTextColors(getResources().getColor(R.color.grey_light), getResources().getColor(R.color.white));
         mTabLayout.setupWithViewPager(mViewPager);
+
+        // if a timer object exists always open that as the default tab
+        CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
+        if (currentItemListData.getCurrentItemId() != null){
+            mViewPager.setCurrentItem(1);
+        }
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -47,7 +47,7 @@
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:maxLines="1"
-                                android:text="@string/tado_chooser_framgent_1_list_text_view"
+                                android:text="@string/tado_chooser_fragment_2_list_text_view"
                                 android:textColor="@color/primaryText"
                                 android:textSize="@dimen/text_22sp" />
 
@@ -89,7 +89,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/activity_horizontal_margin"
                             android:layout_weight="1"
-                            android:text="@string/tado_chooser_fragment_1_task"
+                            android:text="@string/tado_chooser_fragment_2_task"
                             android:textColor="@color/primaryColorAccent"
                             android:textSize="@dimen/text_16sp" />
 
@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_vertical_margin"
                         android:layout_marginRight="@dimen/activity_vertical_margin"
-                        android:text="@string/tado_chooser_framgent_1_item_text_view"
+                        android:text="@string/tado_chooser_fragment_2_item_text_view"
                         android:textColor="@color/primaryText"
                         android:textSize="@dimen/text_20sp" />
 
@@ -134,7 +134,7 @@
                         android:layout_marginRight="@dimen/activity_vertical_margin"
                         android:layout_marginTop="@dimen/four_dp"
                         android:maxLines="3"
-                        android:text="@string/tado_chooser_framgent_1_item_text_view"
+                        android:text="@string/tado_chooser_fragment_2_item_text_view"
                         android:textColor="@color/grey_dark"
                         android:textSize="@dimen/text_16sp" />
 

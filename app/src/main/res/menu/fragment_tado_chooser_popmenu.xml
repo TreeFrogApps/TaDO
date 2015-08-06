@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/popmenu_tado_chooser_notify"
-        android:title="@string/tado_chooser_fragment_1_checkbox"
+        android:title="@string/tado_chooser_fragment_2_checkbox"
         android:checkable="true"
         android:checked="true"
         android:orderInCategory="1"/>
@@ -15,17 +15,17 @@
 
         <item
             android:id="@+id/popmenu_tado_chooser_done"
-            android:title="@string/tado_chooser_fragment_1_done_radio_button"
+            android:title="@string/tado_chooser_fragment_2_done_radio_button"
             android:checkable="true"/>
 
         <item
             android:id="@+id/popmenu_tado_chooser_delete"
-            android:title="@string/tado_chooser_fragment_1_delete_radio_button"
+            android:title="@string/tado_chooser_fragment_2_delete_radio_button"
             android:checkable="true"/>
 
         <item
             android:id="@+id/popmenu_tado_chooser_do_not_alter"
-            android:title="@string/tado_chooser_fragment_1_do_not_alter_radio_button"
+            android:title="@string/tado_chooser_fragment_2_do_not_alter_radio_button"
             android:checked="true"
             android:checkable="true"/>
 
@@ -33,7 +33,7 @@
 
     <item
         android:id="@+id/popmenu_tado_chooser_remove"
-        android:title="@string/tado_chooser_fragment_1_remove"
+        android:title="@string/tado_chooser_fragment_2_remove"
         android:orderInCategory="3"/>
 
 </menu>

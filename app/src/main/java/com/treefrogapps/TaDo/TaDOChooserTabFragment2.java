@@ -3,8 +3,13 @@ package com.treefrogapps.TaDo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
@@ -23,15 +28,19 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickListener {
 
     private LinearLayout mLinearLayout;
 
     private TaDOChooserTimerObject mTaDOChooserTimerObject;
-    private static final String TIMER_OBJECT = "com.treefrogapps.TaDo.TIMER_OBJECT";
+    public static final String TIMER_OBJECT = "com.treefrogapps.TaDo.TIMER_OBJECT";
     private boolean isActive;
     private boolean isPaused;
+    private boolean isTimerObject = false;
+    private String pausedTimerText;
 
     // Database Item Inputs
     private TextView mTaDOChooserFragment2ListTextView;
@@ -66,26 +75,15 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Log.e("onActivityCreated", "CALLED");
+
         mLinearLayout = (LinearLayout) mRootView.findViewById(R.id.taDOChooserFragmentMainLayout);
         dbHelper = new DBHelper(getActivity());
         mSharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
 
         initialiseInputs();
 
-        if (savedInstanceState != null) {
-            // coming from screen rotation, or configuration change
-            if (retrieveTimerObject()) {
-                isActive = mTaDOChooserTimerObject.isActive();
-                isPaused = mTaDOChooserTimerObject.isPaused();
-                mCurrentItemListData = mTaDOChooserTimerObject.getCurrentItemListData();
-                mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
-                populateInputs();
-                startCountDown(isActive, isPaused);
-            }
-        } else {
-            //
-            checkCurrentItemExists();
-        }
+        initialiseTimerAndObject();
     }
 
     private void initialiseInputs() {
@@ -109,6 +107,21 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
     }
 
+    public void initialiseTimerAndObject(){
+
+        if (retrieveTimerObject()) {
+            isActive = mTaDOChooserTimerObject.isActive();
+            isPaused = mTaDOChooserTimerObject.isPaused();
+            isTimerObject = mTaDOChooserTimerObject.isTimerObject;
+            mCurrentItemListData = mTaDOChooserTimerObject.getCurrentItemListData();
+            mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
+            populateInputs();
+            countDownHandler(isActive, isPaused);
+        } else {
+            checkCurrentItemExists();
+        }
+    }
+
     public void checkCurrentItemExists() {
         // retrieve current item and check against ItemsListDataId that
         // it hasn't been updated to complete
@@ -121,12 +134,13 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 if (retrieveTimerObject()) {
                     isActive = mTaDOChooserTimerObject.isActive();
                     isPaused = mTaDOChooserTimerObject.isPaused();
+                    isTimerObject = mTaDOChooserTimerObject.isTimerObject;
                 } else {
                     isActive = false;
                     isPaused = true;
                 }
                 populateInputs();
-                startCountDown(isActive, isPaused);
+                countDownHandler(isActive, isPaused);
 
             } else {
                 CustomToasts.Toast(getActivity(), "Current task marked as done");
@@ -137,7 +151,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         }
     }
 
-    public void populateInputs(){
+    public void populateInputs() {
 
         mTaDOChooserFragment2ListTextView.setText(dbHelper.getTitle(mItemsListData.getTitleId()));
         mTaDOChooserFragment2ItemTextView.setText(mItemsListData.getItem());
@@ -160,34 +174,125 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 mTaDOChooserFragment2PriorityTextView.setBackgroundResource(R.drawable.priority_circle_high_40dp);
                 break;
         }
-        mTaDOChooserFragmentTimerTextView.setText(mItemsListData.getDuration());
         mLinearLayout.setVisibility(View.VISIBLE);
     }
 
-    public void startCountDown(boolean isActive, boolean isPaused){
+    public void countDownHandler(boolean isActive, boolean isPaused) {
 
-        if (isActive && !isPaused){
+        long countDownTime;
 
-            // todo - startcountdown - has started and not paused (coming from outside app to inside)
+        if (isActive && !isPaused && isTimerObject) {
+            // start countdown - has started and not paused (coming from outside app to inside - must have been saved object)
             // cancel service here if started (only start service if isActive and !isPaused) in onPause
             // if service is called start notification and display time up and handle options from 3 dot popup menu
 
-        } else if (!isActive && isPaused) {
+            // get time difference when exited/saved to present time
+            long difference = SystemClock.elapsedRealtime() - mTaDOChooserTimerObject.getSystemTimeonExit();
+            countDownTime = mTaDOChooserTimerObject.getTimeOnExitInMillis() - difference;
 
-            // default starting value for a not started item
+            if (countDownTime >= 0) {
+                // still some time to go - set formatted text and continue countdown
+                mTaDOChooserFragmentTimerTextView.setText(formatTime(countDownTime));
+                countDown(countDownTime);
+            } else {
+                // TODO - time has elapsed past end of time
+                mTaDOChooserFragment2TimerButton.setOnClickListener(null);
+                mTaDOChooserFragmentTimerTextView.setText(getActivity().getString(R.string.tado_chooser_fragment_2_time_up));
+            }
+
+            // reference to saved object not needed as it has been started (saved info obsolete)
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.remove(TIMER_OBJECT).apply();
+            isTimerObject = false;
+
+        } else if (isActive && isTimerObject) {
+            // must have either been exited with it paused, because it was started and is saved
+            // get time and set timer text
+            mTaDOChooserFragmentTimerTextView.setText(formatTime(mTaDOChooserTimerObject.getTimeOnExitInMillis()));
+            // reference to saved object not needed as it has been started (saved info obsolete)
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.remove(TIMER_OBJECT).apply();
+            isTimerObject = false;
+            // get the paused timer text
+            pausedTimerText = mTaDOChooserFragmentTimerTextView.getText().toString();
+
+        } else if (isActive && !isPaused) {
+            // is started and not saved - maybe first use - needs just to continue counting down (get timer text when pause button pressed and use to continue with)
+            // (convert to long for timer - use task time tin milliseconds to convert back)
+            if (pausedTimerText != null) {
+                countDownTime = (long) taskTimeInMilliseconds(pausedTimerText);
+            } else {
+                countDownTime = (long) taskTimeInMilliseconds(mItemsListData.getDuration());
+            }
+            countDown(countDownTime);
 
         } else if (isActive) {
+            // has started, but has been paused - get  timer text, cancel countDown
+            pausedTimerText = mTaDOChooserFragmentTimerTextView.getText().toString();
+            stopCountDown();
 
-            // todo  - must have been exited with it paused, because it was started
-            // has started, but is paused
+        } else {
+            // default starting value for a not started item and paused
+            mTaDOChooserFragmentTimerTextView.setText(mItemsListData.getDuration());
         }
+    }
 
+    public void countDown(long countDownTime) {
+        // stop screen from going to sleep manually
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // start animation
+        mTaDOChooserFragmentProgressImageView.startAnimation(Animations.rotate_infinite(getActivity()));
+
+        mCountDownTimer = new CountDownTimer(countDownTime, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // set the text view every second
+                mTaDOChooserFragmentTimerTextView.setText(formatTime(millisUntilFinished));
+            }
+
+            @Override
+            public void onFinish() {
+
+                if (TaDOChooserTabFragment2.this.getView() != null) {
+                    mTaDOChooserFragmentTimerTextView.setText(getActivity().getString(R.string.tado_chooser_fragment_2_time_up));
+                    mTaDOChooserFragment2TimerButton.setOnClickListener(null);
+                    stopCountDown();
+                    Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(250);
+                    Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone notification = RingtoneManager.getRingtone(getActivity(), sound);
+                    notification.play();
+
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.remove(TIMER_OBJECT).apply();
+                }
+            }
+        }.start();
+    }
+
+    public void stopCountDown() {
+
+        if (mCountDownTimer != null) mCountDownTimer.cancel();
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mTaDOChooserFragmentProgressImageView.clearAnimation();
+    }
+
+    public String formatTime(long countDownTime) {
+
+        return String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(countDownTime),
+                TimeUnit.MILLISECONDS.toMinutes(countDownTime) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(countDownTime)),
+                TimeUnit.MILLISECONDS.toSeconds(countDownTime) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(countDownTime)));
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        // todo - update object on first adding - currently not working using initialiseTimerAndObject();
+
     }
 
     public int taskTimeInMilliseconds(String taskTime) {
@@ -211,15 +316,14 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     public void onPause() {
         super.onPause();
 
-        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (mCountDownTimer != null) mCountDownTimer.cancel();
-
+        stopCountDown();
         saveTimerObject();
     }
 
     private void saveTimerObject() {
 
-        if (isActive && mLinearLayout.getVisibility() == View.VISIBLE) {
+        if (isActive && mLinearLayout.getVisibility() == View.VISIBLE &&
+                !mTaDOChooserFragmentTimerTextView.getText().toString().equals("TIME UP")) {
 
             CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
             ItemsListData itemsListData = dbHelper.getSingleItem(currentItemListData.getItemId());
@@ -228,7 +332,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                     new TaDOChooserTimerObject(currentItemListData,
                             (long) taskTimeInMilliseconds(itemsListData.getDuration()),
                             (long) taskTimeInMilliseconds(mTaDOChooserFragmentTimerTextView.getText().toString()),
-                            isActive, isPaused);
+                            SystemClock.elapsedRealtime(), isActive, isPaused);
 
             Gson gson = new Gson();
             String timerObjectToJson = gson.toJson(mTaDOChooserTimerObject);
@@ -264,9 +368,9 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 // handle pausing and has started
                 // changes has started to true (and stays true from now on)
                 isActive = true;
-                // toggles paused state - handled in startCountDown
+                // toggles paused state - handled in countDownHandler
                 isPaused = !isPaused;
-                startCountDown(isActive, isPaused);
+                countDownHandler(isActive, isPaused);
                 break;
 
             default:
@@ -294,7 +398,12 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         switch (item.getItemId()) {
 
             case R.id.chooserFragmentTimerMenuReset:
-                // TODO - reset timer
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.remove(TIMER_OBJECT).apply();
+                pausedTimerText = null;
+                checkCurrentItemExists();
+                stopCountDown();
+                // todo - causing crash here - onContextItemSelected(TaDOChooserTabFragment1.java:98)
                 break;
 
             default:
@@ -304,10 +413,12 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         return super.onContextItemSelected(item);
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
 
     }
+
 
 }

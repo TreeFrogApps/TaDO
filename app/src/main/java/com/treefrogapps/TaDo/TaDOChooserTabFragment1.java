@@ -105,6 +105,9 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 // add as current item
                 addAsCurrentItem(itemId);
                 deleteQueuedItem(adapterPosition, itemId);
+                // remove any shared prefs timer object
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.remove(TaDOChooserTabFragment2.TIMER_OBJECT).apply();
                 break;
 
             case R.id.chooserFragmentContextMenuRemove:
