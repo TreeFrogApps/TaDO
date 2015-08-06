@@ -95,7 +95,15 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
 
         // get adapter position
         int adapterPosition = mTaDOChooserFragmentRecyclerAdapter.getPosition();
-        String itemId = mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
+        String itemId = "0";
+
+        // try catch block required for context menu on chooser2 - somehow linked?
+        // when down to no queued items and reset using context menu throws exception
+        try{
+            itemId = mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
+        } catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
 
         switch (item.getItemId()) {
             case R.id.chooserFragmentContextMenuSetAsCurrent:
@@ -156,7 +164,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         }, 200);
     }
 
-
     @Override
     public void onClick(View v) {
 
@@ -173,7 +180,6 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         mTaDOChooserFragment1Dialog.mOnItemChosenCallback = TaDOChooserTabFragment1.this;
         mTaDOChooserFragment1Dialog.show(getFragmentManager(), "Dialog04");
     }
-
 
     @Override
     public void itemChosenCallBack() {

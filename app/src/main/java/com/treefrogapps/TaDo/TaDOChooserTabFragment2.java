@@ -403,7 +403,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 pausedTimerText = null;
                 checkCurrentItemExists();
                 stopCountDown();
-                // todo - causing crash here - onContextItemSelected(TaDOChooserTabFragment1.java:98)
                 break;
 
             default:
