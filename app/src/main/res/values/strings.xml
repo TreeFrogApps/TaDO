@@ -87,7 +87,7 @@
 
 
     <!-- Chooser Fragment 2 -->
-    <string-array name="chooser_framgent_tab_title_array">
+    <string-array name="chooser_fragment_tab_title_array">
         <item>QUEUED TASKS</item>
         <item>CURRENT TASK</item>
     </string-array>
@@ -116,6 +116,7 @@
 
 
     <!-- Chooser Fragment Context Menu (recycler view) -->
+    <string name="tado_chooser_fragment_context_menu_header">Queued Item Options</string>
     <string name="tado_chooser_fragment_context_menu_set_as_current">Set as current task</string>
     <string name="tado_chooser_fragment_context_menu_set_as_remove">Remove from queue</string>
 

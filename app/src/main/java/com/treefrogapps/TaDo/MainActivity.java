@@ -30,21 +30,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initialiseMenu();
-        dbHelper = new DBHelper(this);
+        mToolbar = (Toolbar) findViewById(R.id.myToolBar);
+        setSupportActionBar(mToolbar);
 
         if (savedInstanceState != null){
             menuPosition = savedInstanceState.getInt("menuPosition");
+            updateTitle(menuPosition);
         } else {
             menuPosition = 0;
             updateDisplayFragment(getResources().getString(R.string.nav_home));
         }
+
+        initialiseMenu();
+        dbHelper = new DBHelper(this);
+    }
+
+    public void updateTitle(int menuPosition) {
+        if (getSupportActionBar() != null) {
+
+            switch (menuPosition) {
+                case 0: getSupportActionBar().setTitle("My Lists"); break;
+                case 1: getSupportActionBar().setTitle("TaDO Chooser"); break;
+                case 2: getSupportActionBar().setTitle("Sync with Google Drive"); break;
+                case 3: getSupportActionBar().setTitle("Scheduler"); break;
+                default: break;
+            }
+        }
     }
 
     public void initialiseMenu() {
-
-        mToolbar = (Toolbar) findViewById(R.id.myToolBar);
-        setSupportActionBar(mToolbar);
 
         mDrawLayout = (DrawerLayout) findViewById(R.id.navDrawerLayout);
         mToggle = new ActionBarDrawerToggle(this, mDrawLayout, mToolbar, R.string.app_name, R.string.app_name);

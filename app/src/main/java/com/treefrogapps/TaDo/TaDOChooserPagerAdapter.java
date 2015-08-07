@@ -20,7 +20,7 @@ public class TaDOChooserPagerAdapter extends FragmentPagerAdapter {
     public TaDOChooserPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
 
-        tabTitlesArray = context.getResources().getStringArray(R.array.chooser_framgent_tab_title_array);
+        tabTitlesArray = context.getResources().getStringArray(R.array.chooser_fragment_tab_title_array);
 
         this.context = context;
         this.fragmentManager = fm;

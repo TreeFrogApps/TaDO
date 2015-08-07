@@ -37,8 +37,8 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
     private TaDOChooserTimerObject mTaDOChooserTimerObject;
     public static final String TIMER_OBJECT = "com.treefrogapps.TaDo.TIMER_OBJECT";
-    private boolean isActive;
-    private boolean isPaused;
+    public static boolean isActive;
+    public static boolean isPaused;
     private boolean isTimerObject = false;
     private String pausedTimerText;
 
@@ -82,8 +82,21 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         mSharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
 
         initialiseInputs();
+        checkCurrentItemExists();
+    }
 
-        initialiseTimerAndObject();
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.e("onResume - f2", "CALLED");
+
+        mCurrentItemListData = dbHelper.getCurrentItem();
+        if (!isActive){
+            Log.e("onResume - checkCurrentItemExists()", "CALLED");
+            checkCurrentItemExists();
+        }
+        // todo - update object on first adding - currently not working using initialiseTimerAndObject();
     }
 
     private void initialiseInputs() {
@@ -107,7 +120,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
 
     }
 
-    public void initialiseTimerAndObject(){
+    public void initialiseTimerAndObject() {
 
         if (retrieveTimerObject()) {
             isActive = mTaDOChooserTimerObject.isActive();
@@ -147,6 +160,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 dbHelper.deleteCurrentItem(mCurrentItemListData);
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.remove(TIMER_OBJECT).apply();
+                stopCountDown();
             }
         }
     }
@@ -182,6 +196,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         long countDownTime;
 
         if (isActive && !isPaused && isTimerObject) {
+            Log.e("A", "CALLED");
             // start countdown - has started and not paused (coming from outside app to inside - must have been saved object)
             // cancel service here if started (only start service if isActive and !isPaused) in onPause
             // if service is called start notification and display time up and handle options from 3 dot popup menu
@@ -206,6 +221,8 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             isTimerObject = false;
 
         } else if (isActive && isTimerObject) {
+            Log.e("B", "CALLED");
+
             // must have either been exited with it paused, because it was started and is saved
             // get time and set timer text
             mTaDOChooserFragmentTimerTextView.setText(formatTime(mTaDOChooserTimerObject.getTimeOnExitInMillis()));
@@ -217,6 +234,8 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             pausedTimerText = mTaDOChooserFragmentTimerTextView.getText().toString();
 
         } else if (isActive && !isPaused) {
+            Log.e("C", "CALLED");
+
             // is started and not saved - maybe first use - needs just to continue counting down (get timer text when pause button pressed and use to continue with)
             // (convert to long for timer - use task time tin milliseconds to convert back)
             if (pausedTimerText != null) {
@@ -227,13 +246,21 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
             countDown(countDownTime);
 
         } else if (isActive) {
+            Log.e("D", "CALLED");
+
             // has started, but has been paused - get  timer text, cancel countDown
             pausedTimerText = mTaDOChooserFragmentTimerTextView.getText().toString();
             stopCountDown();
 
         } else {
-            // default starting value for a not started item and paused
+            Log.e("E", "CALLED");
+            // default starting value for a not started item and paused - or will be called when replacing paused
+            // or active task from queued task context menu - need to null paused text if active as 'C' is called
+            // when scrolling from queued tasks and current task is running
+            // todo - null service ??
             mTaDOChooserFragmentTimerTextView.setText(mItemsListData.getDuration());
+            stopCountDown();
+            pausedTimerText = null;
         }
     }
 
@@ -288,13 +315,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // todo - update object on first adding - currently not working using initialiseTimerAndObject();
-
-    }
-
     public int taskTimeInMilliseconds(String taskTime) {
         String[] TaskTimeArray = taskTime.split(":");
         int IntHours = Integer.parseInt(TaskTimeArray[0]);
@@ -323,7 +343,8 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
     private void saveTimerObject() {
 
         if (isActive && mLinearLayout.getVisibility() == View.VISIBLE &&
-                !mTaDOChooserFragmentTimerTextView.getText().toString().equals("TIME UP")) {
+                !mTaDOChooserFragmentTimerTextView.getText().toString()
+                        .equals(getActivity().getResources().getString(R.string.tado_chooser_fragment_2_time_up))) {
 
             CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
             ItemsListData itemsListData = dbHelper.getSingleItem(currentItemListData.getItemId());
@@ -365,6 +386,7 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 break;
 
             case R.id.taDOChooserFragment2TimerButton:
+
                 // handle pausing and has started
                 // changes has started to true (and stays true from now on)
                 isActive = true;
@@ -403,6 +425,10 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 pausedTimerText = null;
                 checkCurrentItemExists();
                 stopCountDown();
+                if (mTaDOChooserFragmentTimerTextView.getText().toString()
+                        .equals(getActivity().getResources().getString(R.string.tado_chooser_fragment_2_time_up))){
+                    mTaDOChooserFragment2TimerButton.setOnClickListener(this);
+                }
                 break;
 
             default:

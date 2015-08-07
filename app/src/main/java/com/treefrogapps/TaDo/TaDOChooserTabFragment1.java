@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -25,7 +27,7 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     private View mRootView;
     private DBHelper dbHelper;
     private SharedPreferences mSharedPreferences;
-    private RecyclerView mTaDOChooserFragment1RecyclerView;
+    public static RecyclerView mTaDOChooserFragment1RecyclerView;
     public static TaDOChooserFragmentRecyclerAdapter mTaDOChooserFragmentRecyclerAdapter;
     private FloatingActionButton mTaDoChooserFragment1FAB;
     private ArrayList<QueuedItemListData> mQueuedItemListDataArrayList;
@@ -59,8 +61,11 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.e("onResume - f1", "CALLED");
         // always called in the lifecycle stack
         populateRecyclerViewArrayList();
+
 
         // reset callback on screen rotation for dialog
         mTaDOChooserFragment1Dialog = (TaDOChooserFragment1Dialog) getFragmentManager().findFragmentByTag("Dialog04");
@@ -85,6 +90,8 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
         switch (v.getId()) {
 
             case R.id.taDOChooserFragment1RecyclerView:
+                menu.setHeaderTitle(getActivity().getString(R.string.tado_chooser_fragment_context_menu_header));
+                menu.setHeaderIcon(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_nav_sync, null));
                 MenuInflater menuInflater = getActivity().getMenuInflater();
                 menuInflater.inflate(R.menu.fragment_tado_chooser_context_menu, menu);
         }
@@ -93,20 +100,14 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        // get adapter position
-        int adapterPosition = mTaDOChooserFragmentRecyclerAdapter.getPosition();
-        String itemId = "0";
-
-        // try catch block required for context menu on chooser2 - somehow linked?
-        // when down to no queued items and reset using context menu throws exception
-        try{
-            itemId = mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
-        } catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-        }
+        int adapterPosition;
+        String itemId;
 
         switch (item.getItemId()) {
             case R.id.chooserFragmentContextMenuSetAsCurrent:
+                // get adapter position
+                adapterPosition = mTaDOChooserFragmentRecyclerAdapter.getPosition();
+                itemId = mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
                 // get current item and delete
                 CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
                 if (currentItemListData.getItemId() != null) dbHelper.deleteCurrentItem(currentItemListData);
@@ -116,9 +117,14 @@ public class TaDOChooserTabFragment1 extends Fragment implements View.OnClickLis
                 // remove any shared prefs timer object
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.remove(TaDOChooserTabFragment2.TIMER_OBJECT).apply();
+                TaDOChooserTabFragment2.isActive = false;
+                TaDOChooserTabFragment2.isPaused = true;
                 break;
 
             case R.id.chooserFragmentContextMenuRemove:
+                // get adapter position
+                adapterPosition = mTaDOChooserFragmentRecyclerAdapter.getPosition();
+                itemId = mQueuedItemListDataArrayList.get(adapterPosition).getItemId();
                 deleteQueuedItem(adapterPosition, itemId);
                 break;
         }

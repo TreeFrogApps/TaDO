@@ -73,7 +73,7 @@ public class TaDOChooserFragment extends Fragment {
                 // cast pagerAdapter to the view pager to get access to created method to manually update fragment
                 // get fragment 1 (queued items) and use onResume()
                 Fragment fragment = ((TaDOChooserPagerAdapter) mViewPager.getAdapter()).getFragment(position);
-                if (fragment !=null && position == 1){
+                if (fragment !=null){
                     fragment.onResume();
                 }
             }
@@ -84,6 +84,4 @@ public class TaDOChooserFragment extends Fragment {
             }
         });
     }
-
-
 }
