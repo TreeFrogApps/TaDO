@@ -420,15 +420,18 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         switch (item.getItemId()) {
 
             case R.id.chooserFragmentTimerMenuReset:
+                // reset click listener for pause if completed
+                if (mTaDOChooserFragmentTimerTextView.getText().toString()
+                        .equals(getActivity().getResources().getString(R.string.tado_chooser_fragment_2_time_up))){
+                    mTaDOChooserFragment2TimerButton.setOnClickListener(this);
+                }
+
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.remove(TIMER_OBJECT).apply();
                 pausedTimerText = null;
                 checkCurrentItemExists();
                 stopCountDown();
-                if (mTaDOChooserFragmentTimerTextView.getText().toString()
-                        .equals(getActivity().getResources().getString(R.string.tado_chooser_fragment_2_time_up))){
-                    mTaDOChooserFragment2TimerButton.setOnClickListener(this);
-                }
+
                 break;
 
             default:
