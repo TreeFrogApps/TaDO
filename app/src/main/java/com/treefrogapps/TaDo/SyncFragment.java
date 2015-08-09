@@ -49,7 +49,7 @@ public class SyncFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private View rootView;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences mSharedPreferences;
     private DBHelper dbHelper;
 
     private GoogleApiClient mGoogleApiClient;
@@ -88,6 +88,7 @@ public class SyncFragment extends Fragment implements
         }
 
         dbHelper = new DBHelper(getActivity());
+        mSharedPreferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
 
         if (checkPlayServicesInstalled()) {
             // build connection
@@ -540,6 +541,9 @@ public class SyncFragment extends Fragment implements
                 Toast.makeText(getActivity(), "Error whilst writing database locally", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), "Successfully downloaded database", Toast.LENGTH_SHORT).show();
+                // remove timer object from saved preferences
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.remove(TaDOChooserTabFragment2.TIMER_OBJECT).apply();
             }
             mSyncFragmentSyncButton.setClickable(true);
             mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));

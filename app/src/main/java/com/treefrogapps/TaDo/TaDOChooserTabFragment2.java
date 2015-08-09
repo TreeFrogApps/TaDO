@@ -90,13 +90,10 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         super.onResume();
 
         Log.e("onResume - f2", "CALLED");
-
-        mCurrentItemListData = dbHelper.getCurrentItem();
         if (!isActive){
             Log.e("onResume - checkCurrentItemExists()", "CALLED");
             checkCurrentItemExists();
         }
-        // todo - update object on first adding - currently not working using initialiseTimerAndObject();
     }
 
     private void initialiseInputs() {
@@ -117,23 +114,9 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
         mTaDOChooserFragmentTimerTextView = (TextView) mRootView.findViewById(R.id.taDOChooserFragmentTimerTextView);
 
         mTaDOChooserFragmentProgressImageView = (ImageView) mRootView.findViewById(R.id.taDOChooserFragmentProgressImageView);
-
     }
 
-    public void initialiseTimerAndObject() {
 
-        if (retrieveTimerObject()) {
-            isActive = mTaDOChooserTimerObject.isActive();
-            isPaused = mTaDOChooserTimerObject.isPaused();
-            isTimerObject = mTaDOChooserTimerObject.isTimerObject;
-            mCurrentItemListData = mTaDOChooserTimerObject.getCurrentItemListData();
-            mItemsListData = dbHelper.getSingleItem(mCurrentItemListData.getItemId());
-            populateInputs();
-            countDownHandler(isActive, isPaused);
-        } else {
-            checkCurrentItemExists();
-        }
-    }
 
     public void checkCurrentItemExists() {
         // retrieve current item and check against ItemsListDataId that
