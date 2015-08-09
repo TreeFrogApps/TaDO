@@ -193,7 +193,6 @@ public class TaDOChooserTabFragment2 extends Fragment implements View.OnClickLis
                 mTaDOChooserFragmentTimerTextView.setText(formatTime(countDownTime));
                 countDown(countDownTime);
             } else {
-                // TODO - time has elapsed past end of time
                 mTaDOChooserFragment2TimerButton.setOnClickListener(null);
                 mTaDOChooserFragmentTimerTextView.setText(getActivity().getString(R.string.tado_chooser_fragment_2_time_up));
             }
