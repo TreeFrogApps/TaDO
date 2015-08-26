@@ -44,44 +44,6 @@ public class TaDOChooserFragment extends Fragment {
 
         dbHelper = new DBHelper(getActivity());
         mSharedPerferences = getActivity().getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
-        initialiseTabs();
     }
 
-    private void initialiseTabs() {
-
-        mViewPager = (ViewPager) rootView.findViewById(R.id.chooserFragmentViewPager);
-        mViewPager.setAdapter(new TaDOChooserPagerAdapter(getActivity(), getChildFragmentManager()));
-        // new design library tab layout
-        mTabLayout = (TabLayout) rootView.findViewById(R.id.chooserFragmentSlidingTabsLayout);
-        mTabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-        mTabLayout.setTabTextColors(getResources().getColor(R.color.grey_light), getResources().getColor(R.color.white));
-        mTabLayout.setupWithViewPager(mViewPager);
-
-        // if a timer object exists always open that as the default tab
-        CurrentItemListData currentItemListData = dbHelper.getCurrentItem();
-        if (currentItemListData.getCurrentItemId() != null){
-            mViewPager.setCurrentItem(1);
-        }
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                // cast pagerAdapter to the view pager to get access to created method to manually update fragment
-                // get fragment 1 (queued items) and use onResume()
-                Fragment fragment = ((TaDOChooserPagerAdapter) mViewPager.getAdapter()).getFragment(position);
-                if (fragment !=null){
-                    fragment.onResume();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
 }

@@ -541,9 +541,6 @@ public class SyncFragment extends Fragment implements
                 Toast.makeText(getActivity(), "Error whilst writing database locally", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), "Successfully downloaded database", Toast.LENGTH_SHORT).show();
-                // remove timer object from saved preferences
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.remove(TaDOChooserTabFragment2.TIMER_OBJECT).apply();
             }
             mSyncFragmentSyncButton.setClickable(true);
             mSyncFragmentSyncButton.setTextColor(getResources().getColor(R.color.primaryColor));
