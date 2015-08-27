@@ -18,11 +18,14 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
     private Context context;
     private ArrayList<TitlesListData> titlesListDataArrayList;
+    private DBHelper dbHelper;
 
     public TitlesRecyclerAdapter(Context context, ArrayList<TitlesListData> titlesListDataArrayList) {
 
         this.context = context;
         this.titlesListDataArrayList = titlesListDataArrayList;
+
+        this.dbHelper = new DBHelper(context);
     }
 
 
@@ -40,8 +43,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private int circleState = 1;
 
         private TextView recyclerTitleIDTextView;
 
@@ -90,6 +91,18 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
                 (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
 
+        String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(position));
+
+        if (selected.equals("N") || selected.equals("")) {
+            holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
+                    (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
+            holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
+
+        } else {
+            holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
+            holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
+        }
+
         holder.recyclerTitleCircleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,16 +113,18 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
                     @Override
                     public void run() {
 
-                        if (holder.circleState == 1) {
+                        final String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(position));
+
+                        if (selected.equals("N") || selected.equals("")) {
                             holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
                             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
-                            holder.circleState = 0;
+                            dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(position).getTitle_id(), "Y");
 
                         } else {
                             holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
                                     (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
                             holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.circleState = 1;
+                            dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(position).getTitle_id(), "N");
                         }
 
                         holder.recyclerTitleCircleTextView.startAnimation(Animations.scale0to1(context));
@@ -121,7 +136,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         holder.recyclerTitleCircleTextView.setText(titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1));
         holder.recyclerTitleTextView.setText(titlesListDataArrayList.get(position).getTitle());
 
-        DBHelper dbHelper = new DBHelper(context);
         // query database for counts of items - complete total and not done total
         ArrayList<ItemsListData> itemsListDataDone = dbHelper.getItemsForTitleDone(titlesListDataArrayList.get(position).getTitle_id());
         ArrayList<ItemsListData> itemsListDataNotDone = dbHelper.getItemsForTitleNotDone(titlesListDataArrayList.get(position).getTitle_id());

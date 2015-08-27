@@ -14,9 +14,10 @@ public class Constants {
     protected static final String DROP_ITEMS_TABLE = "DROP TABLE IF EXISTS items_list;";
     protected static final String DROP_QUEUED_ITEMS_TABLE = "DROP TABLE IF EXISTS queued_items;";
     protected static final String DROP_CURRENT_ITEM_TABLE = "DROP TABLE IF EXISTS current_item;";
+    protected static final String DROP_SELECTED_LIST_TABLE = "DROP TABLE IF EXISTS selected_list;";
 
 
-    // Titles table
+    // Titles table ---------------------------------------------------------------------
     protected static final String TITLES_TABLE =
             "CREATE TABLE IF NOT EXISTS titles_list " +
                     "(title_id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR, date DATETIME);";
@@ -34,7 +35,22 @@ public class Constants {
     protected static final String TITLE_DELETE_QUERY = "DELETE FROM titles_list WHERE title_id = ?;";
 
 
-    // Items Table
+    // Selected List Table - Lists selected (tick or letter) in My lists view -----------
+    protected static final String SELECTED_LISTS_TABLE =
+            "CREATE TABLE IF NOT EXISTS selected_list " +
+                    "(selected_list_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " title_id INTEGER NOT NULL," +
+                    " selected CHAR," +
+                    " FOREIGN KEY (title_id) REFERENCES titles_list (title_id) ON DELETE CASCADE);";
+
+    protected static final String SELECTED_LIST = "selected_list";
+    protected static final String SELECTED = "selected";
+
+    protected static final String SELECTED_LIST_GET_LIST_STATUS = "SELECT * FROM selected_list WHERE title_id = ?;";
+
+
+
+    // Items Table -----------------------------------------------------------------------
     protected static final String ITEMS_TABLE =
             "CREATE TABLE IF NOT EXISTS items_list " +
                     "(item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -56,7 +72,6 @@ public class Constants {
     protected static final String ITEM_PRIORITY_MEDIUM = "M";
     protected static final String ITEM_PRIORITY_LOW = "L";
 
-    // SQLite Queries - including prepared statement queries
     protected static final String ITEM_INSERT_QUERY = "INSERT INTO items_list VALUES (NULL, ?, ?," +
             " ?, TIME (?), DATETIME (?), ?, ?);"; // datetime format = YYYY-MM-YY HH:YY:SS
     protected static final String ITEMS_NOT_DONE_GET_QUERY = "SELECT * FROM items_list WHERE title_id = ?" +
@@ -71,7 +86,7 @@ public class Constants {
     protected static final String ITEM_UPDATE_ITEM_DONE = "UPDATE items_list SET item_done = ? WHERE item_id = ?;";
 
 
-    // Queued Items Table
+    // Queued Items Table -------------------------------------------------------------------
     protected static final String QUEUED_ITEMS_TABLE =
             "CREATE TABLE IF NOT EXISTS queued_items (queued_item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " item_id INTEGER NOT NULL,  FOREIGN KEY (item_id) REFERENCES items_list (item_id) ON DELETE CASCADE);";
@@ -84,7 +99,7 @@ public class Constants {
     protected static final String QUEUED_ITEM_GET_ITEMS_QUERY = "SELECT * FROM queued_items";
 
 
-    // Current Item Table (will only hold one item at a time)
+    // Current Item Table (will only hold one item at a time) --------------------------------
     protected static final String CURRENT_ITEM_TABLE =
             "CREATE TABLE IF NOT EXISTS current_item (current_item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " item_id INTEGER NOT NULL,  FOREIGN KEY (item_id) REFERENCES items_list (item_id) ON DELETE CASCADE);";

@@ -22,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             db.execSQL(Constants.TITLES_TABLE);
+            db.execSQL(Constants.SELECTED_LISTS_TABLE);
             db.execSQL(Constants.ITEMS_TABLE);
             db.execSQL(Constants.QUEUED_ITEMS_TABLE);
             db.execSQL(Constants.CURRENT_ITEM_TABLE);
@@ -39,6 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL(Constants.DROP_TITLES_TABLE);
+        db.execSQL(Constants.DROP_SELECTED_LIST_TABLE);
         db.execSQL(Constants.DROP_ITEMS_TABLE);
         db.execSQL(Constants.DROP_QUEUED_ITEMS_TABLE);
         db.execSQL(Constants.DROP_CURRENT_ITEM_TABLE);
@@ -70,23 +72,8 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    // ITEMS TABLE
-    public void insertIntoItemsTable(ItemsListData itemsListData) {
+    // TITLES TABLE ----------------------------------------------------------------------------
 
-        SQLiteDatabase database = this.getWritableDatabase();
-        // Non-exclusive mode allows database file to be in readable by other threads executing queries.
-        database.beginTransactionNonExclusive();
-
-        // create prepared statement
-        SQLiteStatement statement = database.compileStatement(Constants.ITEM_INSERT_QUERY);
-
-        // execute method to handle statement request
-        executePreparedStatement(3, database, statement,
-                new String[]{itemsListData.getItem(), itemsListData.getItemDetail(), itemsListData.getTitleId(),
-                        itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone(), itemsListData.getItemPriority()});
-    }
-
-    // TITLES TABLE
     public ArrayList<TitlesListData> getTitles() {
 
         SQLiteDatabase database = this.getWritableDatabase();
@@ -177,6 +164,83 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         database.close();
         return titleId;
+    }
+
+    // TITLES TABLE
+    public void deleteTitle(String titleId) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // Non-exclusive mode allows database file to be in readable by other threads executing queries.
+        database.beginTransactionNonExclusive();
+        SQLiteStatement statement = database.compileStatement(Constants.TITLE_DELETE_QUERY);
+
+        executePreparedStatement(2, database, statement, new String[]{titleId});
+    }
+
+    // TITLES TABLE
+    public void updateTitle(TitlesListData oldTitle, TitlesListData newTitle) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // put new values
+        ContentValues values = new ContentValues();
+        values.put(Constants.TITLE, newTitle.getTitle());
+        values.put(Constants.TITLE_DATETIME, newTitle.getDateTime());
+        // update the database passing the oldTitleName as an argument
+        //                     table name  |  new values | where | arguments replacing '?' in where
+        database.update(Constants.TITLES_LIST, values, "title= ?", new String[]{oldTitle.getTitle()});
+        database.close();
+    }
+
+
+    // SELECTED LIST TABLE
+    public void insertIntoSelectedListTable(String titleId, String selected){
+
+        SQLiteDatabase database = getWritableDatabase();
+        // put new values
+        ContentValues values = new ContentValues();
+        values.put(Constants.TITLE_ID, titleId);
+        values.put(Constants.SELECTED, selected);
+        database.insert(Constants.SELECTED_LIST, null, values);
+        database.close();
+    }
+
+    // SELECTED LIST TABLE
+    public String getSelectedListItem(TitlesListData titlesListData){
+
+        SQLiteDatabase database = getWritableDatabase();
+        String selectedListItem = "";
+
+        Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_GET_LIST_STATUS, new String[] {titlesListData.getTitle_id()});
+
+        int selected = cursor.getColumnIndex(Constants.SELECTED);
+
+        if (cursor.moveToFirst()){
+            do {
+                selectedListItem = cursor.getString(selected);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        database.close();
+
+        return selectedListItem;
+    }
+
+
+    // ITEMS TABLE
+    public void insertIntoItemsTable(ItemsListData itemsListData) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // Non-exclusive mode allows database file to be in readable by other threads executing queries.
+        database.beginTransactionNonExclusive();
+
+        // create prepared statement
+        SQLiteStatement statement = database.compileStatement(Constants.ITEM_INSERT_QUERY);
+
+        // execute method to handle statement request
+        executePreparedStatement(3, database, statement,
+                new String[]{itemsListData.getItem(), itemsListData.getItemDetail(), itemsListData.getTitleId(),
+                        itemsListData.getDuration(), itemsListData.getDateTime(), itemsListData.getItemDone(), itemsListData.getItemPriority()});
     }
 
     // ITEMS TABLE
@@ -275,17 +339,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return itemsListDataArrayList;
     }
 
-    // TITLES TABLE
-    public void deleteTitle(String titleId) {
-
-        SQLiteDatabase database = this.getWritableDatabase();
-        // Non-exclusive mode allows database file to be in readable by other threads executing queries.
-        database.beginTransactionNonExclusive();
-        SQLiteStatement statement = database.compileStatement(Constants.TITLE_DELETE_QUERY);
-
-        executePreparedStatement(2, database, statement, new String[]{titleId});
-    }
-
     // ITEMS TABLE
     public void deleteItem(ItemsListData itemsListData) {
 
@@ -304,32 +357,6 @@ public class DBHelper extends SQLiteOpenHelper {
         database.beginTransactionNonExclusive();
         SQLiteStatement statement = database.compileStatement(Constants.ITEMS_DELETE_ALL_SINGLE_TITLE);
         executePreparedStatement(2, database, statement, new String[]{titleName});
-    }
-
-    // ALL TABLES
-    public void deleteAllTitlesAndItems() {
-
-        SQLiteDatabase database = this.getWritableDatabase();
-        // delete all titles & items
-        database.delete(Constants.ITEMS_LIST, null, null);
-        database.delete(Constants.TITLES_LIST, null, null);
-        database.delete(Constants.QUEUED_ITEMS_LIST, null, null);
-        database.delete(Constants.CURRENT_ITEM_LIST, null, null);
-        database.close();
-    }
-
-    // TITLES TABLE
-    public void updateTitle(TitlesListData oldTitle, TitlesListData newTitle) {
-
-        SQLiteDatabase database = this.getWritableDatabase();
-        // put new values
-        ContentValues values = new ContentValues();
-        values.put(Constants.TITLE, newTitle.getTitle());
-        values.put(Constants.TITLE_DATETIME, newTitle.getDateTime());
-        // update the database passing the oldTitleName as an argument
-        //                     table name  |  new values | where | arguments replacing '?' in where
-        database.update(Constants.TITLES_LIST, values, "title= ?", new String[]{oldTitle.getTitle()});
-        database.close();
     }
 
     // ITEMS TABLE
@@ -492,6 +519,19 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
 
         return currentItemListData;
+    }
+
+    // ALL TABLES
+    public void deleteAllTitlesAndItems() {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // delete all titles & items
+        database.delete(Constants.ITEMS_LIST, null, null);
+        database.delete(Constants.SELECTED_LIST, null, null);
+        database.delete(Constants.TITLES_LIST, null, null);
+        database.delete(Constants.QUEUED_ITEMS_LIST, null, null);
+        database.delete(Constants.CURRENT_ITEM_LIST, null, null);
+        database.close();
     }
 
 

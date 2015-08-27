@@ -21,6 +21,7 @@ public class MyListsFragmentDialog extends DialogFragment {
     }
 
     private DBHelper dbHelper;
+    private String selected = "N";
     public onDialogDonePressedCallBack mOnDialogDonePressedCallBack;
 
     public MyListsFragmentDialog() {
@@ -71,6 +72,8 @@ public class MyListsFragmentDialog extends DialogFragment {
                     titlesListData.setTitle(titleName);
                     titlesListData.setDateTime(date);
                     dbHelper.insertIntoTitlesTable(titlesListData);
+                    // start by making the list non selected - letter, not tick
+                    dbHelper.insertIntoSelectedListTable(dbHelper.getTitleId(titlesListData.getTitle()), selected);
 
                     // callback to  MyListsFragment
                     mOnDialogDonePressedCallBack.updateRecyclerViewCallBack();
