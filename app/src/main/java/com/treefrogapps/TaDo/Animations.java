@@ -53,6 +53,10 @@ public class Animations {
         return animation = AnimationUtils.loadAnimation(context, R.anim.scale_x_0_to_1);
     }
 
+    public static Animation scaleXY0to1(Context context) {
+        return animation = AnimationUtils.loadAnimation(context, R.anim.scale_xy_0_to_1);
+    }
+
     public static Animation rotate_infinite(Context context){
         return animation = AnimationUtils.loadAnimation(context, R.anim.progress_indeterminate);
     }

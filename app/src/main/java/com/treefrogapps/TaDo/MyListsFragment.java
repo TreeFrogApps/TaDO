@@ -80,6 +80,18 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
             }
         }, 200);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // required to set the dialog callback listener after screen rotation it is lost
+        myListsFragmentDialog = (MyListsFragmentDialog) getFragmentManager().findFragmentByTag("Dialog");
+        if(myListsFragmentDialog  != null){
+            myListsFragmentDialog.setCallBack(MyListsFragment.this);
+        }
+
         initialiseRecyclerView();
     }
 
@@ -209,17 +221,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // required to set the dialog callback listener after screen rotation it is lost
-        myListsFragmentDialog = (MyListsFragmentDialog) getFragmentManager().findFragmentByTag("Dialog");
-        if(myListsFragmentDialog  != null){
-            myListsFragmentDialog.setCallBack(MyListsFragment.this);
-        }
-    }
-
     public void removeSplashScreen() {
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -242,9 +243,13 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
         }
     }
 
-
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        dbHelper.removeAllFromSelectedListTable();
+
     }
+
+
 }

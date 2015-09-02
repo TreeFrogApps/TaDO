@@ -193,37 +193,60 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     // SELECTED LIST TABLE
-    public void insertIntoSelectedListTable(String titleId, String selected){
+    public void insertIntoSelectedListTable(final String titleId, final String selected){
 
-        SQLiteDatabase database = getWritableDatabase();
-        // put new values
-        ContentValues values = new ContentValues();
-        values.put(Constants.TITLE_ID, titleId);
-        values.put(Constants.SELECTED, selected);
-        database.insert(Constants.SELECTED_LIST, null, values);
-        database.close();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase database = getWritableDatabase();
+                // put new values
+                ContentValues values = new ContentValues();
+                values.put(Constants.TITLE_ID, titleId);
+                values.put(Constants.SELECTED, selected);
+                database.insert(Constants.SELECTED_LIST, null, values);
+                database.close();
+            }
+        });
+
+        thread.run();
+
     }
 
     // SELECTED LIST TABLE
-    public String getSelectedListItem(TitlesListData titlesListData){
+    public String getSelectedListItem(final TitlesListData titlesListData){
+
+        final String[] selectedListItem = {""};
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase database = getWritableDatabase();
+                Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_GET_LIST_STATUS, new String[] {titlesListData.getTitle_id()});
+
+                int selected = cursor.getColumnIndex(Constants.SELECTED);
+
+                if (cursor.moveToFirst()){
+                    do {
+                        selectedListItem[0] = cursor.getString(selected);
+                    } while (cursor.moveToNext());
+                }
+
+                cursor.close();
+                database.close();
+            }
+        });
+
+        thread.run();
+
+        return selectedListItem[0];
+    }
+
+    //SELECTED LIST TABLE
+    public void removeAllFromSelectedListTable(){
 
         SQLiteDatabase database = getWritableDatabase();
-        String selectedListItem = "";
-
-        Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_GET_LIST_STATUS, new String[] {titlesListData.getTitle_id()});
-
-        int selected = cursor.getColumnIndex(Constants.SELECTED);
-
-        if (cursor.moveToFirst()){
-            do {
-                selectedListItem = cursor.getString(selected);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
+        database.delete(Constants.SELECTED_LIST, null, null);
         database.close();
-
-        return selectedListItem;
     }
 
 

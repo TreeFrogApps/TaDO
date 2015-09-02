@@ -30,6 +30,11 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:orientation="horizontal">
 
+            <FrameLayout
+                android:id="@+id/recyclerTitleCircleFrameLayout"
+                android:layout_width="40dp"
+                android:layout_height="40dp">
+
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -40,6 +45,16 @@
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_24sp" />
+
+                <ImageView
+                    android:id="@+id/recyclerTitleCircleTick"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:background="@mipmap/ic_circle_reverse_tick"
+                    android:visibility="visible"/>
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/recyclerTitleTextView"

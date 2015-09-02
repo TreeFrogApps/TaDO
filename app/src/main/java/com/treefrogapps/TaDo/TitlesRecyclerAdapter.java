@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,7 +27,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
         this.context = context;
         this.titlesListDataArrayList = titlesListDataArrayList;
-
         this.dbHelper = new DBHelper(context);
     }
 
@@ -41,12 +43,13 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         return new MyViewHolder(itemView);
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView recyclerTitleIDTextView;
-
+        private LinearLayout recyclerTitleLinearLayout;
+        private FrameLayout recyclerTitleCircleFrameLayout;
         private TextView recyclerTitleCircleTextView;
+        private ImageView recyclerTitleCircleTick;
         private TextView recyclerTitleTextView;
         private TextView recyclerTitleTadoTextView;
         private TextView recyclerTitleItemsTextView;
@@ -57,9 +60,11 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         public MyViewHolder(View itemView) {
             super(itemView);
 
+            recyclerTitleLinearLayout = (LinearLayout) itemView.findViewById(R.id.recyclerTitleLinearLayout);
             recyclerTitleIDTextView = (TextView) itemView.findViewById(R.id.recyclerTitleIDTextView);
-
+            recyclerTitleCircleFrameLayout = (FrameLayout) itemView.findViewById(R.id.recyclerTitleCircleFrameLayout);
             recyclerTitleCircleTextView = (TextView) itemView.findViewById(R.id.recyclerTitleCircleTextView);
+            recyclerTitleCircleTick = (ImageView) itemView.findViewById(R.id.recyclerTitleCircleTick);
 
             recyclerTitleTextView = (TextView) itemView.findViewById(R.id.recyclerTitleTextView);
             recyclerTitleTadoTextView = (TextView) itemView.findViewById(R.id.recyclerTitleTadoTextView);
@@ -94,19 +99,23 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(position));
 
         if (selected.equals("N") || selected.equals("")) {
+            holder.recyclerTitleLinearLayout.setBackgroundResource(R.drawable.recycler_item_selector);
             holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
                     (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
             holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
+            holder.recyclerTitleCircleTick.setVisibility(View.GONE);
 
         } else {
+            holder.recyclerTitleLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_light));
             holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
+            holder.recyclerTitleCircleTick.setVisibility(View.VISIBLE);
             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
         }
 
         holder.recyclerTitleCircleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.recyclerTitleCircleTextView.startAnimation(Animations.scale1to0(context));
+                holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale1to0(context));
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -116,20 +125,27 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
                         final String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(position));
 
                         if (selected.equals("N") || selected.equals("")) {
+                            holder.recyclerTitleLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_light));
                             holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
                             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
                             dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(position).getTitle_id(), "Y");
+                            holder.recyclerTitleCircleTick.startAnimation(Animations.scaleXY0to1(context));
+                            holder.recyclerTitleCircleTick.setVisibility(View.VISIBLE);
 
                         } else {
+                            holder.recyclerTitleLinearLayout.setBackgroundResource(R.drawable.recycler_item_selector);
                             holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
                                     (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
                             holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
                             dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(position).getTitle_id(), "N");
+                            holder.recyclerTitleCircleTick.setVisibility(View.GONE);
                         }
 
-                        holder.recyclerTitleCircleTextView.startAnimation(Animations.scale0to1(context));
+                        holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
+
+
                     }
-                }, 100);
+                }, 80);
             }
         });
 
@@ -214,7 +230,4 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             default : return R.drawable.circle_other_40dp;
         }
     }
-
-
-
 }
