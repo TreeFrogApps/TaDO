@@ -241,6 +241,29 @@ public class DBHelper extends SQLiteOpenHelper {
         return selectedListItem[0];
     }
 
+    // SELECTED LIST TABLE
+    public ArrayList<Integer> getAllSelectedLists(){
+
+        SQLiteDatabase database = getWritableDatabase();
+        ArrayList<Integer> selectedArrayList = new ArrayList<>();
+
+        Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_ALL_SELECTED, new String[] {"Y"});
+        int titleID = cursor.getColumnIndex(Constants.TITLE_ID);
+
+        if (cursor.moveToFirst()){
+
+            do {
+                String titleIdAsString = (cursor.getString(titleID));
+                selectedArrayList.add(Integer.parseInt(titleIdAsString));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        database.close();
+
+        return selectedArrayList;
+    }
+
     //SELECTED LIST TABLE
     public void removeAllFromSelectedListTable(){
 

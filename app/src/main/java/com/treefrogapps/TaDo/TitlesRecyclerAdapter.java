@@ -16,18 +16,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<TitlesListData> titlesListDataArrayList;
     private DBHelper dbHelper;
+    // arraylist to track selected items to delete
+    private ArrayList<HashMap<Integer, String>> selectedTitlesArrayList;
 
     public TitlesRecyclerAdapter(Context context, ArrayList<TitlesListData> titlesListDataArrayList) {
 
         this.context = context;
         this.titlesListDataArrayList = titlesListDataArrayList;
         this.dbHelper = new DBHelper(context);
+        this.selectedTitlesArrayList = new ArrayList<>();
     }
 
 
@@ -105,6 +109,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
             holder.recyclerTitleCircleTick.setVisibility(View.GONE);
 
+
         } else {
             holder.recyclerTitleLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_light));
             holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
@@ -142,8 +147,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
                         }
 
                         holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
-
-
                     }
                 }, 80);
             }
@@ -229,5 +232,22 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             case "": return R.drawable.circle_other_40dp;
             default : return R.drawable.circle_other_40dp;
         }
+    }
+
+    public ArrayList<HashMap<Integer, String>> getSelectedListTitles(){
+
+        for (int i = 0; i < titlesListDataArrayList.size(); i++){
+
+            String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(i));
+
+            if (selected.equals("Y")){
+
+                HashMap<Integer, String> selectedTitle = new HashMap<>();
+                selectedTitle.put(i, titlesListDataArrayList.get(i).getTitle_id());
+                selectedTitlesArrayList.add(selectedTitle);
+            }
+        }
+
+        return selectedTitlesArrayList;
     }
 }

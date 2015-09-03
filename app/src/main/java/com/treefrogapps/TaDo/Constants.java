@@ -48,6 +48,8 @@ public class Constants {
 
     protected static final String SELECTED_LIST_GET_LIST_STATUS = "SELECT * FROM selected_list WHERE title_id = ?;";
 
+    protected static final String SELECTED_LIST_ALL_SELECTED = "SELECT title_id FROM selected_list WHERE selected = ?;";
+
 
     // Items Table -----------------------------------------------------------------------
     protected static final String ITEMS_TABLE =
