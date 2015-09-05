@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +23,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
-public class MyListsFragment extends Fragment implements View.OnClickListener, MyListsFragmentDialog.onDialogDonePressedCallBack {
+public class MyListsFragment extends Fragment implements View.OnClickListener,
+        MyListsFragmentDialog.onDialogDonePressedCallBack, TitlesRecyclerAdapter.RecyclerActionModeCallBack {
 
     private DBHelper dbHelper;
     private SharedPreferences sharedPreferences;
@@ -37,6 +40,8 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
     private TitlesRecyclerAdapter mTitlesRecyclerAdapter;
     private ArrayList<TitlesListData> mTitlesListDataArrayList;
     private RestoreRecyclerPosition mRestoreRecyclerPosition;
+    private ActionMode mActionMode;
+    private ArrayList<HashMap<Integer, String>> mSelectedTitlesArrayList;
 
     private LinearLayout mHomeFragmentSplashScreen;
 
@@ -131,7 +136,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         mTitlesListDataArrayList = dbHelper.getTitles();
-        mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList);
+        mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList, MyListsFragment.this);
         mRecyclerView.setAdapter(mTitlesRecyclerAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -172,7 +177,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
 
         mTitlesListDataArrayList.clear();
         mTitlesListDataArrayList = dbHelper.getTitles();
-        mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList);
+        mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList, MyListsFragment.this);
         mRecyclerView.setAdapter(mTitlesRecyclerAdapter);
     }
 
@@ -251,5 +256,51 @@ public class MyListsFragment extends Fragment implements View.OnClickListener, M
 
     }
 
+    // callback interface method from RecyclerAdapter to start Contextual Action Bar menu
+    @Override
+    public void startActionModeMenu() {
+
+        Log.i("CALLED", "startActionModeMenu");
+
+        mSelectedTitlesArrayList =  mTitlesRecyclerAdapter.getSelectedListTitles();
+
+        if (mActionMode == null && mSelectedTitlesArrayList.size() > 0) {
+            mActionMode = getActivity().startActionMode(mActionModeCallback);
+        } else if (mActionMode != null && mSelectedTitlesArrayList.size() == 0){
+            mActionMode.finish();
+        }
+    }
+
+    // ActionMode callback for the contextual Action Bar Menu
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            actionMode.getMenuInflater().inflate(R.menu.context_action_bar_menu_titles, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+
+            switch (menuItem.getItemId()){
+
+                case R.id.context_menu_delete :
+
+
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            mActionMode = null;
+        }
+    };
 
 }

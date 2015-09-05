@@ -14,8 +14,9 @@
         <!-- text color for nav menu items text -->
         <item name="itemTextColor">@color/primaryText</item>
 
-        <!-- background and textcolor for Contextual Action Bar menu -->
-        <item name="actionModeBackground">@color/grey_light</item>
+        <!-- background and text color for Contextual Action Bar menu -->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/primaryColorAccent</item>
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 

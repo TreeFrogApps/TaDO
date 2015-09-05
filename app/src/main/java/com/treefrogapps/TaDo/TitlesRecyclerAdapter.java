@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +24,21 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
     private Context context;
     private ArrayList<TitlesListData> titlesListDataArrayList;
     private DBHelper dbHelper;
-    // arraylist to track selected items to delete
+    // array list to track selected items to delete
     private ArrayList<HashMap<Integer, String>> selectedTitlesArrayList;
 
-    public TitlesRecyclerAdapter(Context context, ArrayList<TitlesListData> titlesListDataArrayList) {
+    // callback to start Action Bar Context Menu in fragment
+    private RecyclerActionModeCallBack mRecyclerActionModeCallBack;
+
+
+    public TitlesRecyclerAdapter(Context context, ArrayList<TitlesListData> titlesListDataArrayList,
+                                 RecyclerActionModeCallBack recyclerActionModeCallBack) {
 
         this.context = context;
         this.titlesListDataArrayList = titlesListDataArrayList;
         this.dbHelper = new DBHelper(context);
         this.selectedTitlesArrayList = new ArrayList<>();
+        this.mRecyclerActionModeCallBack = recyclerActionModeCallBack;
     }
 
 
@@ -117,6 +124,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
         }
 
+        mRecyclerActionModeCallBack.startActionModeMenu();
+
         holder.recyclerTitleCircleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +158,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
                         holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
                     }
                 }, 80);
+
+                mRecyclerActionModeCallBack.startActionModeMenu();
             }
         });
 
@@ -249,5 +260,11 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         }
 
         return selectedTitlesArrayList;
+    }
+
+    // interface to use in fragment to start Action Mode Context Menu
+    interface RecyclerActionModeCallBack {
+
+        void startActionModeMenu();
     }
 }
