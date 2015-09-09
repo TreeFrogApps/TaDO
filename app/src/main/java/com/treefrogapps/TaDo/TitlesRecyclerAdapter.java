@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +16,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<TitlesListData> titlesListDataArrayList;
     private DBHelper dbHelper;
-    // array list to track selected items to delete
-    private ArrayList<HashMap<Integer, String>> selectedTitlesArrayList;
 
     // callback to start Action Bar Context Menu in fragment
     private RecyclerActionModeCallBack mRecyclerActionModeCallBack;
-
 
     public TitlesRecyclerAdapter(Context context, ArrayList<TitlesListData> titlesListDataArrayList,
                                  RecyclerActionModeCallBack recyclerActionModeCallBack) {
@@ -37,8 +32,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         this.context = context;
         this.titlesListDataArrayList = titlesListDataArrayList;
         this.dbHelper = new DBHelper(context);
-        this.selectedTitlesArrayList = new ArrayList<>();
         this.mRecyclerActionModeCallBack = recyclerActionModeCallBack;
+
     }
 
 
@@ -116,15 +111,12 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
             holder.recyclerTitleCircleTick.setVisibility(View.GONE);
 
-
         } else {
             holder.recyclerTitleLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_light));
             holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
             holder.recyclerTitleCircleTick.setVisibility(View.VISIBLE);
             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
         }
-
-        mRecyclerActionModeCallBack.startActionModeMenu();
 
         holder.recyclerTitleCircleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,10 +148,9 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
                         }
 
                         holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
+                        mRecyclerActionModeCallBack.startActionModeMenu();
                     }
                 }, 80);
-
-                mRecyclerActionModeCallBack.startActionModeMenu();
             }
         });
 
@@ -245,7 +236,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         }
     }
 
-    public ArrayList<HashMap<Integer, String>> getSelectedListTitles(){
+    public void removeSelectedListTitles(){
 
         for (int i = 0; i < titlesListDataArrayList.size(); i++){
 
@@ -253,13 +244,25 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
             if (selected.equals("Y")){
 
-                HashMap<Integer, String> selectedTitle = new HashMap<>();
-                selectedTitle.put(i, titlesListDataArrayList.get(i).getTitle_id());
-                selectedTitlesArrayList.add(selectedTitle);
+                dbHelper.deleteTitle(titlesListDataArrayList.get(i).getTitle_id());
+                notifyItemRemoved(i);
+                titlesListDataArrayList.remove(i);
             }
         }
+    }
 
-        return selectedTitlesArrayList;
+    public int getSelectedListTitlesCount(){
+
+        int selectedCount = 0;
+
+        for (int i = 0; i < titlesListDataArrayList.size(); i++){
+            String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(i));
+
+            if (selected.equals("Y")){
+                selectedCount++;
+            }
+        }
+        return selectedCount;
     }
 
     // interface to use in fragment to start Action Mode Context Menu
@@ -267,4 +270,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
         void startActionModeMenu();
     }
+
+
 }

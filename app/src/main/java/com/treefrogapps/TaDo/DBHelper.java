@@ -193,64 +193,49 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     // SELECTED LIST TABLE
-    public void insertIntoSelectedListTable(final String titleId, final String selected){
+    public void insertIntoSelectedListTable(final String titleId, final String selected) {
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase database = getWritableDatabase();
-                // put new values
-                ContentValues values = new ContentValues();
-                values.put(Constants.TITLE_ID, titleId);
-                values.put(Constants.SELECTED, selected);
-                database.insert(Constants.SELECTED_LIST, null, values);
-                database.close();
-            }
-        });
-
-        thread.run();
-
+        SQLiteDatabase database = getWritableDatabase();
+        // put new values
+        ContentValues values = new ContentValues();
+        values.put(Constants.TITLE_ID, titleId);
+        values.put(Constants.SELECTED, selected);
+        database.insert(Constants.SELECTED_LIST, null, values);
+        database.close();
     }
 
     // SELECTED LIST TABLE
-    public String getSelectedListItem(final TitlesListData titlesListData){
+    public String getSelectedListItem(final TitlesListData titlesListData) {
 
         final String[] selectedListItem = {""};
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase database = getWritableDatabase();
-                Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_GET_LIST_STATUS, new String[] {titlesListData.getTitle_id()});
+        SQLiteDatabase database = getWritableDatabase();
+        Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_GET_LIST_STATUS, new String[]{titlesListData.getTitle_id()});
 
-                int selected = cursor.getColumnIndex(Constants.SELECTED);
+        int selected = cursor.getColumnIndex(Constants.SELECTED);
 
-                if (cursor.moveToFirst()){
-                    do {
-                        selectedListItem[0] = cursor.getString(selected);
-                    } while (cursor.moveToNext());
-                }
+        if (cursor.moveToFirst()) {
+            do {
+                selectedListItem[0] = cursor.getString(selected);
+            } while (cursor.moveToNext());
+        }
 
-                cursor.close();
-                database.close();
-            }
-        });
-
-        thread.run();
+        cursor.close();
+        database.close();
 
         return selectedListItem[0];
     }
 
     // SELECTED LIST TABLE
-    public ArrayList<Integer> getAllSelectedLists(){
+    public ArrayList<Integer> getAllSelectedLists() {
 
         SQLiteDatabase database = getWritableDatabase();
         ArrayList<Integer> selectedArrayList = new ArrayList<>();
 
-        Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_ALL_SELECTED, new String[] {"Y"});
+        Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_ALL_SELECTED, new String[]{"Y"});
         int titleID = cursor.getColumnIndex(Constants.TITLE_ID);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 String titleIdAsString = (cursor.getString(titleID));
@@ -265,7 +250,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //SELECTED LIST TABLE
-    public void removeAllFromSelectedListTable(){
+    public void removeAllFromSelectedListTable() {
 
         SQLiteDatabase database = getWritableDatabase();
         database.delete(Constants.SELECTED_LIST, null, null);
@@ -524,7 +509,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // CURRENT ITEM TABLE
-    public void insertIntoCurrentItemTable(CurrentItemListData currentItemListData){
+    public void insertIntoCurrentItemTable(CurrentItemListData currentItemListData) {
 
         SQLiteDatabase database = getWritableDatabase();
         database.beginTransactionNonExclusive();
@@ -534,17 +519,17 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // CURRENT ITEM TABLE
-    public void deleteCurrentItem(CurrentItemListData currentItemListData){
+    public void deleteCurrentItem(CurrentItemListData currentItemListData) {
 
         SQLiteDatabase database = getWritableDatabase();
         database.beginTransactionNonExclusive();
 
         SQLiteStatement statement = database.compileStatement(Constants.CURRENT_ITEM_DELETE_QUERY);
-        executePreparedStatement(2, database, statement,new String[]{currentItemListData.getCurrentItemId()});
+        executePreparedStatement(2, database, statement, new String[]{currentItemListData.getCurrentItemId()});
     }
 
     // CURRENT ITEM TABLE
-    public CurrentItemListData getCurrentItem(){
+    public CurrentItemListData getCurrentItem() {
 
         SQLiteDatabase database = getWritableDatabase();
         CurrentItemListData currentItemListData = new CurrentItemListData();
@@ -553,7 +538,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int currentId = cursor.getColumnIndex(Constants.CURRENT_ITEM_ID);
         int itemId = cursor.getColumnIndex(Constants.ITEMS_ID);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 currentItemListData.setCurrentItemId(cursor.getString(currentId));

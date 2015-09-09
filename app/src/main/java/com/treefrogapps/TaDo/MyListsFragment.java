@@ -41,7 +41,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     private ArrayList<TitlesListData> mTitlesListDataArrayList;
     private RestoreRecyclerPosition mRestoreRecyclerPosition;
     private ActionMode mActionMode;
-    private ArrayList<HashMap<Integer, String>> mSelectedTitlesArrayList;
 
     private LinearLayout mHomeFragmentSplashScreen;
 
@@ -139,38 +138,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
         mTitlesRecyclerAdapter = new TitlesRecyclerAdapter(getActivity(), mTitlesListDataArrayList, MyListsFragment.this);
         mRecyclerView.setAdapter(mTitlesRecyclerAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                return super.getMovementFlags(recyclerView, viewHolder);
-            }
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-                if (direction == ItemTouchHelper.LEFT) {
-                    deleteTitle(viewHolder.getLayoutPosition());
-                }
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
-    }
-
-    public void deleteTitle(int positionToDelete) {
-
-        String titleId = mTitlesListDataArrayList.get(positionToDelete).getTitle_id();
-
-        dbHelper.deleteTitle(titleId);
-        mTitlesRecyclerAdapter.notifyItemRemoved(positionToDelete);
-        mTitlesListDataArrayList.remove(positionToDelete);
     }
 
     public void populateRecyclerView() {
@@ -185,8 +152,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
 
         if (v.getId() == mFAB.getId()) {
-
-
+            
             if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE) {
                 mHomeFragmentSplashScreen.startAnimation(Animations.moveOut(getActivity()));
                 Handler handler = new Handler();
@@ -262,11 +228,11 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         Log.i("CALLED", "startActionModeMenu");
 
-        mSelectedTitlesArrayList =  mTitlesRecyclerAdapter.getSelectedListTitles();
+        int selectedCount =  mTitlesRecyclerAdapter.getSelectedListTitlesCount();
 
-        if (mActionMode == null && mSelectedTitlesArrayList.size() > 0) {
+        if (mActionMode == null && selectedCount > 0) {
             mActionMode = getActivity().startActionMode(mActionModeCallback);
-        } else if (mActionMode != null && mSelectedTitlesArrayList.size() == 0){
+        } else if (mActionMode != null && selectedCount == 0){
             mActionMode.finish();
         }
     }
@@ -292,6 +258,13 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
                 case R.id.context_menu_delete :
 
+                    mTitlesRecyclerAdapter.removeSelectedListTitles();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActionMode.finish();
+                        }
+                    },200);
 
             }
             return false;
@@ -299,8 +272,19 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
+
+            dbHelper.removeAllFromSelectedListTable();
             mActionMode = null;
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mTitlesRecyclerAdapter.notifyDataSetChanged();
+                }
+            }, 240);
         }
     };
+
+
 
 }
