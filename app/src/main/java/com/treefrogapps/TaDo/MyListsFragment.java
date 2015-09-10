@@ -8,12 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class MyListsFragment extends Fragment implements View.OnClickListener,
@@ -54,6 +52,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
@@ -62,6 +61,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_my_lists, container, false);
+
         return rootView;
     }
 
@@ -91,12 +91,20 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
         super.onResume();
 
         // required to set the dialog callback listener after screen rotation it is lost
-        myListsFragmentDialog = (MyListsFragmentDialog) getFragmentManager().findFragmentByTag("Dialog");
-        if(myListsFragmentDialog  != null){
+        myListsFragmentDialog = (MyListsFragmentDialog) getFragmentManager().findFragmentByTag("Dialog01");
+        if (myListsFragmentDialog != null) {
             myListsFragmentDialog.setCallBack(MyListsFragment.this);
         }
 
         initialiseRecyclerView();
+
+        int selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
+
+        if (mActionMode !=null){
+            mActionMode.invalidate();
+            mActionMode.setTitle(String.valueOf(selectedCount));
+        }
+
     }
 
     @Override
@@ -152,7 +160,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
 
         if (v.getId() == mFAB.getId()) {
-            
+
             if (mHomeFragmentSplashScreen.getVisibility() == View.VISIBLE) {
                 mHomeFragmentSplashScreen.startAnimation(Animations.moveOut(getActivity()));
                 Handler handler = new Handler();
@@ -181,7 +189,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void updateRecyclerViewCallBack() {
 
-        if (mTitlesListDataArrayList.size() > 1){
+        if (mTitlesListDataArrayList.size() > 1) {
             // use helper class to get current position of recyclerView
             mRestoreRecyclerPosition = new RestoreRecyclerPosition(mRecyclerView, mLinearLayoutManager);
             RestoreRecyclerPosition.RecyclerPositionValues recyclerPositionValues = mRestoreRecyclerPosition.getCurrentPosition();
@@ -204,12 +212,9 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e("CALLED", "OnActivity Result");
-
         // if requestCode matches from CreateItemsActivity
         if (requestCode == Constants.NEW_ITEMS_REQUEST_CODE) {
 
-            Log.e("RESULT CODE", String.valueOf(requestCode));
             populateRecyclerView();
         }
     }
@@ -218,7 +223,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     public void onDestroyView() {
         super.onDestroyView();
 
-        dbHelper.removeAllFromSelectedListTable();
+        // dbHelper.removeAllFromSelectedListTable();
 
     }
 
@@ -228,13 +233,42 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         Log.i("CALLED", "startActionModeMenu");
 
-        int selectedCount =  mTitlesRecyclerAdapter.getSelectedListTitlesCount();
+        new Thread() {
+            @Override
+            public void run() {
 
-        if (mActionMode == null && selectedCount > 0) {
-            mActionMode = getActivity().startActionMode(mActionModeCallback);
-        } else if (mActionMode != null && selectedCount == 0){
-            mActionMode.finish();
-        }
+                final int selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
+
+                if (mActionMode == null && selectedCount > 0) {
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActionMode = getActivity().startActionMode(mActionModeCallback);
+                            mActionMode.setTitle(String.valueOf(selectedCount));
+                        }
+                    });
+
+                } else if (mActionMode != null && selectedCount > 0){
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActionMode.setTitle(String.valueOf(selectedCount));
+                        }
+                    });
+
+                } else if (mActionMode != null && selectedCount == 0) {
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActionMode.finish();
+                        }
+                    });
+                }
+            }
+        }.start();
     }
 
     // ActionMode callback for the contextual Action Bar Menu
@@ -254,17 +288,18 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
         @Override
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
 
-            switch (menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
 
-                case R.id.context_menu_delete :
+                case R.id.context_menu_delete:
 
                     mTitlesRecyclerAdapter.removeSelectedListTitles();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mActionMode.finish();
+                            mActionMode = null;
                         }
-                    },200);
+                    }, 200);
 
             }
             return false;
@@ -273,8 +308,9 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
 
-            dbHelper.removeAllFromSelectedListTable();
+            mActionMode.finish();
             mActionMode = null;
+            dbHelper.removeAllFromSelectedListTable();
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -284,7 +320,4 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
             }, 240);
         }
     };
-
-
-
 }

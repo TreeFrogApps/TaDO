@@ -80,19 +80,62 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             recyclerTitleHighPriorityTextView = (TextView) itemView.findViewById(R.id.recyclerTitleHighPriorityTextView);
 
             itemView.setOnClickListener(this);
+            recyclerTitleCircleTextView.setOnClickListener(this);
         }
+
 
         @Override
         public void onClick(View v) {
 
-            String titleId = titlesListDataArrayList.get(getLayoutPosition()).getTitle_id();
+            if (v.getId() == itemView.getId()){
 
-            Intent intent = new Intent(context, CreateItemsActivity.class);
-            intent.putExtra("TITLE_ID", titleId);
-            ((Activity)context).startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
+                String titleId = titlesListDataArrayList.get(getLayoutPosition()).getTitle_id();
+
+                Intent intent = new Intent(context, CreateItemsActivity.class);
+                intent.putExtra("TITLE_ID", titleId);
+                ((Activity)context).startActivityForResult(intent, Constants.NEW_ITEMS_REQUEST_CODE);
+
+            } else if (v.getId() == recyclerTitleCircleTextView.getId()){
+
+                handleTitleClicked(getLayoutPosition());
+            }
+        }
+
+        public void handleTitleClicked(final int adapterPosition){
+
+            recyclerTitleCircleFrameLayout.startAnimation(Animations.scale1to0(context));
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    final String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(adapterPosition));
+
+                    if (selected.equals("N") || selected.equals("")) {
+                        recyclerTitleLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_light));
+                        recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
+                        recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
+                        dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(adapterPosition).getTitle_id(), "Y");
+                        recyclerTitleCircleTick.startAnimation(Animations.scaleXY0to1(context));
+                        recyclerTitleCircleTick.setVisibility(View.VISIBLE);
+
+                    } else {
+                        recyclerTitleLinearLayout.setBackgroundResource(R.drawable.recycler_item_selector);
+                        recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
+                                (titlesListDataArrayList.get(adapterPosition).getTitle().toUpperCase().substring(0, 1)));
+                        recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
+                        dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(adapterPosition).getTitle_id(), "N");
+                        recyclerTitleCircleTick.setVisibility(View.GONE);
+                    }
+
+                    recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
+                    mRecyclerActionModeCallBack.startActionModeMenu();
+                }
+            }, 80);
         }
     }
-
+    
 
     @Override
     public void onBindViewHolder(final TitlesRecyclerAdapter.MyViewHolder holder, final int position) {
@@ -117,42 +160,6 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
             holder.recyclerTitleCircleTick.setVisibility(View.VISIBLE);
             holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
         }
-
-        holder.recyclerTitleCircleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale1to0(context));
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        final String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(position));
-
-                        if (selected.equals("N") || selected.equals("")) {
-                            holder.recyclerTitleLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.grey_light));
-                            holder.recyclerTitleCircleTextView.setBackgroundResource(R.mipmap.ic_circle_reverse);
-                            holder.recyclerTitleCircleTextView.setTextColor(Color.TRANSPARENT);
-                            dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(position).getTitle_id(), "Y");
-                            holder.recyclerTitleCircleTick.startAnimation(Animations.scaleXY0to1(context));
-                            holder.recyclerTitleCircleTick.setVisibility(View.VISIBLE);
-
-                        } else {
-                            holder.recyclerTitleLinearLayout.setBackgroundResource(R.drawable.recycler_item_selector);
-                            holder.recyclerTitleCircleTextView.setBackgroundResource(setTitleCircleColorResource
-                                    (titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1)));
-                            holder.recyclerTitleCircleTextView.setTextColor(context.getResources().getColor(R.color.white));
-                            dbHelper.insertIntoSelectedListTable(titlesListDataArrayList.get(position).getTitle_id(), "N");
-                            holder.recyclerTitleCircleTick.setVisibility(View.GONE);
-                        }
-
-                        holder.recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
-                        mRecyclerActionModeCallBack.startActionModeMenu();
-                    }
-                }, 80);
-            }
-        });
 
         holder.recyclerTitleCircleTextView.setText(titlesListDataArrayList.get(position).getTitle().toUpperCase().substring(0, 1));
         holder.recyclerTitleTextView.setText(titlesListDataArrayList.get(position).getTitle());
@@ -238,7 +245,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
     public void removeSelectedListTitles(){
 
-        for (int i = 0; i < titlesListDataArrayList.size(); i++){
+        for (int i = titlesListDataArrayList.size() -1; i >= 0; i--){
 
             String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(i));
 
@@ -256,6 +263,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         int selectedCount = 0;
 
         for (int i = 0; i < titlesListDataArrayList.size(); i++){
+
             String selected = dbHelper.getSelectedListItem(titlesListDataArrayList.get(i));
 
             if (selected.equals("Y")){

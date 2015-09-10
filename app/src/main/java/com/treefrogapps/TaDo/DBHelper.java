@@ -207,9 +207,10 @@ public class DBHelper extends SQLiteOpenHelper {
     // SELECTED LIST TABLE
     public String getSelectedListItem(final TitlesListData titlesListData) {
 
-        final String[] selectedListItem = {""};
+        String[] selectedListItem = {""};
 
         SQLiteDatabase database = getWritableDatabase();
+
         Cursor cursor = database.rawQuery(Constants.SELECTED_LIST_GET_LIST_STATUS, new String[]{titlesListData.getTitle_id()});
 
         int selected = cursor.getColumnIndex(Constants.SELECTED);
@@ -227,7 +228,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // SELECTED LIST TABLE
-    public ArrayList<Integer> getAllSelectedLists() {
+   public ArrayList<Integer> getAllSelectedLists() {
 
         SQLiteDatabase database = getWritableDatabase();
         ArrayList<Integer> selectedArrayList = new ArrayList<>();
