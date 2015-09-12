@@ -27,6 +27,8 @@ import java.util.ArrayList;
 public class MyListsFragment extends Fragment implements View.OnClickListener,
         MyListsFragmentDialog.onDialogDonePressedCallBack, TitlesRecyclerAdapter.RecyclerActionModeCallBack {
 
+    private static final String SELECTED_COUNT = "com.treefrogapps.TaDo.selected_count";
+
     private DBHelper dbHelper;
     private SharedPreferences sharedPreferences;
     private View rootView;
@@ -39,6 +41,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     private ArrayList<TitlesListData> mTitlesListDataArrayList;
     private RestoreRecyclerPosition mRestoreRecyclerPosition;
     private ActionMode mActionMode;
+    private int selectedCount = 0;
 
     private LinearLayout mHomeFragmentSplashScreen;
 
@@ -84,6 +87,10 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
             }
         }, 200);
 
+        if (savedInstanceState != null){
+            selectedCount = savedInstanceState.getInt(SELECTED_COUNT);
+        }
+
     }
 
     @Override
@@ -98,13 +105,10 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         initialiseRecyclerView();
 
-        int selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
-
         if (mActionMode !=null){
-            mActionMode.invalidate();
+            mActionMode = getActivity().startActionMode(mActionModeCallback);
             mActionMode.setTitle(String.valueOf(selectedCount));
         }
-
     }
 
     @Override
@@ -237,7 +241,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
             @Override
             public void run() {
 
-                final int selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
+                selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
 
                 if (mActionMode == null && selectedCount > 0) {
 
@@ -320,4 +324,11 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
             }, 240);
         }
     };
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(SELECTED_COUNT, selectedCount);
+    }
 }
