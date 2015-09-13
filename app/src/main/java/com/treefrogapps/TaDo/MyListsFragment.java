@@ -40,7 +40,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
     private TitlesRecyclerAdapter mTitlesRecyclerAdapter;
     private ArrayList<TitlesListData> mTitlesListDataArrayList;
     private RestoreRecyclerPosition mRestoreRecyclerPosition;
-    private ActionMode mActionMode;
+    private ActionMode mActionMode = null;
     private int selectedCount = 0;
 
     private LinearLayout mHomeFragmentSplashScreen;
@@ -90,7 +90,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
         if (savedInstanceState != null){
             selectedCount = savedInstanceState.getInt(SELECTED_COUNT);
         }
-
     }
 
     @Override
@@ -314,16 +313,22 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
             mActionMode.finish();
             mActionMode = null;
-            dbHelper.removeAllFromSelectedListTable();
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (!sharedPreferences.getBoolean(Constants.ACTION_MODE, false)) {
+                        dbHelper.removeAllFromSelectedListTable();
+                    }
                     mTitlesRecyclerAdapter.notifyDataSetChanged();
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove(Constants.ACTION_MODE).apply();
                 }
             }, 240);
         }
     };
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -331,4 +336,6 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         outState.putInt(SELECTED_COUNT, selectedCount);
     }
+
+
 }

@@ -9,5 +9,4 @@
         idk:showAsAction="ifRoom|withText"
         android:title="Delete"/>
 
-
 </menu>

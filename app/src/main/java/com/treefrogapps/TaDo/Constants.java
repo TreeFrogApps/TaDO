@@ -129,6 +129,9 @@ public class Constants {
     // RequestCode onActivityResult - HomeFragment NEW LIST
     protected static final int NEW_ITEMS_REQUEST_CODE = 30;
 
+    // Shared Preferences - ActionMode onDestroy
+    protected static final String ACTION_MODE = "com.treefrogapps.TaDo.action_mode_active";
+
 
 
 

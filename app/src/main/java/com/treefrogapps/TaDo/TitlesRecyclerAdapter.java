@@ -4,6 +4,7 @@ package com.treefrogapps.TaDo;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
     private Context context;
     private ArrayList<TitlesListData> titlesListDataArrayList;
     private DBHelper dbHelper;
+    private SharedPreferences sharedPreferences;
+
 
     // callback to start Action Bar Context Menu in fragment
     private RecyclerActionModeCallBack mRecyclerActionModeCallBack;
@@ -33,6 +36,8 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         this.titlesListDataArrayList = titlesListDataArrayList;
         this.dbHelper = new DBHelper(context);
         this.mRecyclerActionModeCallBack = recyclerActionModeCallBack;
+
+        sharedPreferences = context.getSharedPreferences(Constants.TADO_PREFERENCES, Context.MODE_PRIVATE);
 
     }
 
@@ -88,6 +93,10 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
         public void onClick(View v) {
 
             if (v.getId() == itemView.getId()){
+
+                // if ActionMode is Active keep active using shared preference - handled in ActionMode onDestroy
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Constants.ACTION_MODE, true).apply();
 
                 String titleId = titlesListDataArrayList.get(getLayoutPosition()).getTitle_id();
 
