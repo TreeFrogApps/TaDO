@@ -140,6 +140,7 @@ public class TitlesRecyclerAdapter extends RecyclerView.Adapter<TitlesRecyclerAd
 
                     recyclerTitleCircleFrameLayout.startAnimation(Animations.scale0to1(context));
                     mRecyclerActionModeCallBack.startActionModeMenu();
+
                 }
             }, 80);
         }

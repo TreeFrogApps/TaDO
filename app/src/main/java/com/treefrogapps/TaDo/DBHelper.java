@@ -222,7 +222,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        database.close();
+        //database.close();
 
         return selectedListItem[0];
     }

@@ -87,8 +87,11 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
             }
         }, 200);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             selectedCount = savedInstanceState.getInt(SELECTED_COUNT);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Constants.ACTION_MODE, savedInstanceState.getBoolean(Constants.ACTION_MODE, false)).apply();
+
         }
     }
 
@@ -104,7 +107,7 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         initialiseRecyclerView();
 
-        if (mActionMode !=null){
+        if (mActionMode != null) {
             mActionMode = getActivity().startActionMode(mActionModeCallback);
             mActionMode.setTitle(String.valueOf(selectedCount));
         }
@@ -236,42 +239,25 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
 
         Log.i("CALLED", "startActionModeMenu");
 
-        new Thread() {
-            @Override
-            public void run() {
+        selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
 
-                selectedCount = mTitlesRecyclerAdapter.getSelectedListTitlesCount();
+        if (mActionMode == null && selectedCount > 0) {
+            mActionMode = getActivity().startActionMode(mActionModeCallback);
+            mActionMode.setTitle(String.valueOf(selectedCount));
 
-                if (mActionMode == null && selectedCount > 0) {
+        } else if (mActionMode != null && selectedCount > 0) {
+            mActionMode.setTitle(String.valueOf(selectedCount));
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mActionMode = getActivity().startActionMode(mActionModeCallback);
-                            mActionMode.setTitle(String.valueOf(selectedCount));
-                        }
-                    });
+        } else if (mActionMode != null && selectedCount == 0) {
 
-                } else if (mActionMode != null && selectedCount > 0){
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mActionMode.setTitle(String.valueOf(selectedCount));
-                        }
-                    });
-
-                } else if (mActionMode != null && selectedCount == 0) {
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mActionMode.finish();
-                        }
-                    });
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActionMode.finish();
                 }
-            }
-        }.start();
+            });
+        }
+
     }
 
     // ActionMode callback for the contextual Action Bar Menu
@@ -320,10 +306,11 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
                     if (!sharedPreferences.getBoolean(Constants.ACTION_MODE, false)) {
                         dbHelper.removeAllFromSelectedListTable();
                     }
-                    mTitlesRecyclerAdapter.notifyDataSetChanged();
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.remove(Constants.ACTION_MODE).apply();
+
+                    mTitlesRecyclerAdapter.notifyDataSetChanged();
                 }
             }, 240);
         }
@@ -335,7 +322,17 @@ public class MyListsFragment extends Fragment implements View.OnClickListener,
         super.onSaveInstanceState(outState);
 
         outState.putInt(SELECTED_COUNT, selectedCount);
+        outState.putBoolean(Constants.ACTION_MODE, false);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
 
+        if (mActionMode !=null && selectedCount > 0){
+            // if ActionMode is Active keep active using shared preference - handled in ActionMode onDestroy
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Constants.ACTION_MODE, true).apply();
+        }
+    }
 }
